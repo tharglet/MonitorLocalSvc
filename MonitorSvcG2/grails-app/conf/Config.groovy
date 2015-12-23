@@ -74,7 +74,7 @@ grails.spring.bean.packages = []
 grails.web.disable.multipart=false
 
 // request parameters to mask when logging exceptions
-grails.exceptionresolver.params.exclude = ['password']
+grails.exceptionresolver.params.exclude = ['password', 'client_secret' ]
 
 // configure auto-caching of queries by default (if false you can cache individual queries with 'cache: true')
 grails.hibernate.cache.queries = false
@@ -121,14 +121,38 @@ log4j.main = {
 grails.plugin.springsecurity.userLookup.userDomainClassName = 'ac.uk.jisc.monitor.User'
 grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'ac.uk.jisc.monitor.UserRole'
 grails.plugin.springsecurity.authority.className = 'ac.uk.jisc.monitor.Role'
-grails.plugin.springsecurity.controllerAnnotations.staticRules = [
-	'/':                ['permitAll'],
-	'/index':           ['permitAll'],
-	'/index.gsp':       ['permitAll'],
-	'/assets/**':       ['permitAll'],
-	'/**/js/**':        ['permitAll'],
-	'/**/css/**':       ['permitAll'],
-	'/**/images/**':    ['permitAll'],
-	'/**/favicon.ico':  ['permitAll']
+
+// grails.plugin.springsecurity.controllerAnnotations.staticRules = [
+// 	'/':                ['permitAll'],
+// 	'/index':           ['permitAll'],
+// 	'/index.gsp':       ['permitAll'],
+// 	'/assets/**':       ['permitAll'],
+// 	'/**/js/**':        ['permitAll'],
+// 	'/**/css/**':       ['permitAll'],
+// 	'/**/images/**':    ['permitAll'],
+// 	'/**/favicon.ico':  ['permitAll']
+// ]
+
+grails.plugin.springsecurity.rejectIfNoRule = false
+grails.plugin.springsecurity.fii.rejectPublicInvocations = false
+
+
+
+// Added by the Spring Security OAuth2 Provider plugin:
+grails.plugin.springsecurity.oauthProvider.clientLookup.className = 'ac.uk.jisc.monitor.OAuthClient'
+grails.plugin.springsecurity.oauthProvider.authorizationCodeLookup.className = 'ac.uk.jisc.monitor.OAuthAuthorizationCode'
+grails.plugin.springsecurity.oauthProvider.accessTokenLookup.className = 'ac.uk.jisc.monitor.OAuthAccessToken'
+grails.plugin.springsecurity.oauthProvider.refreshTokenLookup.className = 'ac.uk.jisc.monitor.OAuthRefreshToken'
+
+
+grails.plugin.springsecurity.filterChain.chainMap = [
+        '/oauth/token': 'JOINED_FILTERS,-oauth2ProviderFilter,-securityContextPersistenceFilter,-logoutFilter,-rememberMeAuthenticationFilter',
+        '/**': 'JOINED_FILTERS,-statelessSecurityContextPersistenceFilter',
 ]
 
+grails.plugin.springsecurity.providerNames = [
+        'clientCredentialsAuthenticationProvider',
+        'daoAuthenticationProvider',
+        'anonymousAuthenticationProvider',
+        'rememberMeAuthenticationProvider'
+]
