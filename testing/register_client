@@ -1,0 +1,2 @@
+curl -X POST -H "Content-Type: application/json" -d '{ "grant_type":"client_credentials", "client_id":"monitorLocal", "client_secret":"a3802436c3c558ea5725e40756fa7b16", "scope":"read" }' http://localhost:8080/MonitorSvcG2/oauth/token
+

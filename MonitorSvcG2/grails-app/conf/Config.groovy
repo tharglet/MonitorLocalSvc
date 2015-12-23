@@ -122,21 +122,18 @@ grails.plugin.springsecurity.userLookup.userDomainClassName = 'ac.uk.jisc.monito
 grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'ac.uk.jisc.monitor.UserRole'
 grails.plugin.springsecurity.authority.className = 'ac.uk.jisc.monitor.Role'
 
-// grails.plugin.springsecurity.controllerAnnotations.staticRules = [
-// 	'/':                ['permitAll'],
-// 	'/index':           ['permitAll'],
-// 	'/index.gsp':       ['permitAll'],
-// 	'/assets/**':       ['permitAll'],
-// 	'/**/js/**':        ['permitAll'],
-// 	'/**/css/**':       ['permitAll'],
-// 	'/**/images/**':    ['permitAll'],
-// 	'/**/favicon.ico':  ['permitAll']
-// ]
-
-grails.plugin.springsecurity.rejectIfNoRule = false
-grails.plugin.springsecurity.fii.rejectPublicInvocations = false
-
-
+grails.plugin.springsecurity.controllerAnnotations.staticRules = [
+ 	'/':                ['permitAll'],
+ 	'/oauth/token':     ['permitAll'],
+ 	'/oauth/token/':    ['permitAll'],
+ 	'/index':           ['permitAll'],
+ 	'/index.gsp':       ['permitAll'],
+ 	'/assets/**':       ['permitAll'],
+ 	'/**/js/**':        ['permitAll'],
+ 	'/**/css/**':       ['permitAll'],
+ 	'/**/images/**':    ['permitAll'],
+ 	'/**/favicon.ico':  ['permitAll']
+]
 
 // Added by the Spring Security OAuth2 Provider plugin:
 grails.plugin.springsecurity.oauthProvider.clientLookup.className = 'ac.uk.jisc.monitor.OAuthClient'
