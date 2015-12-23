@@ -2,6 +2,8 @@ import ac.uk.jisc.monitor.*
 
 class BootStrap {
 
+  def grailsApplication
+
   def init = { servletContext ->
 
     def userRole = Role.findByAuthority('ROLE_USER') ?: new Role(authority: 'ROLE_USER', roleType:'global').save(failOnError: true)
