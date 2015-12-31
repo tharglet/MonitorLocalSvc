@@ -55,6 +55,9 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-actuator"
     compile "org.springframework.boot:spring-boot-autoconfigure"
     compile "org.springframework.boot:spring-boot-starter-tomcat"
+    compile "org.grails.plugins:spring-security-core:3.0.0"
+
+
     compile "org.grails:grails-dependencies"
     compile "org.grails:grails-web-boot"
 
@@ -62,6 +65,8 @@ dependencies {
     compile "org.grails.plugins:cache"
     compile "org.hibernate:hibernate-ehcache"
     compile "org.grails.plugins:scaffolding"
+
+    compile "org.bitbucket.b_c:jose4j:0.4.2"
 
     runtime "org.grails.plugins:asset-pipeline"
 
