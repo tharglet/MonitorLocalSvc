@@ -125,7 +125,6 @@ grails.plugin.springsecurity.authority.className = 'ac.uk.jisc.monitor.Role'
 grails.plugin.springsecurity.controllerAnnotations.staticRules = [
  	'/':                ['permitAll'],
  	'/oauth/token':     ['permitAll'],
- 	'/oauth/token/':    ['permitAll'],
  	'/index':           ['permitAll'],
  	'/index.gsp':       ['permitAll'],
  	'/assets/**':       ['permitAll'],

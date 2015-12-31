@@ -1,2 +1,13 @@
-curl -X POST -H "Content-Type: application/json" -d '{ "grant_type":"client_credentials", "client_id":"monitorLocal", "client_secret":"a3802436c3c558ea5725e40756fa7b16", "scope":"read" }' http://localhost:8080/MonitorSvcG2/oauth/token
+# curl -X POST -H "Content-Type: application/json" -d '{ "grant_type":"client_credentials", "client_id":"monitorLocal", "client_secret":"a3802436c3c558ea5725e40756fa7b16", "scope":"read" }' http://localhost:8080/MonitorSvcG2/oauth/token
+#
+authstr="monitorLocal:a3802436c3c558ea5725e40756fa7b16"
+# Base 64eNCODEA
+encAuthStr=`echo $authstr|base64`
+
+# echo Attempt with auth header $encAuthStr
+# curl -X POST -H "Authorization: $encAuthStr" -d '{ "grant_type":"client_credentials", "scope":"read" }' http://localhost:8080/MonitorSvcG2/oauth/token
+# http://forum.spring.io/forum/spring-projects/security/oauth/748482-oauth2-full-authentication-is-required-after-token-request
+
+curl -v -u monitorLocal:a3802436c3c558ea5725e40756fa7b16 -d "grant_type=client_credentials" http://localhost:8080/MonitorSvcG2/oauth/token
+
 
