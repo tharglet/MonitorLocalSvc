@@ -112,7 +112,7 @@ class JwtController {
                 } else {
                     // log.debug("Creating new user");
 
-                    user = new cesvc.User()
+                    user = new User()
 
                     // copy properties from the social API to the CE User object.
                     if (userMapping) {

@@ -68,6 +68,11 @@ dependencies {
 
     compile "org.bitbucket.b_c:jose4j:0.4.2"
 
+    compile('org.codehaus.groovy.modules.http-builder:http-builder:0.5.2') {
+      exclude group: "org.codehaus.groovy", module: "groovy"
+    }
+
+
     runtime "org.grails.plugins:asset-pipeline"
 
     testCompile "org.grails:grails-plugin-testing"
