@@ -18,6 +18,19 @@ class User implements Serializable {
 	boolean accountLocked
 	boolean passwordExpired
 
+
+        String displayName
+        String profilePic
+        String email
+
+        static hasMany = [
+          socialIdentities : SocialIdentity
+        ]
+
+        static mappedBy = [
+          socialIdentities : 'user'
+        ]
+
 	User(String username, String password) {
 		this()
 		this.username = username
