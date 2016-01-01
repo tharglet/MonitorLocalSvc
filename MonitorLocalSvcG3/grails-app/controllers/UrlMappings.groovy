@@ -7,8 +7,11 @@ class UrlMappings {
             }
         }
 
+        "/oauth/${action}/${provider}"(controller: 'ceJwt')
+
         "/"(view:"/index")
         "500"(view:'/error')
         "404"(view:'/notFound')
+
     }
 }
