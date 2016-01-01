@@ -6,7 +6,6 @@ import static groovyx.net.http.Method.GET
 import org.jose4j.jwk.*
 import org.jose4j.jwt.*
 import org.jose4j.jws.*
-import uk.ac.jisc.monitorlocal
 
 
 /**
@@ -16,7 +15,6 @@ import uk.ac.jisc.monitorlocal
  */
 class JwtController {
 
-  def grailsApplication
   def publicKeyService
 
   def callback(String provider) {
