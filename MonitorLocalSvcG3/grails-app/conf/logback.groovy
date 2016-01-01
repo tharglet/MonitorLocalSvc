@@ -10,6 +10,15 @@ appender('STDOUT', ConsoleAppender) {
 
 root(ERROR, ['STDOUT'])
 
+// Explanation for this from http://www.ociweb.com/resources/publications/sett/september-2015-grails-3-interceptors/
+logger 'grails.app.controllers.com.k_int', DEBUG
+logger 'grails.app.controllers.uk', DEBUG
+logger 'grails.plugin.springsecurity', WARN
+logger 'org.springframework.security', WARN
+logger 'org.springframework.web', WARN
+logger 'grails.artefact.Interceptor', WARN, ['STDOUT'], false
+
+
 def targetDir = BuildSettings.TARGET_DIR
 if (Environment.isDevelopmentMode() && targetDir) {
     appender("FULL_STACKTRACE", FileAppender) {
