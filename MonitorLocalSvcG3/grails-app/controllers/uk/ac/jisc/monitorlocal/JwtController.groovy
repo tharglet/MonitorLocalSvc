@@ -17,10 +17,11 @@ class JwtController {
 
   def publicKeyService
 
-  def callback(String provider) {
+  def callback() {
     def result = [:]
+    String provider = params.provider
 
-    log.debug("CeJwt::callback ")
+    log.debug("CeJwt::callback ${params}")
 
     def auth_cfg = grailsApplication.config.auth[provider]
 
