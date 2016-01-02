@@ -57,7 +57,7 @@ class JwtController {
         // Locate a user for...
         def people_api = new HTTPBuilder(peopleUri.scheme + "://" + peopleUri.host)
 
-        log.debug("Fetch the person data via the people API")
+        log.debug("Fetch the person data via the people API -- ${peopleUri}")
         people_api.request(GET,groovyx.net.http.ContentType.JSON) { req ->
 
           uri.path = peopleUri.path
