@@ -27,3 +27,25 @@ grails.plugin.springsecurity.filterChain.chainMap = [
 	[pattern: '/**',             filters: 'JOINED_FILTERS']
 ]
 
+auth = [
+  sob:[
+    key : 'xxx',
+    secret : 'xxx',
+    scope : 'read',
+    defaultRoles : ['ROLE_USER', 'ROLE_GOOGLE'],
+    accessTokenUrl : 'https://accounts.google.com/o/oauth2/token',
+    peopleApiUrl : 'https://www.googleapis.com/plus/v1/people/me/openIdConnect',
+    query : [:],
+    userMapping: [username: "sub", displayName: "name", profilePic: "picture", email: "email"]
+  ],
+  google : [
+    key : 'xxx',
+    secret : 'xxx',
+    scope : '',
+    defaultRoles : ['ROLE_USER', 'ROLE_GOOGLE'],
+    accessTokenUrl : 'https://accounts.google.com/o/oauth2/token',
+    peopleApiUrl : 'https://www.googleapis.com/plus/v1/people/me/openIdConnect',
+    query : [:],
+    userMapping: [username: "sub", displayName: "name", profilePic: "picture", email: "email"]
+  ],
+]
