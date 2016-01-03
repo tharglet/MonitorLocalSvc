@@ -27,22 +27,25 @@ class JwtController {
 
     if ( auth_cfg ) {
 
-      log.debug("${request.JSON.code} ${request.JSON.redirectUri}");
+      log.debug("Request.JSON.code:${request.JSON.code} redirectUri:${request.JSON.redirectUri}");
 
       def access_params = [
          code: request.JSON.code,
          client_id: request.JSON.clientId,
-         client_secret: auth_cfg.secret,
          redirect_uri: request.JSON.redirectUri,
          grant_type: 'authorization_code'
       ];
+
+      if ( auth_cfg.secret ) {
+        access_params.client_secret = auth_cfg.secret
+      }
 
       // get the URI to hit for exchanging the auth-code for a token.
       def tokenUri = auth_cfg.accessTokenUrl.toURI()
 
       def http = new HTTPBuilder(tokenUri.scheme + "://" + tokenUri.host)
 
-      log.debug("About to call post on ${tokenUri.path} to validate token")
+      log.debug("About to call post on ${tokenUri.path} to validate token using access params ${access_params}")
 
       http.post( path: tokenUri.path, body:access_params) { resp, json ->
         log.debug("POST Success: ${resp} ${json}")
@@ -58,6 +61,7 @@ class JwtController {
         def people_api = new HTTPBuilder(peopleUri.scheme + "://" + peopleUri.host)
 
         log.debug("Fetch the person data via the people API -- ${peopleUri}")
+
         people_api.request(GET,groovyx.net.http.ContentType.JSON) { req ->
 
           uri.path = peopleUri.path

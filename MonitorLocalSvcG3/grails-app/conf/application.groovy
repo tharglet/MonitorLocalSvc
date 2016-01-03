@@ -29,8 +29,8 @@ grails.plugin.springsecurity.filterChain.chainMap = [
 
 auth = [
   sob:[
-    key : 'xxx',
-    secret : 'xxx',
+    key : 'monitorLocalDev',
+    secret : 'monitorLocalDevSecret',
     scope : 'read',
     defaultRoles : ['ROLE_USER', 'ROLE_GOOGLE'],
     accessTokenUrl : 'https://www.kbplus.ac.uk/sobtest/oauth/token',
