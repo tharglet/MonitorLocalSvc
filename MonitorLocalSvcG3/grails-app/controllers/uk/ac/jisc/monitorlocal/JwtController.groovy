@@ -47,7 +47,9 @@ class JwtController {
 
       log.debug("About to call post on ${tokenUri.path} to validate token using access params ${access_params}")
 
-      http.post( path: tokenUri.path, body:access_params) { resp, json ->
+      http.post( 
+                 path: tokenUri.path,
+                 body:access_params) { resp, json ->
         log.debug("POST Success: ${resp} ${json}")
 
         def accessToken = json.access_token;
@@ -60,7 +62,7 @@ class JwtController {
         // Locate a user for...
         def people_api = new HTTPBuilder(peopleUri.scheme + "://" + peopleUri.host)
 
-        log.debug("Fetch the person data via the people URI -- ${peopleUri} api -- ${peopleUri.scheme}://${peopleUri.host}")
+        log.debug("Fetch the person data via the people URI -- ${peopleUri} api -- ${peopleUri?.scheme}://${peopleUri?.host}")
 
         people_api.request(GET,groovyx.net.http.ContentType.JSON) { req ->
 
@@ -89,9 +91,9 @@ class JwtController {
                 response.status = 409;
               }
               else {
-                log.debug("Create token")
                 def token = authorization_header.split(' ')[1];
-                def payload = decodeJWT(token, access_params.client_secret);
+                log.debug("Create token ${token}")
+                def payload = publicKeyService.decodeJWT(token, access_params.client_secret);
                 result.token = createToken(social_identity)
               }
             }
