@@ -60,7 +60,7 @@ class JwtController {
         // Locate a user for...
         def people_api = new HTTPBuilder(peopleUri.scheme + "://" + peopleUri.host)
 
-        log.debug("Fetch the person data via the people API -- ${peopleUri}")
+        log.debug("Fetch the person data via the people URI -- ${peopleUri} api -- ${peopleUri.scheme}://${peopleUri.host}")
 
         people_api.request(GET,groovyx.net.http.ContentType.JSON) { req ->
 
@@ -158,6 +158,12 @@ class JwtController {
               }
             }
           }
+
+          response.failure = { resp2, reader ->
+              log.error("Failure result ${resp2.statusLine}");
+              log.errir(reader.text)
+          }
+
         }
 
       }
@@ -166,6 +172,7 @@ class JwtController {
      log.error("Unable to locate config for provider ${provider}");
     }
 
+    log.debug("JwtController returning...");
     render result as JSON;
   }
 

@@ -31,7 +31,7 @@ auth = [
   sob:[
     key : 'monitorLocalDev',
     secret : 'monitorLocalDevSecret',
-    scope : 'read',
+    scope : ['read'],
     defaultRoles : ['ROLE_USER', 'ROLE_GOOGLE'],
     accessTokenUrl : 'https://www.kbplus.ac.uk/sobtest/oauth/token',
     peopleApiUrl : 'https://www.kbplus.ac.uk/sobtest/userinfo',
