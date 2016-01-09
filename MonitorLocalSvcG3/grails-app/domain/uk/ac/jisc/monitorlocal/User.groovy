@@ -7,16 +7,16 @@ import groovy.transform.ToString
 @ToString(includes='username', includeNames=true, includePackage=false)
 class User implements Serializable {
 
-	private static final long serialVersionUID = 1
+  private static final long serialVersionUID = 1
 
-	transient springSecurityService
+  transient springSecurityService
 
-	String username
-	String password
-	boolean enabled = true
-	boolean accountExpired
-	boolean accountLocked
-	boolean passwordExpired
+  String username
+  String password
+  boolean enabled = true
+  boolean accountExpired
+  boolean accountLocked
+  boolean passwordExpired
 
 
         String displayName
@@ -31,43 +31,44 @@ class User implements Serializable {
           socialIdentities : 'user'
         ]
 
-	User(String username, String password) {
-		this()
-		this.username = username
-		this.password = password
-	}
+  User(String username, String password) {
+    this()
+    this.username = username
+    this.password = password
+  }
 
-	Set<Role> getAuthorities() {
-		UserRole.findAllByUser(this)*.role
-	}
+  Set<Role> getAuthorities() {
+    UserRole.findAllByUser(this)*.role
+  }
 
-	def beforeInsert() {
-		encodePassword()
-	}
+  def beforeInsert() {
+    encodePassword()
+  }
 
-	def beforeUpdate() {
-		if (isDirty('password')) {
-			encodePassword()
-		}
-	}
+  def beforeUpdate() {
+    if (isDirty('password')) {
+      encodePassword()
+    }
+  }
 
-	protected void encodePassword() {
-		password = springSecurityService?.passwordEncoder ? springSecurityService.encodePassword(password) : password
-	}
+  protected void encodePassword() {
+    password = springSecurityService?.passwordEncoder ? springSecurityService.encodePassword(password) : password
+  }
 
-	static transients = ['springSecurityService']
+  static transients = ['springSecurityService']
 
-	static constraints = {
-		username blank: false, unique: true
-		password blank: false
-		displayName blank: true, nullable:true
-		profilePic blank: true, nullable:true
-		email blank: true, nullable:true
-	}
+  static constraints = {
+    username blank: false, unique: true
+    password blank: false
+    displayName blank: true, nullable:true
+    profilePic blank: true, nullable:true
+    email blank: true, nullable:true
+  }
 
-	static mapping = {
-		password column: '`password`'
-	
+  static mapping = {
+    password column: '`password`'
+  }
+  
   public createUserDTO() {
     def verified_user = Role.findByAuthority('ROLE_VERIFIED_USER')
     def result = [
