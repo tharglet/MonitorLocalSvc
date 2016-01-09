@@ -51,7 +51,7 @@ class JwtController {
                  path: tokenUri.path,
                  body:access_params) { resp, json ->
 
-        log.debug("POST Success: ${resp} ${json}")
+        log.debug("POST Success for validation of token ${resp} ${json}")
 
         def accessToken = json.access_token;
 
