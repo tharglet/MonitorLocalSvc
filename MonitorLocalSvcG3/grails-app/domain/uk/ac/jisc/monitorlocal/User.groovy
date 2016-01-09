@@ -67,5 +67,18 @@ class User implements Serializable {
 
 	static mapping = {
 		password column: '`password`'
-	}
+	
+  public createUserDTO() {
+    def verified_user = Role.findByAuthority('ROLE_VERIFIED_USER')
+    def result = [
+      userid:this.username,
+      email:this.email,
+      displayName:this.displayName,
+      profilePic:this.profilePic,
+      bio: this.biography,
+      affiliations: [],
+      verified: this.authorities.contains(verified_user)
+    ]
+    return result;
+  }
 }
