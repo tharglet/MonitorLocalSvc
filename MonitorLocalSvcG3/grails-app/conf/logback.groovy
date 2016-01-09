@@ -18,6 +18,11 @@ logger 'org.springframework.security', WARN
 logger 'org.springframework.web', WARN
 logger 'grails.artefact.Interceptor', WARN, ['STDOUT'], false
 
+logger 'com.k_int', DEBUG
+logger 'grails.app.controllers.com.k_int', DEBUG
+logger 'grails.app.init.BootStrap', DEBUG
+logger 'grails.artefact.Interceptor', WARN
+
 
 def targetDir = BuildSettings.TARGET_DIR
 if (Environment.isDevelopmentMode() && targetDir) {

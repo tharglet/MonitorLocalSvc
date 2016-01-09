@@ -66,6 +66,8 @@ dependencies {
     compile "org.hibernate:hibernate-ehcache"
     compile "org.grails.plugins:scaffolding"
 
+    runtime 'mysql:mysql-connector-java:5.1.30'
+
     compile "org.bitbucket.b_c:jose4j:0.4.2"
 
     compile('org.codehaus.groovy.modules.http-builder:http-builder:0.5.2') {

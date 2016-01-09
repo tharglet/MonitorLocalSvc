@@ -50,6 +50,7 @@ class JwtController {
       http.post( 
                  path: tokenUri.path,
                  body:access_params) { resp, json ->
+
         log.debug("POST Success: ${resp} ${json}")
 
         def accessToken = json.access_token;
@@ -62,110 +63,120 @@ class JwtController {
         // Locate a user for...
         def people_api = new HTTPBuilder(peopleUri.scheme + "://" + peopleUri.host)
 
-        log.debug("Fetch the person data via the people URI -- ${peopleUri} api -- ${peopleUri?.scheme}://${peopleUri?.host}")
 
-        people_api.request(GET,groovyx.net.http.ContentType.JSON) { req ->
+        try {
 
-          uri.path = peopleUri.path
-          uri.query = auth_cfg.query
-          headers.'Authorization' = 'Bearer ' + accessToken
-          headers.Accept = 'application/json'
+          log.debug("Fetch the person data via the people URI -- ${peopleUri} api -- ${peopleUri?.scheme}://${peopleUri?.host}")
 
-          response.success = { r2, j2 ->
-
-            log.debug("Got person data")
-
-            // get hold of the mapping from the social API to the CE user properties, obtain the user reference, which
-            // is the unique identifier for the user within the scope of the social provider.
-            def userMapping = auth_cfg.userMapping
-            def userReference = j2[userMapping.username]
-
-            // attempt to locate an existing SocialIdentity for the user.
-            def social_identity = SocialIdentity.findByProviderAndReference(provider, userReference)
-
-            if ( authorization_header ) {
-              log.debug("Request already contains an Authorization header :  ${authorization_header}")
-              if ( social_identity ) {
-                log.debug("Got user for that JWT")
-                result.message =  'There is already a Google account that belongs to you'
-                response.status = 409;
-              }
-              else {
-                def token = authorization_header.split(' ')[1];
-                log.debug("Create token ${token}")
-                def payload = publicKeyService.decodeJWT(token, access_params.client_secret);
-                result.token = createToken(social_identity)
-              }
-            }
-            else {
-              log.debug("Request does not contain an Authorization header")
-
-              def user;
-              if ( social_identity ) {
-                log.debug("Located social identity for ${j2.sub} :: ${social_identity.user}");
-                user = social_identity.user
-                result.token = createToken(social_identity)
-              }
-              else {
-                // if there is no "user" role, the system is in an invalid state, this should be created as necessary
-                // on bootstrap.
-                log.debug("Create user")
-                def role_user = Role.findByAuthority('ROLE_USER')
-                if (!role_user) {
-                    // no "user" role, log an error and respond with a 500 InternalServerError.
-                    log.error('missing role "user"')
-                    response.status(500, "invalid system state")
-                } else {
-                    // log.debug("Creating new user");
-
-                    user = new User()
-
-                    // copy properties from the social API to the CE User object.
-                    if (userMapping) {
-                        userMapping.each{ k, v ->
-                            user[k] = j2[v]
-                        }
-                    }
-
-                    // prefix the username with the social provider.
-                    user.username = provider + '_' + user.username
-                    user.password = java.util.UUID.randomUUID().toString()
-                    user.accountExpired=false;
-                    user.accountLocked=false;
-                    user.passwordExpired=false;
-                    // TODO: add created and lastUsed timestamp fields?
-                    user.save(flush:true, failOnError:true);
-
-                    social_identity = new SocialIdentity(provider: provider,reference:userReference,user:user).save(flush:true, failOnError:true);
-
-                    log.debug("Grant user role");
-                    def new_grant = new UserRole(role:role_user, user:user).save(flush:true, failOnError:true);
-
-                    result.token = createToken(social_identity)
+          people_api.request(GET,groovyx.net.http.ContentType.JSON) { req ->
+  
+            uri.path = peopleUri.path
+            uri.query = auth_cfg.query
+            headers.'Authorization' = 'Bearer ' + accessToken
+            headers.Accept = 'application/json'
+  
+            response.success = { r2, j2 ->
+  
+              log.debug("response: ${r2} ${j2}");
+  
+              // get hold of the mapping from the social API to the CE user properties, obtain the user reference, which
+              // is the unique identifier for the user within the scope of the social provider.
+              def userMapping = auth_cfg.userMapping
+              def userReference = j2[userMapping.username]
+  
+              log.debug("Got person data -- need to see if we alreadt have a user matching ${userReference}")
+  
+              // attempt to locate an existing SocialIdentity for the user.
+              def social_identity = SocialIdentity.findByProviderAndReference(provider, userReference)
+  
+              if ( authorization_header ) {
+                log.debug("Request already contains an Authorization header :  ${authorization_header} so we should already have neen through this process")
+                if ( social_identity ) {
+                  log.debug("Got user for that JWT")
+                  result.message =  'There is already a Google account that belongs to you'
+                  response.status = 409;
+                }
+                else {
+                  def token = authorization_header.split(' ')[1];
+                  log.debug("Create token ${token}")
+                  def payload = publicKeyService.decodeJWT(token);
+                  result.token = createToken(social_identity)
                 }
               }
-
-              if ( user ) {
-                // if there is no "ROLE_VERIFIED_USER" role, the system is in an invalid state, this should be created as
-                // necessary on bootstrap.
-                def verified_user = Role.findByAuthority('ROLE_VERIFIED_USER')
-                if (!verified_user) {
-                    // no "ROLE_VERIFIED_USER" role, log an error and respond with a 500 InternalServerError.
-                    log.error('missing role "ROLE_VERIFIED_USER"')
-                    response.status(500, "invalid system state")
-                } else {
-                    // create a user object to push down with the JWT to the client.
-                    result.user = user.createUserDTO()
+              else {
+                log.debug("Request does not contain an Authorization header")
+  
+                def user;
+                if ( social_identity ) {
+                  log.debug("Located social identity for ${j2.sub} :: ${social_identity.user}");
+                  user = social_identity.user
+                  result.token = createToken(social_identity)
+                }
+                else {
+                  // if there is no "user" role, the system is in an invalid state, this should be created as necessary
+                  // on bootstrap.
+                  log.debug("Create user")
+                  def role_user = Role.findByAuthority('ROLE_USER')
+                  if (!role_user) {
+                      // no "user" role, log an error and respond with a 500 InternalServerError.
+                      log.error('missing role "user"')
+                      response.status(500, "invalid system state")
+                  } else {
+                      // log.debug("Creating new user");
+  
+                      user = new User()
+  
+                      // copy properties from the social API to the User object.
+                      if (userMapping) {
+                          userMapping.each{ k, v ->
+                              log.debug("Copy user mapping ${k} ${v} ${j2[v]}");
+                              user[k] = j2[v]
+                          }
+                      }
+  
+                      // prefix the username with the social provider.
+                      user.username = provider + '_' + user.username
+                      user.password = java.util.UUID.randomUUID().toString()
+                      user.accountExpired=false;
+                      user.accountLocked=false;
+                      user.passwordExpired=false;
+                      // TODO: add created and lastUsed timestamp fields?
+                      user.save(flush:true, failOnError:true);
+  
+                      social_identity = new SocialIdentity(provider: provider,reference:userReference,user:user).save(flush:true, failOnError:true);
+  
+                      log.debug("Grant user role");
+                      def new_grant = new UserRole(role:role_user, user:user).save(flush:true, failOnError:true);
+  
+                      result.token = createToken(social_identity)
+                  }
+                }
+  
+                if ( user ) {
+                  // if there is no "ROLE_VERIFIED_USER" role, the system is in an invalid state, this should be created as
+                  // necessary on bootstrap.
+                  def verified_user = Role.findByAuthority('ROLE_VERIFIED_USER')
+                  if (!verified_user) {
+                      // no "ROLE_VERIFIED_USER" role, log an error and respond with a 500 InternalServerError.
+                      log.error('missing role "ROLE_VERIFIED_USER"')
+                      response.status(500, "invalid system state")
+                  } else {
+                      // create a user object to push down with the JWT to the client.
+                      result.user = user.createUserDTO()
+                  }
                 }
               }
             }
+  
+            response.failure = { resp2, reader ->
+                log.error("Failure result ${resp2.statusLine}");
+                log.errir(reader.text)
+            }
+  
           }
-
-          response.failure = { resp2, reader ->
-              log.error("Failure result ${resp2.statusLine}");
-              log.errir(reader.text)
-          }
-
+        }
+        catch ( Exception e ) {
+          log.error("Error",e);
         }
 
       }

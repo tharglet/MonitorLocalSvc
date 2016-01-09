@@ -37,7 +37,7 @@ class PublicKeyService {
       // Give the JWK a Key ID (kid), which is just the polite thing to do
       // thekey.setKeyId("k1");
 
-      Map<String, Object> keyparams = grailsApplication.config.cesvc_jwk
+      Map<String, Object> keyparams = grailsApplication.config.monitorLocal_jwk
       // keyparams.n = 'nB-sbsjkNr7AH4hzsH-_3P6UlWlYA0Izy2UgjowJkNQfiaPvILS320FJaHqBQ6r2qP86xssPYqxSIvXS4qxWgxaKkwNx5myYKVNO4aIN6DpnIGmtzcjdVMZYWSVe4dGXwrGJ8dqLxEL6FthVu6DkTkCICpqIPU2gsgRqPPgt61GAu87_3Q8qGjgeb-gm1YfLZdlm_JQqWEPDmiwEiR7PARVPkNByhZISWX9U1CG0LBPRDh9eLnm6hdFdQAgesHqhRMB7UXrNJftCnDKw8Ay_m6wk2Tv86Mwi3jx0RBWm0sVnjVlHVqgGeDk1IMJQaWkcUC5KvfXcSTpn4ZX_IneIuQ'
       // keyparams.e = 'AQAB'
       thekey = new org.jose4j.jwk.RsaJsonWebKey(keyparams)
