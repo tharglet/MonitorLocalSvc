@@ -19,17 +19,18 @@ class User implements Serializable {
   boolean passwordExpired
 
 
-        String displayName
-        String profilePic
-        String email
+  String displayName
+  String profilePic
+  String email
+  String biography
 
-        static hasMany = [
-          socialIdentities : SocialIdentity
-        ]
+  static hasMany = [
+    socialIdentities : SocialIdentity
+  ]
 
-        static mappedBy = [
-          socialIdentities : 'user'
-        ]
+  static mappedBy = [
+    socialIdentities : 'user'
+  ]
 
   User(String username, String password) {
     this()
@@ -63,6 +64,7 @@ class User implements Serializable {
     displayName blank: true, nullable:true
     profilePic blank: true, nullable:true
     email blank: true, nullable:true
+    biography blank: true, nullable:true
   }
 
   static mapping = {
