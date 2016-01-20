@@ -3,7 +3,7 @@ package com.k_int.jwt
 
 import grails.plugin.springsecurity.annotation.Secured
 import org.apache.commons.codec.binary.Base64
-import org.codehaus.groovy.grails.commons.GrailsApplication
+import grails.core.GrailsApplication
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UsernameNotFoundException
