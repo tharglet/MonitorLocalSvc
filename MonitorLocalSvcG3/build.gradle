@@ -91,7 +91,19 @@ dependencies {
     console "org.grails:grails-console"
     
     compile 'org.joda:joda-money:0.10.0'
-    compile 'com.k-int.grails:grails-tools:0.1'
+    
+    
+    // See if the Gradle project for the grails-tools plugin is declared.
+    // If so, include locally, otherwise pull in distributed version from Maven
+    println "Looking for GrailsTools..."
+    try {
+      def gtp = project(':grails-tools')
+      compile gtp
+      println "\tfound locally at ${gtp.projectDir}"
+    } catch (Throwable t) {
+      compile 'com.k-int.grails:grails-tools:0.1'
+      println "\tno local copy found downloading from Maven"
+    }
 }
 
 task wrapper(type: Wrapper) {

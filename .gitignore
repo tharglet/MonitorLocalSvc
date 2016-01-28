@@ -6,6 +6,7 @@
 # Hidden files except the gitignore.
 .*
 !.gitignore
+settings.gradle
 
 # web application files
 /web-app/WEB-INF/classes
