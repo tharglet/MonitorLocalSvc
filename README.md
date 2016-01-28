@@ -12,7 +12,7 @@ https://msdn.microsoft.com/en-us/library/azure/dn645543.aspx
 ## Dependencies
 The grails 3 Application in this repository uses a grails-tools module. This will be pulled in using Maven, but if you wish, you can use a local filesystem version of the plugin when in development.
 
-To point to a local version create a local file named "settings.gradle" in *the root* of your local repository, and add the following lines to that file:  
+To point to a local version create a local file named "settings.gradle" in **the root** of your local repository, and add the following lines to that file:  
 
 ``` Groovy
 include 'MonitorLocalSvcG3', 'grails-tools'
