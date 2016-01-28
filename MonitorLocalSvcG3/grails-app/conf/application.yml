@@ -2,7 +2,7 @@
 grails:
     profile: web
     codegen:
-        defaultPackage: monitorlocalsvcg3
+        defaultPackage: uk.ac.jisc.monitorlocal
 info:
     app:
         name: '@info.app.name@'
@@ -54,6 +54,12 @@ grails:
         defaultScope: singleton
     converters:
         encoding: UTF-8
+        domain:
+          include:
+            class: true
+        json:
+          default:
+            deep: true
     views:
         default:
             codec: html
@@ -262,5 +268,5 @@ auth:
       displayName: "name"
       profilePic: "picture"
       email: "email"
-    
+
       

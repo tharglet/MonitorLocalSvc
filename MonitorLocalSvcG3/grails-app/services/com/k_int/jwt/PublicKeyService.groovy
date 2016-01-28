@@ -1,7 +1,6 @@
 package com.k_int.jwt
 
 
-import grails.plugin.springsecurity.annotation.Secured
 import org.apache.commons.codec.binary.Base64
 import grails.core.GrailsApplication
 import org.springframework.http.HttpStatus

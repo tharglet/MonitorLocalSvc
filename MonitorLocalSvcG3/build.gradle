@@ -41,6 +41,10 @@ assets {
 repositories {
     mavenLocal()
     maven { url "https://repo.grails.org/grails/core" }
+    maven { 
+        name "K-Int Private"
+        url "http://maven.k-int.com/content/repositories/private" 
+    }
 }
 
 dependencyManagement {
@@ -55,13 +59,14 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-actuator"
     compile "org.springframework.boot:spring-boot-autoconfigure"
     compile "org.springframework.boot:spring-boot-starter-tomcat"
-    compile "org.grails.plugins:spring-security-core:3.0.0"
+    // compile "org.grails.plugins:spring-security-core:3.0.0"
+    compile "org.springframework.security:spring-security-core:4.0.3.RELEASE"
 
 
     compile "org.grails:grails-dependencies"
     compile "org.grails:grails-web-boot"
 
-    compile "org.grails.plugins:hibernate"
+    compile "org.grails.plugins:hibernate4"
     compile "org.grails.plugins:cache"
     compile "org.hibernate:hibernate-ehcache"
     compile "org.grails.plugins:scaffolding"
@@ -84,6 +89,9 @@ dependencies {
     testRuntime 'org.seleniumhq.selenium:selenium-htmlunit-driver:2.44.0'
 
     console "org.grails:grails-console"
+    
+    compile 'org.joda:joda-money:0.10.0'
+    compile 'com.k-int.grails:grails-tools:0.1'
 }
 
 task wrapper(type: Wrapper) {
