@@ -9,51 +9,6 @@ import com.k_int.grails.tools.refdata.*
 
 class CostItem extends Component {
   
-  String name
-  static DEFAULT_REFDATA_VALS = [
-    'status' : [
-      'Committed',
-      'Actual'
-    ],
-    'category' : [
-      'Basic APC Cost',
-      'Bank Charge',
-      'Admin Cost',
-      'Discount',
-      'Refund',
-      'Page Charge',
-      'Colour Charge',
-      'Other'
-    ],
-    'prepay' : [
-      'Elsevier:Prepay2015',
-      'Wiley:Prepay2015',
-      'Springer:2014'
-    ],
-    'paid' : [
-      'Yes',
-      'No'
-    ],
-    'estimated' : [
-      'Yes',
-      'No'
-    ],
-    'awards' : [
-      'BB/J009709/1',
-      'G1000708',
-      'NE/G016003/1',
-      'MC_UU_12019/4',
-      'K013351',
-      'U105260558',
-      'G9901012',
-      'WT089698/Z/09/Z',
-      '089698/Z/09/Z',
-      'EP/J007560/1',
-      'WT089698',
-      'EP/I01778X/1'
-    ],
-  ]
-  
   static hasMany = [
     awards:Tag,
     prepay:Tag
@@ -68,12 +23,33 @@ class CostItem extends Component {
   
   AcademicOutput academicOutput
   Invoice invoice
+  
+  @Defaults([
+    'Basic APC Cost',
+    'Bank Charge',
+    'Admin Cost',
+    'Discount',
+    'Refund',
+    'Page Charge',
+    'Colour Charge',
+    'Other'
+  ])
   RefdataValue category
+  
+  @Defaults([
+    'Committed',
+    'Actual'
+  ])
   RefdataValue status
+  
   List prepay
+  
   List awards
   
+  @Defaults(["Yes","No"])
   RefdataValue paid
+  
+  @Defaults(["Yes","No"])
   RefdataValue estimated
   
   Currency currency = Constants.GBP
@@ -83,7 +59,6 @@ class CostItem extends Component {
   BigDecimal tax = new BigDecimal("0.00")
   
   public String toString () {
-    
     // Default the value.
     String val = "${grossValue ?: 0.00}"
     
