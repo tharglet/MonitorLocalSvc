@@ -37,7 +37,7 @@ class Tag extends RefdataValue {
       if ( !result ) {
   
         // Create and save a new refdata value.
-        log.debug ("Creating RefdataValue ${value}")
+        log.debug ("Creating Tag ${value}")
         result = new Tag(owner:cat, value:(value), sortKey:(sortkey))
         result.save(failOnError:true, flush:true)
       }

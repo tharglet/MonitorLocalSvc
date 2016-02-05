@@ -10,36 +10,22 @@ class Invoice extends Component {
   
   String supplier
   
-  static DEFAULT_REFDATA_VALS = [
-    received: [
-      'Yes',
-      'No'
-    ],
-    passedToFinance: [
-      'Yes',
-      'No'
-    ],
-    paidInFull: [
-      'Yes',
-      'No'
-    ],
-    paymentType: [
-      'Card',
-      'BACS',
-      'CHAPS'
-    ]
-  ]
-  
+  @Defaults(['Yes','No'])
   RefdataValue received
-  Date receivedDate
   
+  @Defaults(['Yes','No'])
   RefdataValue passedToFinance
-  Date passedToFinanceDate
   
+  @Defaults(['Yes','No'])  
   RefdataValue paidInFull
+  
+  @Defaults(['Card','BACS','CHAPS'])
+  RefdataValue paymentType
+  
+  Date receivedDate
+  Date passedToFinanceDate
   Date paidInFullDate
   
-  RefdataValue paymentType
   String filename
   
   static hasMany = [
