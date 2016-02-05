@@ -4,8 +4,10 @@ import com.k_int.grails.tools.identifiers.Identifier
 
 class Component {
   String name
+  List identifiers
+  
   static hasMany = [
-    ids:Identifier
+    identifiers:Identifier
   ]
 
   static constraints = {
@@ -13,7 +15,7 @@ class Component {
   }
   
   static mapping = {
-    ids cascade: "all"
+    identifiers cascade: "all"
   }
 //  
   public String toString() {
