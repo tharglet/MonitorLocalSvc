@@ -19,6 +19,8 @@ logger 'org.springframework.web', WARN
 logger 'grails.artefact.Interceptor', WARN, ['STDOUT'], false
 
 logger 'com.k_int', DEBUG
+logger 'com.k_int.grails.tools.refdata', DEBUG
+logger 'com.k_int.grails.tools.identifiers', DEBUG
 logger 'grails.app.controllers.com.k_int', DEBUG
 logger 'grails.app.init.BootStrap', DEBUG
 logger 'grails.artefact.Interceptor', WARN
