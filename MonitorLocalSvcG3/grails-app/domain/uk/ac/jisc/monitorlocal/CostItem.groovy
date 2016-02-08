@@ -1,11 +1,7 @@
 package uk.ac.jisc.monitorlocal
 
-import org.joda.money.CurrencyUnit
-import org.joda.money.Money
-import org.joda.money.format.MoneyFormatter
-import org.joda.money.format.MoneyFormatterBuilder
-
 import com.k_int.grails.tools.refdata.*
+import com.k_int.grailt.tools.finance.MonetaryValue
 
 class CostItem extends Component {
   
@@ -43,8 +39,9 @@ class CostItem extends Component {
   RefdataValue status
   
   List prepay
-  
   List awards
+  
+  Currency currency = Constants.GBP
   
   @Defaults(["Yes","No"])
   RefdataValue paid
@@ -52,32 +49,24 @@ class CostItem extends Component {
   @Defaults(["Yes","No"])
   RefdataValue estimated
   
-  Currency currency = Constants.GBP
-  
-  BigDecimal grossValue = new BigDecimal("0.00")
-  BigDecimal grossValueGBP = new BigDecimal("0.00")
-  BigDecimal tax = new BigDecimal("0.00")
+  MonetaryValue grossValue = new MonetaryValue("currency" : currency)
+  MonetaryValue grossValueGBP = new MonetaryValue("currency" : Constants.GBP)
+  MonetaryValue tax = new MonetaryValue("currency" : currency)
   
   public String toString () {
+    
     // Default the value.
-    String val = "${grossValue ?: 0.00}"
+    String val = "0.00"
     
     // If we have the currency and the value then we can provide a value.
-    if (currency && grossValue) {
-    
-      // Create a formatter.
-      MoneyFormatter formatter = new MoneyFormatterBuilder()
-        .appendCurrencySymbolLocalized()
-        .appendAmount()
-        .toFormatter()
-      ;
+    if (grossValue) {
       
       // Format the value using the currency and the gross value.
-      val = "${category?.value ?: ''} ${formatter.print(Money.of(CurrencyUnit.of(currency), grossValue))}"
+      val = "${category?.value ?: ''} ${grossValue}"
       
       // Only append GBP if in a different currency.
-      if (grossValueGBP && currency != Constants.GBP) {
-        val += " (${formatter.print(Money.of(CurrencyUnit.GBP, grossValueGBP))})"
+      if (grossValueGBP && grossValue?.baseCurrency != Constants.GBP) {
+        val += " (${grossValueGBP})"
       }
     }
 
@@ -95,8 +84,6 @@ class CostItem extends Component {
   }
 
   static constraints = {
-    'currency'        ( shared: 'required', size:3 )
-    'grossValue'      ( shared: 'required' )
     'status'          ( shared: 'required' )
     'category'        ( shared: 'required' )
     'paid'            ( shared: 'required' )
