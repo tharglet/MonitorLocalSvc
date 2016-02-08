@@ -15,10 +15,6 @@ class ApiController {
         respond role
     }
 
-    def create() {
-        respond new Role(params)
-    }
-
     @Transactional
     def save(Role role) {
         if (role == null) {
@@ -42,10 +38,6 @@ class ApiController {
             }
             '*' { respond role, [status: CREATED] }
         }
-    }
-
-    def edit(Role role) {
-        respond role
     }
 
     @Transactional
