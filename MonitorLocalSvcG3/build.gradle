@@ -97,7 +97,6 @@ dependencies {
 
   testCompile "org.grails:grails-plugin-testing"
   testCompile "org.grails.plugins:geb"
-  compile 'org.joda:joda-money:0.10.0'
 
   // See if the Gradle project for the grails-tools plugin is declared.
   // If so, include locally, otherwise pull in distributed version from Maven
