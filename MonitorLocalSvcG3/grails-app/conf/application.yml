@@ -242,8 +242,8 @@ auth:
     defaultRoles:
       - 'ROLE_USER'
       - 'ROLE_GOOGLE'
-    accessTokenUrl: 'https://www.kbplus.ac.uk/sobtest/oauth/token'
-    peopleApiUrl: 'https://www.kbplus.ac.uk/sobtest/userinfo'
+    accessTokenUrl: 'https://demo.kbplus.ac.uk/sobtest/oauth/token'
+    peopleApiUrl: 'https://demo.kbplus.ac.uk/sobtest/userinfo'
     query: {}
     userMapping:
       username: "sub"
@@ -327,3 +327,28 @@ grails:
         defaultScope: singleton
     converters:
         encoding: UTF-8
+---
+elasticSearch:
+  datastoreImpl: hibernateDatatstore
+  bulkIndexOnStartup: true
+  cluster:
+    name: elasticsearch
+  index:
+    name: monitor-local
+  migration:
+    strategy: delete
+  date:
+    formats: 
+      - "yyyy-MM-dd'T'HH:mm:ss'Z'"
+  defaultExcludedProperties:
+    - password
+  client:
+    mode: transport
+    transport:
+      sniff: true
+    
+    hosts:
+      -
+        host: localhost
+        port: 9300
+ 

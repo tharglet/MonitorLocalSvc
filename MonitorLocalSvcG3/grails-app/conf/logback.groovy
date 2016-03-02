@@ -11,19 +11,18 @@ appender('STDOUT', ConsoleAppender) {
 root(ERROR, ['STDOUT'])
 
 // Explanation for this from http://www.ociweb.com/resources/publications/sett/september-2015-grails-3-interceptors/
+logger 'uk.ac.jisc.monitorlocal', DEBUG
 logger 'grails.app.controllers.com.k_int', DEBUG
-logger 'grails.app.controllers.uk', DEBUG
+logger 'grails.app.controllers.uk.ac.jisc.monitorlocal', DEBUG
 logger 'grails.plugin.springsecurity', WARN
 logger 'org.springframework.security', WARN
 logger 'org.springframework.web', WARN
-logger 'grails.artefact.Interceptor', WARN, ['STDOUT'], false
+//logger 'grails.artefact.Interceptor', WARN, ['STDOUT'], false
 
 logger 'com.k_int', DEBUG
 logger 'com.k_int.grails.tools.refdata', DEBUG
 logger 'com.k_int.grails.tools.identifiers', DEBUG
-logger 'grails.app.controllers.com.k_int', DEBUG
 logger 'grails.app.init.BootStrap', DEBUG
-logger 'grails.artefact.Interceptor', WARN
 
 
 def targetDir = BuildSettings.TARGET_DIR
