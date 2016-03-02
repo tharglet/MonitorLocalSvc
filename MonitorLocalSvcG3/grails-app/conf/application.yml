@@ -329,7 +329,7 @@ grails:
         encoding: UTF-8
 ---
 elasticSearch:
-  datastoreImpl: hibernateDatatstore
+  datastoreImpl: hibernateDatastore
   bulkIndexOnStartup: true
   cluster:
     name: elasticsearch
@@ -344,9 +344,6 @@ elasticSearch:
     - password
   client:
     mode: transport
-    transport:
-      sniff: true
-    
     hosts:
       -
         host: localhost

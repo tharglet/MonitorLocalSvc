@@ -42,6 +42,7 @@ assets {
 
 repositories {
   mavenLocal()
+  mavenCentral()
   maven { url "https://repo.grails.org/grails/core" }
   maven {
     name "K-Int Private"
@@ -100,7 +101,7 @@ dependencies {
   testCompile "org.grails.plugins:geb"
   
   // Elastic search plugin.
-  runtime "org.grails.plugins:elasticsearch:0.0.4.6"
+  compile ("org.grails.plugins:elasticsearch:1.0.0")
 
   // See if the Gradle project for the grails-tools plugin is declared.
   // If so, include locally, otherwise pull in distributed version from Maven
