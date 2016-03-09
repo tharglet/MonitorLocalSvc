@@ -1,8 +1,13 @@
 package uk.ac.jisc.monitorlocal;
 
 
-import com.k_int.grails.tools.refdata.*
+import grails.rest.Resource
 
+import com.k_int.grails.tools.refdata.*
+import com.k_int.grails.tools.rest.ExtendedRestfulController
+
+
+@Resource(uri='/ao', superClass=ExtendedRestfulController)
 class AcademicOutput extends Component {
   
   @Defaults([
