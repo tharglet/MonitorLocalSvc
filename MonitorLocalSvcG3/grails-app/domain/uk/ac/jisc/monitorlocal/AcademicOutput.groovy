@@ -6,7 +6,6 @@ import grails.rest.Resource
 import com.k_int.grails.tools.refdata.*
 import com.k_int.grails.tools.rest.ExtendedRestfulController
 
-
 @Resource(uri='/ao', superClass=ExtendedRestfulController)
 class AcademicOutput extends Component {
   
@@ -36,8 +35,12 @@ class AcademicOutput extends Component {
   RefdataValue type
 
   static constraints = {
-    'name' (shared: 'titleText')
-    'type' (shared: 'required')
+    'name' ( validator: { value, obj ->
+      if (!( value =~ /^[a-z|A-Z\d\s\-\(\)\:\;\?\,\"\']+$/ )) {
+        return 'shared.titleText.error'
+      }
+     })
+    'type' (nullable: false)
   }
 
   static hasMany = [

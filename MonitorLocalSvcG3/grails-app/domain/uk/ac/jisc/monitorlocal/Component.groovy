@@ -16,7 +16,7 @@ class Component {
   ]
 
   static constraints = {
-    name shared: "required"
+    name nullable: false, blank:false
   }
   
   static mapping = {

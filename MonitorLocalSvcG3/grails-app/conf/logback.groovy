@@ -19,9 +19,9 @@ logger 'org.springframework.security', WARN
 logger 'org.springframework.web', WARN
 //logger 'grails.artefact.Interceptor', WARN, ['STDOUT'], false
 
-logger 'com.k_int', DEBUG
-logger 'com.k_int.grails.tools.refdata', DEBUG
-logger 'com.k_int.grails.tools.identifiers', DEBUG
+logger 'com.k_int.grails.tools', DEBUG, ['STDOUT']
+logger 'com.k_int.grails.tools.refdata.GrailsDomainRefdataHelpers', DEBUG
+logger 'com.k_int.grails.tools.identifiers.GrailsDomainIdentifierHelpers', DEBUG
 logger 'grails.app.init.BootStrap', DEBUG
 
 
