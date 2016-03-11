@@ -6,8 +6,12 @@ import grails.rest.Resource
 import com.k_int.grails.tools.refdata.*
 import com.k_int.grails.tools.rest.ExtendedRestfulController
 
-@Resource(uri='/ao', superClass=ExtendedRestfulController)
+@Resource(uri="/ao", superClass=ExtendedRestfulController)
 class AcademicOutput extends Component {
+  
+  static searchable = {
+    type component: true
+  }
   
   @Defaults([
     'A - Authored book',

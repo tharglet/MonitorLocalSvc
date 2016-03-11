@@ -4,10 +4,6 @@ import com.k_int.grails.tools.identifiers.Identifier
 
 class Component {
   
-  static searchable = {
-    root = true
-  }
-  
   String name
   List identifiers
   
