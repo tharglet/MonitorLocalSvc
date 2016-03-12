@@ -2,6 +2,9 @@ grails:
     profile: rest-api
     codegen:
         defaultPackage: uk.ac.jisc.monitorlocal
+    spring:
+        transactionManagement:
+            proxies: false
 info:
     app:
         name: '@info.app.name@'
@@ -37,7 +40,6 @@ grails:
               - application/json
               - text/json
             multipartForm: multipart/form-data
-            pdf: application/pdf
             rss: application/rss+xml
             text: text/plain
             hal:
@@ -53,23 +55,6 @@ grails:
         defaultScope: singleton
     converters:
         encoding: UTF-8
-        domain:
-          include:
-            class: true
-        json:
-          default:
-            deep: true
-    views:
-        default:
-            codec: html
-        gsp:
-            encoding: UTF-8
-            htmlcodec: xml
-            codecs:
-                expression: html
-                scriptlets: html
-                taglib: none
-                staticparts: none
 ---
 hibernate:
     cache:
@@ -81,13 +66,6 @@ hibernate:
 endpoints:
     jmx:
         unique-names: true
-
-dataSource:
-    pooled: true
-    jmxExport: true
-    driverClassName: org.h2.Driver
-    username: sa
-    password:
 
 environments:
     development:
@@ -267,24 +245,6 @@ auth:
       profilePic: "picture"
       email: "email"
 
-      
----
-grails:
-    profile: rest-api
-    codegen:
-        defaultPackage: monitorlocalsvcg3
-    spring:
-        transactionManagement:
-            proxies: false
-info:
-    app:
-        name: '@info.app.name@'
-        version: '@info.app.version@'
-        grailsVersion: '@info.app.grailsVersion@'
-spring:
-    groovy:
-        template:
-            check-template-location: false
 ---
 elasticSearch:
   datastoreImpl: hibernateDatastore

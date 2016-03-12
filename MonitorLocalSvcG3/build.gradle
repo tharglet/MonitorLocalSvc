@@ -30,7 +30,7 @@ ext {
 repositories {
   mavenLocal()
   maven { url "https://repo.grails.org/grails/core" }
-  //  mavenCentral()
+  mavenCentral()
   maven {
     name "K-Int Private"
     url "http://maven.k-int.com/content/repositories/private"
