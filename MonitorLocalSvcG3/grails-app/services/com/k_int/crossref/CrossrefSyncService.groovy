@@ -19,6 +19,25 @@ class CrossrefSyncService {
   }
 
   def syncJournals() {
-    // http://api.crossref.org/journals
+    // http://api.crossref.org/journals?offset=10&rows=100
+    def crossref = new RESTClient("http://api.crossref.org")
+    def rows_processed = 1
+    def offset = 0
+    while (rows_processed > 0 ) {
+      rows_processed = 0;
+      // Request 100 rows from offset
+      res = es.get(path:"/journals",
+                   query:[
+                     offset:offset,
+                     rows:100
+                   ]);
+
+      res.data.items.each { crossref_journal_record ->
+        // N.B. ISSN is an array of values
+        log.debug("Got journal: ${crossref_journal_record.title} / ${crossref_journal_record.publisher} / ${crossref_journal_record.issn}");
+        rows_processed++
+      }
+    }
+
   }
 }
