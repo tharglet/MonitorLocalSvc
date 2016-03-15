@@ -49,7 +49,8 @@ dependencies {
   compile "org.springframework.boot:spring-boot-autoconfigure"
   compile "org.grails:grails-core"
   compile "org.springframework.boot:spring-boot-starter-actuator"
-  compile "org.springframework.boot:spring-boot-starter-tomcat"
+//  compile "org.springframework.boot:spring-boot-starter-tomcat"
+  provided "org.springframework.boot:spring-boot-starter-tomcat"
   compile "org.grails:grails-plugin-url-mappings"
   compile "org.grails:grails-plugin-rest"
   compile "org.grails:grails-plugin-codecs"
@@ -98,7 +99,7 @@ dependencies {
   }
 
   if (!gtp) {
-    compile 'com.k-int.grails:grails-tools:0.1'
+    compile 'com.k-int.grails:grails-tools:0.1.4'
     println "\tno local copy found downloading from Maven"
   }
 }
