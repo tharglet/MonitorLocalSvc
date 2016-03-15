@@ -45,7 +45,6 @@ class CrossrefSyncService {
 
   def syncArticles() {
     // http://api.crossref.org/works?offset=10&rows=100
-
-
+    
   }
 }
