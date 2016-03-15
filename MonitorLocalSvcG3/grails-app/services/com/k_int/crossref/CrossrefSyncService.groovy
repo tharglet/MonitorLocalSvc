@@ -8,6 +8,8 @@ import static groovyx.net.http.ContentType.*
 import static groovyx.net.http.Method.GET
 import grails.transaction.Transactional
 
+import groovyx.net.http.*
+
 @Transactional
 class CrossrefSyncService {
 
