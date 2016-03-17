@@ -1,0 +1,7 @@
+import uk.ac.jisc.monitorlocal.AcademicOutput
+
+model {
+	AcademicOutput academicOutput
+}
+
+json g.render( academicOutput, ['deep' : true] )

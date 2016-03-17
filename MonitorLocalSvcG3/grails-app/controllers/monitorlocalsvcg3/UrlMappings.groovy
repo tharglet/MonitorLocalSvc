@@ -3,7 +3,6 @@ package monitorlocalsvcg3
 class UrlMappings {
 
   static mappings = {
-    "/ao/query/${q}?" (controller: 'academicOutput', action: 'query', method: 'GET')
 
     "/jwt/${action}/${provider}"(controller: 'jwt')
 
