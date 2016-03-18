@@ -1,4 +1,4 @@
-package monitorlocalsvcg3
+package uk.ac.jisc.monitorlocal.interceptors
 
 class CORSInterceptor {
 
@@ -11,7 +11,7 @@ class CORSInterceptor {
   boolean before() {
         
     header("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS")
-    header("Access-Control-Allow-Origin", "*" )
+    header("Access-Control-Allow-Origin", "http://localhost:9090" )
     header("Access-Control-Allow-Credentials", "true" )
     header("Access-Control-Allow-Headers", "Origin, Authorization,X-Requested-With,Access,Accept,Content-Type" )
     

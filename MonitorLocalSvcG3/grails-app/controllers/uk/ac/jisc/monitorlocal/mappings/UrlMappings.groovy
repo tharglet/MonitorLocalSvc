@@ -1,4 +1,4 @@
-package monitorlocalsvcg3
+package uk.ac.jisc.monitorlocal.mappings
 
 class UrlMappings {
 
