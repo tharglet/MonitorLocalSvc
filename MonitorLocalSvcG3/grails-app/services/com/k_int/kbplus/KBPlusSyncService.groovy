@@ -23,53 +23,88 @@ class KbplusSyncService {
 
 
   def getLatestKBPlusTitles() {
-    def cursor = SyncCursor.findByActivity('KBPlusTitles') ?: new SyncCursor(activity:'KBPlusTitles').save(flush:true, failOnError:true);
 
-    doSync('http://www.kbplus.ac.uk','/test/oai/titles', 'kbplus', cursor) { r ->
+    def cursor = SyncCursor.findByActivity('KBPlusTitles') ?: new SyncCursor(activity:'KBPlusTitles', lastTimestamp:0).save(flush:true, failOnError:true);
+
+    log.debug("Got cursor ${cursor}");
+
+    doSync('https://www.kbplus.ac.uk','/test/oai/titles', 'kbplus', cursor) { r ->
       def result = [:]
       log.debug("Process record ${r}");
       result
     }
   }
 
-  public doSync(host, path, notificationTarget, prefix, cursor) {
-    println("Get latest changes");
+  public doSync(host, path, prefix, cursor, notificationTarget) {
+    println("Get latest changes ${host} ${path} ${prefix} ${cursor}");
 
     def http = new HTTPBuilder( host )
+    http.ignoreSSLIssues()
 
     def more = true
     println("Attempt get...");
+
     def resumption=null
 
     // perform a GET request, expecting XML response data
     while ( more ) {
+
+      println("Make request....");
+
+      def qry = null
+      if ( resumption ) {
+        log.debug("Processing resumption");
+        qry = [ verb:'ListRecords', resumptionToken: resumption ]
+      }
+      else {
+        log.debug("Fetch all records since ${cursor.lastTimestamp}");
+        def the_date = new Date(cursor.lastTimestamp)
+        def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        def from=sdf.format(the_date)
+        log.debug("Requesting records since ${cursor.lastTimestamp} :: ${from}");
+        qry = [ verb:'ListRecords', metadataPrefix: prefix, from:from ]
+      }
+
+      println("Query params : ${qry} ");
+
       http.request( GET, XML ) {
+
         uri.path = path
-        if ( resumption ) {
-          uri.query = [ verb:'ListRecords', resumptionToken: resumption ]
-        }
-        else {
-          def the_date = new Date(cursor.highestTimestamp)
-          def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-          def from=sdf.format(the_date)
-          log.debug("Requesting records since ${cursor.highestTimestamp} :: ${from}");
-          uri.query = [ verb:'ListRecords', metadataPrefix: prefix, from:from ]
-        }
+        uri.query = qry
+        requestContentType = ContentType.XML
 
         // response handler for a success response code:
-        response.success = { resp, xml ->
-          println resp.statusLine
+        response.success = { resp, reader ->
+          int ctr=0
+          println("In response handler");
+          println("Status ${resp.statusLine}")
+          System.out << reader
 
-          xml.'ListRecords'.'record'.each { r ->
+          def xml = null
+
+          xml?.'ListRecords'?.'record'.each { r ->
             def clr = notificationTarget(r)
-            log.debug(clr);
+            println(clr);
+            ctr++
           }
+
+          if ( ctr > 0 ) {
+            more=true
+          }
+          else {
+            more=false
+          }
+
+          println("Complete ${ctr} ${more}");
         }
 
-        // update cursor
-        cursor.lastTimestamp = highestTimestamp
-        cursor.save(flush:true, failOnError:true);
+        response.error = { err ->
+          println(err)
+        }
       }
+      // update cursor
+      // cursor.lastTimestamp = lastTimestamp
+      cursor.save(flush:true, failOnError:true);
     }
   }
 
