@@ -29,8 +29,31 @@ class KbplusSyncService {
     log.debug("Got cursor ${cursor}");
 
     doSync('https://www.kbplus.ac.uk','/test/oai/titles', 'kbplus', cursor) { r ->
+
       def result = [:]
-      log.debug("Process record ${r}");
+
+      try {
+        PublicationTitle.withNewTransaction {
+          def identifiers = []
+          println("Process record ${r}");
+          def title_id = r.metadata.kbplus.title.@id.text()
+          def title = r.metadata.kbplus.title.title.text()
+          def pub_name = r.metadata.kbplus.publisher.name.text()
+
+          println("${title_id} ${title} ${pub_name}");
+          r.metadata.kbplus.identifiers.identifier.each {
+            println("id ${it.@namespace} ${it.@value}");
+            identifiers.add([namespace:it.@namespace.text(), value:it.@value.text()])
+          }
+
+          def t = PublicationTitle.lookupOrCreate(title, identifiers);
+          result.title_id = t.id
+        }
+      }
+      catch ( Exception e ) {
+        result.message = e.message;
+      }
+
       result
     }
   }
@@ -40,6 +63,8 @@ class KbplusSyncService {
 
     def http = new HTTPBuilder( host )
     http.ignoreSSLIssues()
+    http.contentType = XML
+    http.headers = [Accept : 'application/xml']
 
     def more = true
     println("Attempt get...");
@@ -67,22 +92,23 @@ class KbplusSyncService {
 
       println("Query params : ${qry} ");
 
-      http.request( GET, XML ) {
+      http.request( GET, XML ) { req ->
 
         uri.path = path
-        uri.query = qry
-        requestContentType = ContentType.XML
+        uri.query = qry 
+        contentType=XML
 
         // response handler for a success response code:
-        response.success = { resp, reader ->
+        response.success = { resp, xml ->
           int ctr=0
           println("In response handler");
           println("Status ${resp.statusLine}")
-          System.out << reader
 
-          def xml = null
+          def slurper = new groovy.util.XmlSlurper()
+          // def parsed_xml = slurper.parseText(xml.text)
+          def parsed_xml = slurper.parse(xml)
 
-          xml?.'ListRecords'?.'record'.each { r ->
+          parsed_xml?.'ListRecords'?.'record'.each { r ->
             def clr = notificationTarget(r)
             println(clr);
             ctr++
@@ -95,7 +121,8 @@ class KbplusSyncService {
             more=false
           }
 
-          println("Complete ${ctr} ${more}");
+          resumption = parsed_xml?.'ListRecords'?.'resumptionToken'
+          println("Complete ${ctr} ${more} ${resumption}");
         }
 
         response.error = { err ->
