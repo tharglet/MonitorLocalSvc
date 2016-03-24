@@ -1,4 +1,4 @@
-package com.k_int.jwt
+package com.k_int.crossref
 
 
 import grails.core.GrailsApplication
