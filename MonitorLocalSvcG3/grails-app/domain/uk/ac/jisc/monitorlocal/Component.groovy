@@ -69,7 +69,7 @@ class Component {
       }
 
       lr?.each { id ->
-        id.identifiedComponents.each { component ->
+        id.components.each { component ->
           result.add ( component )
         }
       }
