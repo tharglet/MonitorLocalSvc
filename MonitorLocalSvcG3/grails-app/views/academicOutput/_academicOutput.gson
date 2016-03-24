@@ -4,4 +4,4 @@ model {
 	AcademicOutput academicOutput
 }
 
-json g.render( academicOutput, ['deep' : true] )
+json tmpl."/global/component" ( component: academicOutput )

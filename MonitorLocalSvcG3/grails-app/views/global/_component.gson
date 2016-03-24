@@ -1,0 +1,8 @@
+package global
+import uk.ac.jisc.monitorlocal.Component
+
+model {
+	Component component
+}
+
+json g.render( component, [deep:true] )
