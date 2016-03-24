@@ -34,6 +34,11 @@ class KbplusSyncService {
 
       try {
         PublicationTitle.withNewTransaction {
+          def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+          def record_ts_str = r.header.datestamp.text()
+          result.ts = sdf.parse(record_ts_str)?.getTime()
+
           def identifiers = []
           println("Process record ${r}");
           def title_id = r.metadata.kbplus.title.@id.text()
@@ -65,6 +70,7 @@ class KbplusSyncService {
     http.ignoreSSLIssues()
     http.contentType = XML
     http.headers = [Accept : 'application/xml']
+    def lastTimestamp = 0;
 
     def more = true
     println("Attempt get...");
@@ -112,6 +118,8 @@ class KbplusSyncService {
             def clr = notificationTarget(r)
             println(clr);
             ctr++
+            if ( clr.ts > lastTimestamp )
+              lastTimestamp = clr.ts
           }
 
           if ( ctr > 0 ) {
@@ -130,7 +138,7 @@ class KbplusSyncService {
         }
       }
       // update cursor
-      // cursor.lastTimestamp = lastTimestamp
+      cursor.lastTimestamp = lastTimestamp
       cursor.save(flush:true, failOnError:true);
     }
   }
