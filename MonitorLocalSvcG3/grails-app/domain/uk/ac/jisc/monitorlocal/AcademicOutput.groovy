@@ -38,6 +38,8 @@ class AcademicOutput extends Component {
     'U - Working paper',
   ])
   RefdataValue type
+  
+  AcademicOutput relatedTo
 
   static constraints = {
     'name' ( validator: { value, obj ->
@@ -45,7 +47,7 @@ class AcademicOutput extends Component {
         return 'shared.titleText.error'
       }
      })
-    'type' (nullable: false)
+//    'type' (nullable: false)
   }
 
   static hasMany = [
