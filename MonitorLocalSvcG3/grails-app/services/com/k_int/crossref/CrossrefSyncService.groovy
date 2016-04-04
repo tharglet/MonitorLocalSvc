@@ -39,8 +39,23 @@ class CrossrefSyncService {
 
     // if we had a positive lookup
     if ( crossref_info ) {
-      result = new AcademicOutput(name:crossref_info.message.title);
+
+      def publication_type = null;
+      if ( crossref_info.message.type )
+        publication_type = com.k_int.grails.tools.refdata.RefdataValue.lookupOrCreate('AcademicOutput.Type',crossref_info.message.type);
+
+      result = new AcademicOutput(name:crossref_info.message.title, type:publication_type);
       result.save(flush:true, failOnError:true)
+
+      // Item may be published in crossref_info.message.container_title
+
+      crossref_info.message.author.each { it ->
+        // Resolve the author name if we are able
+        Person p = null;
+        def author_entry = new AOName (academicOutput:result,person:p,name:"${it.given?:''} ${it.family?:''}").save(flush:true)
+      }
+
+      // Add AONames
     }
 
     result

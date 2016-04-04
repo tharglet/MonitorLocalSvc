@@ -52,12 +52,14 @@ class AcademicOutput extends Component {
 
   static hasMany = [
     costs: CostItem,
+    names: AOName
 //    namedRoles: NamedRole
   ]
 
   static mappedBy = [
     costs:'academicOutput',
-    namedRoles:'academicOutput'
+    namedRoles:'academicOutput',
+    names:'academicOutput'
   ]
 
   static mapping = {
