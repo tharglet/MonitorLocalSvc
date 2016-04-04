@@ -1,0 +1,2 @@
+curl -v -d "doi=10.7567/ssdm.1986.c-3-1" http://localhost:8080/application/command/AOWizard
+
