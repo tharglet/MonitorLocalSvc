@@ -9,6 +9,7 @@ import static groovyx.net.http.Method.GET
 import grails.transaction.Transactional
 
 import groovyx.net.http.*
+import uk.ac.jisc.monitorlocal.*;
 
 @Transactional
 class CrossrefSyncService {
@@ -23,6 +24,43 @@ class CrossrefSyncService {
     log.debug("Init");
   }
 
+
+  /**
+   * Take a DOI and look up as much of an AO as is possible, creating the initial AO before
+   * proceeding.
+   */
+  def crossrefWizzard(doi) {
+
+    log.debug("crossrefWizzard(${doi})");
+
+    def result = null;
+
+    def crossref_info = lookupDOI(doi);
+
+    // if we had a positive lookup
+    if ( crossref_info ) {
+
+      def publication_type = null;
+      if ( crossref_info.message.type )
+        publication_type = com.k_int.grails.tools.refdata.RefdataValue.lookupOrCreate('AcademicOutput.Type',crossref_info.message.type);
+
+      result = new AcademicOutput(name:crossref_info.message.title, type:publication_type);
+      result.save(flush:true, failOnError:true)
+
+      // Item may be published in crossref_info.message.container_title
+
+      crossref_info.message.author.each { it ->
+        // Resolve the author name if we are able
+        Person p = null;
+        def author_entry = new AOName (academicOutput:result,person:p,name:"${it.given?:''} ${it.family?:''}").save(flush:true)
+      }
+
+      // Add AONames
+    }
+
+    result
+  }
+
   def syncJournals() {
     // http://api.crossref.org/journals?offset=10&rows=100
     def crossref = new RESTClient("http://api.crossref.org")
@@ -31,7 +69,7 @@ class CrossrefSyncService {
     while (rows_processed > 0 ) {
       rows_processed = 0;
       // Request 100 rows from offset
-      res = es.get(path:"/journals",
+      res = crossref.get(path:"/journals",
                    query:[
                      offset:offset,
                      rows:100
@@ -48,5 +86,25 @@ class CrossrefSyncService {
   def syncArticles() {
     // http://api.crossref.org/works?offset=10&rows=100
     
+  }
+
+  // Example http://api.crossref.org/works/10.7567/ssdm.1986.c-3-1
+  def lookupDOI(doi) {
+    log.debug("Crossref lookup doi : ${doi}");
+    def result = null;
+    try {
+      def crossref = new RESTClient("http://api.crossref.org")
+
+      // Request 100 rows from offset
+      def res = crossref.get(path:"/works/"+doi,query:[:]);
+      result = res.data;
+    }
+    catch ( Exception e ) {
+      e.printStackTrace();
+    }
+
+    log.debug("Returning ${result}");
+
+    result;
   }
 }
