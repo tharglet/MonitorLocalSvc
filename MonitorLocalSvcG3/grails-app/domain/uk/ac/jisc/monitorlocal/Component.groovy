@@ -1,12 +1,14 @@
 package uk.ac.jisc.monitorlocal
 
+import groovy.transform.EqualsAndHashCode
 import com.k_int.grails.tools.identifiers.Identifier
 
+@EqualsAndHashCode(includes=["id"])
 class Component {
-  
+
   String name
   List identifiers
-  
+
   static hasMany = [
     identifiers:Identifier
   ]
@@ -14,11 +16,11 @@ class Component {
   static constraints = {
     name nullable: false, blank:false
   }
-  
+
   static mapping = {
     identifiers cascade: "all"
   }
-  
+
   public String toString() {
     return this.getName()
   }
@@ -32,7 +34,7 @@ class Component {
         result.name = name
         result.identifiers = []
         identifiers.each {
-          result.identifiers.add(Identifier.lookupOrCreate(it.namespace, it.value))
+          result.addToIdentifiers(Identifier.lookupOrCreate(it.namespace, it.value))
         }
         result.save(flush:true, failOnError:true);
         break;

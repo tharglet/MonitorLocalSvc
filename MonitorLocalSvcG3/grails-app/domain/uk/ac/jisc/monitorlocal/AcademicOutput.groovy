@@ -3,7 +3,7 @@ package uk.ac.jisc.monitorlocal;
 
 import grails.rest.Resource
 
-
+import com.k_int.grails.tools.identifiers.Identifier
 import com.k_int.grails.tools.refdata.*
 import com.k_int.grails.tools.rest.ExtendedRestfulController
 
@@ -15,40 +15,21 @@ class AcademicOutput extends Component {
   }
   
   @Defaults([
-    'A - Authored book',
-    'B - Edited book',
-    'C - Chapter in book',
-    'D - Journal article',
-    'E - Conference contribution',
-    'F - Patent',
-    'G - Software',
-    'H - Website content',
-    'I - Performance',
-    'J - Composition',
-    'K - Design',
-    'L - Artefact',
-    'M - Exhibition',
-    'N - Research report for external body',
-    'O - Confidential report for external body',
-    'P - Devices and products',
-    'Q - Digital or visual media',
-    'R - Scholarly edition',
-    'S - Research data sets / databases',
-    'T - Other',
-    'U - Working paper',
+    'Green', 'Gold', 'Gold Paid by Other'
   ])
-  RefdataValue type
+  RefdataValue publicationRoute
   
-  AcademicOutput relatedTo
-
-  static constraints = {
-    'name' ( validator: { value, obj ->
-      if (!( value =~ /^[a-z|A-Z\d\s\-\(\)\:\;\?\,\"\']+$/ )) {
-        return 'shared.titleText.error'
-      }
-     })
-//    'type' (nullable: false)
-  }
+  @Defaults(['Accepted', 'Rejected', 'Unfunded', 'Unknown (follow up with author)'])
+  RefdataValue apcFundingApproval
+  Date apcFundingDate
+  
+  @Defaults(['Submitted', 'Not Submitted'])
+  RefdataValue publisherSubmissionStatus
+  Date publisherSubmissionDate
+  
+  @Defaults(['Accepted', 'Rejected'])
+  RefdataValue publisherResponse
+  Date publisherResponseDate
 
   static hasMany = [
     costs: CostItem,
@@ -57,7 +38,7 @@ class AcademicOutput extends Component {
 
   static mappedBy = [
     costs:'academicOutput',
-    namedRoles:'academicOutput'
+    // namedRoles:'academicOutput'
   ]
 
   static mapping = {

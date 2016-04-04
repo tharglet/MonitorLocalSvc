@@ -54,6 +54,13 @@ grails:
         json:
           default:
             deep: true
+    databinding:
+      dateFormats:
+        - "yyyy-MM-dd'T'HH:mm:ss.S'Z'"
+        - "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        - "yyyy-MM-dd'T'HH:mm'Z'"
+        - 'yyyy-MM-dd HH:mm:ss.S'
+        - 'dd/MM/yyyy'
 ---
 hibernate:
     cache:
