@@ -16,6 +16,11 @@ import au.com.bytecode.opencsv.bean.CsvToBean
 import au.com.bytecode.opencsv.bean.HeaderColumnNameMappingStrategy
 import au.com.bytecode.opencsv.bean.HeaderColumnNameTranslateMappingStrategy
 import java.text.SimpleDateFormat
+// import org.grails.web.databinding.*
+// import org.grails.web.databinding.bindingsource.*
+import grails.databinding.SimpleMapDataBindingSource
+
+
 
 
 
@@ -104,7 +109,9 @@ class ApcSheetImportService {
           log.debug("Create new AO");
           ao = new AcademicOutput()
         }
-        // grailsWebDataBinder.bind(ao, aoRecord, null, AcademicOutput.getExcludeList())
+        def dbs = new SimpleMapDataBindingSource(aoRecord)
+        grailsWebDataBinder.bind(ao, dbs) // , null, AcademicOutput.getExcludeList())
+        ao.save(flush:true, failOnError:true);
       }
 
       nl=csv.readNext()

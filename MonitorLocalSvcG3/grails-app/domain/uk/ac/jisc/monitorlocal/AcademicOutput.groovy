@@ -7,6 +7,7 @@ import com.k_int.grails.tools.identifiers.Identifier
 import com.k_int.grails.tools.refdata.*
 import com.k_int.grails.tools.rest.ExtendedRestfulController
 import groovy.util.logging.Log4j
+import org.grails.databinding.BindUsing
 
 @Log4j
 @Resource(uri="/ao", superClass=ExtendedRestfulController)
@@ -33,7 +34,10 @@ class AcademicOutput extends Component {
   RefdataValue publisherResponse
   Date publisherResponseDate
 
-  Org ownerInstition
+  @BindUsing({obj,source ->
+    Org.orgBinder(obj.ownerInstitution, source.ownerInstitution);
+  })
+  Org ownerInstitution
 
   static hasMany = [
     costs: CostItem,
