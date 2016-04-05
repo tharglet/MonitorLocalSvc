@@ -82,6 +82,8 @@ dependencies {
   compile "org.springframework.security:spring-security-core:4.0.3.RELEASE"
   runtime 'mysql:mysql-connector-java:5.1.30'
   compile "org.bitbucket.b_c:jose4j:0.4.2"
+  compile "au.com.bytecode:opencsv:2.4"
+
   compile('org.codehaus.groovy.modules.http-builder:http-builder:0.7.2') {
     exclude group: "org.codehaus.groovy", module: "groovy"
   }
