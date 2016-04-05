@@ -18,10 +18,12 @@ import au.com.bytecode.opencsv.bean.HeaderColumnNameTranslateMappingStrategy
 import java.text.SimpleDateFormat
 
 
+
 @Transactional
 class ApcSheetImportService {
 
   def grailsApplication
+  def grailsWebDataBinder
 
   @javax.annotation.PostConstruct
   def init() {
@@ -32,8 +34,9 @@ class ApcSheetImportService {
   def assimilateApcSpreadsheet(Org institution, InputStream is) {
     log.debug("assimilateApcSpreadsheet");
 
-    def charset = 'ISO-8859-1' // 'UTF-8'
-    def csv = new CSVReader(new InputStreamReader(new org.apache.commons.io.input.BOMInputStream(is),java.nio.charset.Charset.forName(charset)),'\t' as char,'\0' as char)
+    def charset = 'UTF-8' // 'ISO-8859-1' or 'UTF-8'
+    // def csv = new CSVReader(new InputStreamReader(new org.apache.commons.io.input.BOMInputStream(is),java.nio.charset.Charset.forName(charset)),'\t' as char,'\0' as char)
+    def csv = new CSVReader(new InputStreamReader(new org.apache.commons.io.input.BOMInputStream(is),java.nio.charset.Charset.forName(charset)),',' as char,'"' as char)
 
     String[] header = csv.readNext()
     log.debug("Got header ${header}");
@@ -73,8 +76,7 @@ class ApcSheetImportService {
     // APC paid (�) excluding VAT
     // VAT (�)
     // Additional publication costs (�)
-    // "Discounts
-    //  memberships & pre-payment agreements"
+    // "Discounts, memberships & pre-payment agreements"
     // Amount of APC charged to COAF grant (include VAT if charged) in �
     // Amount of APC charged to RCUK OA fund (include VAT if charged) in �
     // Licence
@@ -83,6 +85,28 @@ class ApcSheetImportService {
     // Notes
     while(nl!=null) {
       log.debug(nl);
+
+      if ( nl.length > 11 ) {
+
+        def aoRecord = [
+          ownerInstition: [
+            id : institution.id
+          ],
+          name:nl[11],
+          identifiers:[
+            [namespace:[value:'doi'],value:nl[5]],
+          ],
+        ]
+
+        log.debug("Add AO: ${aoRecord}");
+        def ao = AcademicOutput.fuzzyMatch(aoRecord)
+        if ( ao == null ) {
+          log.debug("Create new AO");
+          ao = new AcademicOutput()
+        }
+        // grailsWebDataBinder.bind(ao, aoRecord, null, AcademicOutput.getExcludeList())
+      }
+
       nl=csv.readNext()
     }
   }
