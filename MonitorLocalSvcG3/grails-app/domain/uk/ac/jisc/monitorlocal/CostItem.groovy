@@ -49,9 +49,9 @@ class CostItem extends Component {
   @Defaults(["Yes","No"])
   RefdataValue estimated
   
-  MonetaryValue grossValue = new MonetaryValue("currency" : currency)
-  MonetaryValue grossValueGBP = new MonetaryValue("currency" : Constants.GBP)
-  MonetaryValue tax = new MonetaryValue("currency" : currency)
+  MonetaryValue grossValue = new MonetaryValue("baseCurrency" : currency)
+  MonetaryValue grossValueGBP = new MonetaryValue("baseCurrency" : Constants.GBP)
+  MonetaryValue tax = new MonetaryValue("baseCurrency" : currency)
   
   public String toString () {
     

@@ -36,6 +36,16 @@ class AcademicOutput extends Component {
     names: AOName
   ]
 
+  static constraints = {
+    publicationRoute nullable: true
+    apcFundingApproval nullable: true
+    apcFundingDate nullable: true
+    publisherSubmissionStatus nullable: true
+    publisherSubmissionDate nullable: true
+    publisherResponse nullable: true
+    publisherResponseDate nullable: true
+  }
+
   static mappedBy = [
     costs:'academicOutput',
     names:'academicOutput'
