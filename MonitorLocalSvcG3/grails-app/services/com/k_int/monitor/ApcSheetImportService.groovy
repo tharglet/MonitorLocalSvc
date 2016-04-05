@@ -98,9 +98,9 @@ class ApcSheetImportService {
             id : institution.id
           ],
           name:nl[11],
-          // identifiers:[
-          //   [namespace:[value:'doi'],value:nl[5]],
-          // ],
+          identifiers:[
+            [namespace:[value:'doi'],value:nl[5]],
+          ],
         ]
 
         log.debug("Add AO: ${aoRecord}");

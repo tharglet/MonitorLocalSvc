@@ -3,12 +3,20 @@ package uk.ac.jisc.monitorlocal
 import groovy.transform.EqualsAndHashCode
 import com.k_int.grails.tools.identifiers.Identifier
 import groovy.util.logging.Log4j
+import org.grails.databinding.BindUsing
+import grails.databinding.SimpleMapDataBindingSource
+
 
 @Log4j
 @EqualsAndHashCode(includes=["id"])
 class Component {
 
   String name
+
+  @BindUsing({obj,source ->
+    log.debug("Attempting to bind identifiers ${source}");
+    // Org.orgBinder(obj.ownerInstitution, new SimpleMapDataBindingSource(source['ownerInstitution']), true);
+  })
   List identifiers
 
   static hasMany = [
