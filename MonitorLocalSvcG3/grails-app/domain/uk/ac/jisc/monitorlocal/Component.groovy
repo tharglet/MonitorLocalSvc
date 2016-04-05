@@ -2,7 +2,9 @@ package uk.ac.jisc.monitorlocal
 
 import groovy.transform.EqualsAndHashCode
 import com.k_int.grails.tools.identifiers.Identifier
+import groovy.util.logging.Log4j
 
+@Log4j
 @EqualsAndHashCode(includes=["id"])
 class Component {
 
@@ -54,27 +56,36 @@ class Component {
    */ 
   static def lookupByIdentifierValue(identifiers) {
 
+    log.debug("lookupByIdentifierValue ${identifiers}");
+
     def result = []
 
-    if ( identifiers != null ) {
-      def crit = Identifier.createCriteria()
+    if ( ( identifiers != null ) && ( identifiers.size() > 0 ) ) {
+   
       // def combotype = RefdataCategory.lookupOrCreate('Combo.Type','KBComponent.Ids');
+      def sw = new StringWriter()
+      sw.write("select c from Component as c join c.identifiers as i where ")
 
-      def lr = crit.list {
-        or {
-          identifiers.each {
-            if ( ( it?.value != null ) && ( it.value.trim().length() > 0 ) ) {
-              eq('value', it.value)
-            }
-          }
+      def bindvars = []
+      def first = true
+      identifiers.each {
+        if ( first ) {
+          first = false
         }
+        else {
+          sw.write(' or ');
+        }
+
+        sw.write(' ( i.namespace.value = ? AND i.value = ? ) ')
+        bindvars.add(it.namespace)
+        bindvars.add(it.value)
       }
 
-      lr?.each { id ->
-        id.components.each { component ->
-          result.add ( component )
-        }
-      }
+      def qry = sw.toString();
+
+      log.debug("lookup ${qry} ${bindvars}");
+
+      result = Component.executeQuery(qry,bindvars);
     }
 
     result
