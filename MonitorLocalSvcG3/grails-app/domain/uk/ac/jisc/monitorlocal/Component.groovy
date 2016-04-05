@@ -80,7 +80,7 @@ class Component {
           sw.write(' or ');
         }
 
-        sw.write(' ( i.namespace.value = ? AND i.value = ? ) ')
+        sw.write(' ( i.identifier.namespace.value = ? AND i.identifier.value = ? ) ')
         bindvars.add(it.namespace)
         bindvars.add(it.value)
       }

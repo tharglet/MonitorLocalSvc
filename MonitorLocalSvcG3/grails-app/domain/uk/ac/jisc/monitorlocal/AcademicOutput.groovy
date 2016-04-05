@@ -8,6 +8,8 @@ import com.k_int.grails.tools.refdata.*
 import com.k_int.grails.tools.rest.ExtendedRestfulController
 import groovy.util.logging.Log4j
 import org.grails.databinding.BindUsing
+import grails.databinding.SimpleMapDataBindingSource
+
 
 @Log4j
 @Resource(uri="/ao", superClass=ExtendedRestfulController)
@@ -35,7 +37,8 @@ class AcademicOutput extends Component {
   Date publisherResponseDate
 
   @BindUsing({obj,source ->
-    Org.orgBinder(obj.ownerInstitution, source.ownerInstitution);
+    log.debug("Attempting to bind ownerInstitution ${source['ownerInstitution']}");
+    Org.orgBinder(obj.ownerInstitution, new SimpleMapDataBindingSource(source['ownerInstitution']), true);
   })
   Org ownerInstitution
 

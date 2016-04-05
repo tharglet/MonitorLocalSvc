@@ -22,7 +22,7 @@ class Org extends Component {
   // Called with the object that represents the property, and the source
   public static orgBinder = { obj, source, createMissing=false ->
 
-    log.error("orgBinder");
+    println("orgBinder");
 
     if ( obj == null ) {
       if ( source['id'] ) {
@@ -30,9 +30,14 @@ class Org extends Component {
       }
     }
 
+    if ( ( obj == null ) && ( source['name'] != null ) ) {
+      obj = Org.findByName(source['name']);
+    }
+
     // Assuming we have a full set of properties, create a new Org
-    if ( createMissing && ( obj == null ) ) {
-      obj = new Org()
+    if ( ( obj == null ) && createMissing && ( source['name'] != null ) ) {
+      obj = new Org(name:source['name'])
+      obj.save(flush:true, failOnError:true);
     }
 
     // Bind all properties from source to obj

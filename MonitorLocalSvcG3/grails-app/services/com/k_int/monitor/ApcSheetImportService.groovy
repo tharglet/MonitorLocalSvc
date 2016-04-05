@@ -94,13 +94,13 @@ class ApcSheetImportService {
       if ( nl.length > 11 ) {
 
         def aoRecord = [
-          ownerInstition: [
+          ownerInstitution: [
             id : institution.id
           ],
           name:nl[11],
-          identifiers:[
-            [namespace:[value:'doi'],value:nl[5]],
-          ],
+          // identifiers:[
+          //   [namespace:[value:'doi'],value:nl[5]],
+          // ],
         ]
 
         log.debug("Add AO: ${aoRecord}");
@@ -109,8 +109,10 @@ class ApcSheetImportService {
           log.debug("Create new AO");
           ao = new AcademicOutput()
         }
+        log.debug("Bind...");
         def dbs = new SimpleMapDataBindingSource(aoRecord)
         grailsWebDataBinder.bind(ao, dbs) // , null, AcademicOutput.getExcludeList())
+        log.debug("Save...");
         ao.save(flush:true, failOnError:true);
       }
 

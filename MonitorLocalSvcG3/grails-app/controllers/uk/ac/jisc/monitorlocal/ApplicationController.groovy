@@ -62,7 +62,7 @@ class ApplicationController implements PluginManagerAware {
 
     if ( upload_mime_type && upload_filename && org ) {
 
-      log.debug("got mime type");
+      log.debug("got mime type, upload org is ${org}");
 
       // def deposit_token = java.util.UUID.randomUUID().toString();
       def upload_file = request.getFile("content");
