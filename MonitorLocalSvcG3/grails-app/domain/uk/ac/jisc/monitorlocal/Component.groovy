@@ -12,7 +12,11 @@ class Component {
   List identifiers
 
   static hasMany = [
-    identifiers:Identifier
+    identifiers:ComponentIdentifier
+  ]
+
+  static mappedBy = [
+    identifiers:'component'
   ]
 
   static constraints = {
