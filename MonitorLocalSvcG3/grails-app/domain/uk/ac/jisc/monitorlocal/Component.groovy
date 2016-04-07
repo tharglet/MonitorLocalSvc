@@ -5,17 +5,23 @@ import com.k_int.grails.tools.identifiers.Identifier
 import groovy.util.logging.Log4j
 import org.grails.databinding.BindUsing
 import grails.databinding.SimpleMapDataBindingSource
+import javax.persistence.Transient
 
 
 @Log4j
 @EqualsAndHashCode(includes=["id"])
 class Component {
 
+  @Transient
+  def grailsWebDataBinder
+
   String name
 
   @BindUsing({obj,source ->
-    log.debug("Attempting to bind identifiers ${source}");
-    // Org.orgBinder(obj.ownerInstitution, new SimpleMapDataBindingSource(source['ownerInstitution']), true);
+    log.debug("bind identifiers");
+    def result = obj.bindIdentifiers(source);
+    log.debug("Result of bind identifiers: ${result}")
+    result
   })
   List identifiers
 
@@ -101,6 +107,19 @@ class Component {
     }
 
     result
+  }
+
+  def bindIdentifiers(source) {
+    try {
+      com.k_int.grails.tools.databinding.Helpers.manyToManyCollectionHelper(this,
+                                                                            source,
+                                                                            'identifiers', 
+                                                                            ComponentIdentifier.class,
+                                                                            grailsWebDataBinder);
+    }
+    catch ( Throwable t ) {
+      log.error("Problem",t);
+    }
   }
 
 }

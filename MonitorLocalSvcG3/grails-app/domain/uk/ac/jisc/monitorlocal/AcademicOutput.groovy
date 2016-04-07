@@ -96,8 +96,8 @@ class AcademicOutput extends Component {
     if ( !result ) {
       def ids = []
       ao.identifiers?.each { id_occurrence ->
-        log.debug("Lookup by identifier ${id_occurrence.namespace.value} ${id_occurrence.value}");
-        ids.add( [ namespace: id_occurrence.namespace.value, value:id_occurrence.value ] );
+        log.debug("Lookup by identifier ${id_occurrence.identifier.namespace.value} ${id_occurrence.identifier.value}");
+        ids.add( [ namespace: id_occurrence.identifier.namespace.value, value:id_occurrence.identifier.value ] );
       }
 
       if ( ids.size() > 0 ) {

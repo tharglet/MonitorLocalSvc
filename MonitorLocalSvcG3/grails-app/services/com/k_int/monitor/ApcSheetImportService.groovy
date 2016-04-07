@@ -99,7 +99,9 @@ class ApcSheetImportService {
           ],
           name:nl[11],
           identifiers:[
-            [namespace:[value:'doi'],value:nl[5]],
+            [
+              identifier:[namespace:[value:'doi'],value:nl[5]],
+            ]
           ],
         ]
 
