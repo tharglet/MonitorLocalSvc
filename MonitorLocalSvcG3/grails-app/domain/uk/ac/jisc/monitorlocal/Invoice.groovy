@@ -43,4 +43,24 @@ class Invoice extends Component {
   static mapping = {
     costs sort:'category', order:'asc', cascade: "all"
   }
+  
+  static constraints = {
+    date nullable: true
+    currency nullable: false
+    dueDate nullable: true
+    supplier nullable: true
+    
+    received nullable: true
+    receivedDate nullable: true
+    
+    passedToFinance nullable: true
+    passedToFinanceDate nullable: true
+    
+    paidInFull nullable: true
+    paidInFullDate nullable: true
+    
+    paymentType nullable: true
+    
+    filename nullable: true, blank: false
+  }
 }
