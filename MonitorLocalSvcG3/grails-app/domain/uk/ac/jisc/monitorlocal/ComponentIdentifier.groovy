@@ -10,11 +10,30 @@ import groovy.util.logging.Log4j
 @Log4j
 class ComponentIdentifier {
 
+  def grailsWebDataBinder
+
   @BindUsing({obj,source ->
     log.debug("Bind identifier in componentIdentifier ${obj} ${source}");
-    obj['identifier']
+    def result = null;
+    try {
+      result = Identifier.fuzzyMatch(source['identifier']);
+      if ( result == null ) {
+        log.debug("Create and bind a new identifier");
+        result = new Identifier()
+        // grailsWebDataBinder.bind(result,new SimpleMapDataBindingSource(source['identifier']));
+        result.bind(new SimpleMapDataBindingSource(source['identifier']));
+      }
+    }
+    catch ( Exception e ) {
+      log.error("Problem",e);
+    }
+    finally {
+      log.debug("Bind identifier in componentIdentifier returning ${result}");
+    }
+    result;
   })
   Identifier identifier
+
   Component component
 
   static constraints = {
@@ -23,15 +42,16 @@ class ComponentIdentifier {
   }
 
   static ComponentIdentifier fuzzyMatch(ci) {
-
+    println("ComponentIdentifier::fuzzyMatch(${ci})");
     def result = null;
-
     if ( ci['id'] ) {
-      println("lookup component identifier by id ${ci['id']}");
       result = ComponentIdentifier.get(ci['id']);
     }
-
     result;
+  }
+
+  def bind(source) {
+    grailsWebDataBinder.bind(this,source);
   }
 
 }
