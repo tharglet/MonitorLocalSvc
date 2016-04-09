@@ -13,7 +13,7 @@ class ComponentIdentifier {
   def grailsWebDataBinder
 
   @BindUsing({obj,source ->
-    log.debug("Bind identifier in componentIdentifier ${obj} ${source}");
+    log.debug("-> Bind identifier in componentIdentifier ${obj} ${source}");
     def result = null;
     try {
       result = Identifier.fuzzyMatch(source['identifier']);
@@ -21,7 +21,10 @@ class ComponentIdentifier {
         log.debug("Create and bind a new identifier");
         result = new Identifier()
         // grailsWebDataBinder.bind(result,new SimpleMapDataBindingSource(source['identifier']));
-        result.bind(new SimpleMapDataBindingSource(source['identifier']));
+        result.bind(result, new SimpleMapDataBindingSource(source['identifier']));
+      }
+      else {
+        log.debug("matched identifier");
       }
     }
     catch ( Exception e ) {
