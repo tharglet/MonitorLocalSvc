@@ -24,6 +24,7 @@ logger 'com.k_int.grails.tools.refdata.GrailsDomainRefdataHelpers', DEBUG
 logger 'com.k_int.grails.tools.identifiers.GrailsDomainIdentifierHelpers', DEBUG
 logger 'grails.app.init.BootStrap', DEBUG
 logger 'grails.app.services', DEBUG
+logger 'grails.web.databinding.GrailsWebDataBinder',DEBUG
 
 
 def targetDir = BuildSettings.TARGET_DIR
