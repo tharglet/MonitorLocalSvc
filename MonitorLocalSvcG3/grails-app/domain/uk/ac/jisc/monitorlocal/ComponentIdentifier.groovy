@@ -21,6 +21,7 @@ class ComponentIdentifier {
         log.debug("Create and bind a new identifier");
         result = new Identifier()
         // grailsWebDataBinder.bind(result,new SimpleMapDataBindingSource(source['identifier']));
+        log.debug("Calling bind on instance of ${result?.class.name} with identifier ${source['identifier']}");
         result.bind(result, new SimpleMapDataBindingSource(source['identifier']));
       }
       else {
