@@ -12,27 +12,30 @@ class ComponentIdentifier {
 
   def grailsWebDataBinder
 
+  /**
+   * Extend data binding to allow lookup by value as well as primary key, if none found,
+   * then create an identifier.
+   */
   @BindUsing({obj,source ->
-    log.debug("-> Bind identifier in componentIdentifier ${obj} ${source}");
+    // log.debug("-> Bind identifier in componentIdentifier ${obj} ${source} (delegate=${delegate} ${delegate?.class.name})");
     def result = null;
     try {
       result = Identifier.fuzzyMatch(source['identifier']);
       if ( result == null ) {
-        log.debug("Create and bind a new identifier");
+        // log.debug("Create and bind a new identifier");
         result = new Identifier()
-        // grailsWebDataBinder.bind(result,new SimpleMapDataBindingSource(source['identifier']));
-        log.debug("Calling bind on instance of ${result?.class.name} with identifier ${source['identifier']}");
+        // log.debug("Calling bind on instance of ${result?.class.name} with identifier ${source['identifier']}");
         result.bind(result, new SimpleMapDataBindingSource(source['identifier']));
       }
       else {
-        log.debug("matched identifier");
+        // log.debug("matched identifier");
       }
     }
     catch ( Exception e ) {
       log.error("Problem",e);
     }
     finally {
-      log.debug("Bind identifier in componentIdentifier returning ${result}");
+      // log.debug("Bind identifier in componentIdentifier returning ${result}");
     }
     result;
   })
@@ -46,11 +49,13 @@ class ComponentIdentifier {
   }
 
   static ComponentIdentifier fuzzyMatch(ci) {
-    println("ComponentIdentifier::fuzzyMatch(${ci})");
+    // println("ComponentIdentifier::fuzzyMatch(${ci})");
     def result = null;
     if ( ci['id'] ) {
       result = ComponentIdentifier.get(ci['id']);
     }
+   
+    // Attempt lookup by value, owner and id
     result;
   }
 

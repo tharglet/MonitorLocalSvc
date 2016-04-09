@@ -37,7 +37,7 @@ class AcademicOutput extends Component {
   Date publisherResponseDate
 
   @BindUsing({obj,source ->
-    log.debug("Attempting to bind ownerInstitution ${source['ownerInstitution']}");
+    // log.debug("Attempting to bind ownerInstitution ${source['ownerInstitution']}");
     Org.orgBinder(obj.ownerInstitution, new SimpleMapDataBindingSource(source['ownerInstitution']), true);
   })
   Org ownerInstitution
@@ -96,7 +96,7 @@ class AcademicOutput extends Component {
     if ( !result ) {
       def ids = []
       ao.identifiers?.each { id_occurrence ->
-        log.debug("Lookup by identifier ${id_occurrence.identifier.namespace.value} ${id_occurrence.identifier.value}");
+        // log.debug("Lookup by identifier ${id_occurrence.identifier.namespace.value} ${id_occurrence.identifier.value}");
         ids.add( [ namespace: id_occurrence.identifier.namespace.value, value:id_occurrence.identifier.value ] );
       }
 

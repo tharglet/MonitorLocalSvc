@@ -18,9 +18,9 @@ class Component {
   String name
 
   @BindUsing({obj,source ->
-    log.debug("bind identifiers");
+    log.debug("bind identifiers delegate:${delegate}");
     def result = obj.bindIdentifiers(source);
-    log.debug("Result of bind identifiers: ${result}")
+    // log.debug("Result of bind identifiers: ${result}")
     result
   })
   List identifiers
