@@ -20,15 +20,19 @@ class ComponentIdentifier {
     // log.debug("-> Bind identifier in componentIdentifier ${obj} ${source} (delegate=${delegate} ${delegate?.class.name})");
     def result = null;
     try {
+      def needs_save = false;
       result = Identifier.fuzzyMatch(source['identifier']);
       if ( result == null ) {
         // log.debug("Create and bind a new identifier");
         result = new Identifier()
+        needs_save=true;
         // log.debug("Calling bind on instance of ${result?.class.name} with identifier ${source['identifier']}");
-        result.bind(result, new SimpleMapDataBindingSource(source['identifier']));
       }
-      else {
-        // log.debug("matched identifier");
+
+      result.bind(result, new SimpleMapDataBindingSource(source['identifier']));
+
+      if ( needs_save || result.isDirty() ) {
+        result.save(flush:true, failOnError:true);
       }
     }
     catch ( Exception e ) {
