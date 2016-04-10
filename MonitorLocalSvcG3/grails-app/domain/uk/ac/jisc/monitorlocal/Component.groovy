@@ -18,7 +18,6 @@ class Component {
   String name
 
   @BindUsing({obj,source ->
-    log.debug("bind identifiers delegate:${delegate}");
     def result = obj.bindIdentifiers(obj,source);
     // log.debug("Result of bind identifiers: ${result}")
     result
@@ -110,14 +109,14 @@ class Component {
   }
 
   def bindIdentifiers(obj,source) {
-    println("binfIdentifiers");
     try {
       com.k_int.grails.tools.databinding.Helpers.manyToManyCollectionHelper(obj,
                                                                             source,
                                                                             'identifiers', 
                                                                             ComponentIdentifier.class,
                                                                             grailsWebDataBinder,
-                                                                            'component');
+                                                                            'component',
+                                                                            true);
     }
     catch ( Throwable t ) {
       log.error("Problem",t);

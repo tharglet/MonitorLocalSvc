@@ -10,6 +10,7 @@ import groovy.util.logging.Log4j
 @Log4j
 class ComponentIdentifier {
 
+  @Transient
   def grailsWebDataBinder
 
   /**
@@ -30,6 +31,8 @@ class ComponentIdentifier {
     identifier nullable: false, blank:false
     component nullable: false, blank:false
   }
+
+  static belongsTo = [component:Component]
 
   static ComponentIdentifier fuzzyMatch(ci, owner) {
 
@@ -94,5 +97,4 @@ class ComponentIdentifier {
 
     result;
   }
-
 }
