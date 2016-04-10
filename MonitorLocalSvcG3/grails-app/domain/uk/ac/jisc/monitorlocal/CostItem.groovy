@@ -11,8 +11,8 @@ class CostItem extends Component {
   ]
   
   static mappedBy = [
-    academicOutput:'costs',
-    invoice:'costs'
+    academicOutput:'academicOutputCosts',
+    invoice:'invoiceCosts'
   ]
 
   Budget budget
@@ -84,9 +84,12 @@ class CostItem extends Component {
   }
 
   static constraints = {
-    'status'          ( shared: 'required' )
-    'category'        ( shared: 'required' )
-    'paid'            ( shared: 'required' )
+    'status'          ( nullable: true )
+    'category'        ( nullable: true )
+    'paid'            ( nullable: true )
+    'status'          ( nullable: true )
+    'category'        ( nullable: true )
+    'paid'            ( nullable: true )
   }
   
   static mapping = {

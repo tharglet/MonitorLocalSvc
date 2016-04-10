@@ -2,6 +2,8 @@ package uk.ac.jisc.monitorlocal
 
 import grails.rest.Resource
 
+import java.util.List;
+
 import com.k_int.grails.tools.refdata.*
 import com.k_int.grails.tools.rest.ExtendedRestfulController
 
@@ -32,13 +34,14 @@ class Invoice extends Component {
   
   String filename
   
+  List invoiceCosts = []
   static hasMany = [
-    costs:CostItem
+    invoiceCosts: CostItem
   ]
 
-  static mappedBy = [
-    costs:'invoice'
-  ]
+//  static mappedBy = [
+//    costs:'invoice'
+//  ]
 
   static mapping = {
     costs sort:'category', order:'asc', cascade: "all"
@@ -62,5 +65,6 @@ class Invoice extends Component {
     paymentType nullable: true
     
     filename nullable: true, blank: false
+    costs nullable: false
   }
 }

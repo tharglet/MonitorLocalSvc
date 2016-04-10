@@ -7,6 +7,9 @@ import com.k_int.grails.tools.identifiers.Identifier
 import com.k_int.grails.tools.refdata.*
 import com.k_int.grails.tools.rest.ExtendedRestfulController
 import groovy.util.logging.Log4j
+
+import java.util.List;
+
 import org.grails.databinding.BindUsing
 import grails.databinding.SimpleMapDataBindingSource
 
@@ -41,9 +44,11 @@ class AcademicOutput extends Component {
     Org.orgBinder(obj.ownerInstitution, new SimpleMapDataBindingSource(source['ownerInstitution']), true);
   })
   Org ownerInstitution
-
+  
+  
+  List academicOutputCosts = []
   static hasMany = [
-    costs: CostItem,
+    academicOutputCosts: CostItem,
     names: AOName
   ]
 
@@ -56,10 +61,10 @@ class AcademicOutput extends Component {
     publisherResponse nullable: true
     publisherResponseDate nullable: true
     ownerInstitution nullable: true
+    costs nullable: false
   }
-
   static mappedBy = [
-    costs:'academicOutput',
+//    costs:'academicOutput',
     names:'academicOutput'
   ]
 
