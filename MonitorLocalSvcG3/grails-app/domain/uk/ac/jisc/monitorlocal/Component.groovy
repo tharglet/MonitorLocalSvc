@@ -18,7 +18,6 @@ class Component {
   String name
 
   @BindUsing({obj,source ->
-    log.debug("bind identifiers delegate:${delegate}");
     def result = obj.bindIdentifiers(obj,source);
     // log.debug("Result of bind identifiers: ${result}")
     result
@@ -74,8 +73,7 @@ class Component {
    */ 
   static def lookupByIdentifierValue(identifiers) {
 
-    def identifiermp = this.metaClass.getMetaProperty('identifier');
-    log.debug("lookupByIdentifierValue ${identifiers} ${identifiermp}");
+    log.debug("lookupByIdentifierValue ${identifiers}");
 
     def result = []
 
@@ -111,7 +109,6 @@ class Component {
   }
 
   def bindIdentifiers(obj,source) {
-    println("binfIdentifiers");
     try {
       com.k_int.grails.tools.databinding.Helpers.manyToManyCollectionHelper(obj,
                                                                             source,
