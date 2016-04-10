@@ -40,7 +40,6 @@ class AcademicOutput extends Component {
   Date publisherResponseDate
 
   @BindUsing({obj,source ->
-    // log.debug("Attempting to bind ownerInstitution ${source['ownerInstitution']}");
     Org.orgBinder(obj.ownerInstitution, new SimpleMapDataBindingSource(source['ownerInstitution']), true);
   })
   Org ownerInstitution
@@ -61,10 +60,9 @@ class AcademicOutput extends Component {
     publisherResponse nullable: true
     publisherResponseDate nullable: true
     ownerInstitution nullable: true
-    costs nullable: false
   }
   static mappedBy = [
-//    costs:'academicOutput',
+    costs:'academicOutput',
     names:'academicOutput'
   ]
 
