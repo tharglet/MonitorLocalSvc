@@ -7,9 +7,6 @@ import com.k_int.grails.tools.rest.ExtendedRestfulController
 
 @Resource(uri="/person", superClass=ExtendedRestfulController)
 class Person extends Component {
-  
-  Identifier orcid
-  Identifier reference
   String title
   String firstName
   String surname
