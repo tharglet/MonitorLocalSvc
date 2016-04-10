@@ -74,7 +74,8 @@ class Component {
    */ 
   static def lookupByIdentifierValue(identifiers) {
 
-    log.debug("lookupByIdentifierValue ${identifiers}");
+    def identifiermp = this.metaClass.getMetaProperty('identifier');
+    log.debug("lookupByIdentifierValue ${identifiers} ${identifiermp}");
 
     def result = []
 
