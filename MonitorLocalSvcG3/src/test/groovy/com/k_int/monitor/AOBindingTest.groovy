@@ -30,7 +30,15 @@ class AOBindingTest extends Specification {
 
         and:
         final SimpleMapDataBindingSource source = 
-            [id: 1, name: 'My AO Name 1']
+            [id: 1, 
+             name: 'My AO Name 1',
+             identifiers:[
+               [
+                 [ identifier:[namespace:[value:'doi'],value:'1234/5678/1234' ] ]
+               ]
+             ],
+             ownerInstitution: [ name: 'SomeOrg' ]
+            ]
 
         when:
         dataBinder.bind(ao, source)
