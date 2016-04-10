@@ -32,6 +32,8 @@ class ComponentIdentifier {
     component nullable: false, blank:false
   }
 
+  static belongsTo = [component:Component]
+
   static ComponentIdentifier fuzzyMatch(ci, owner) {
 
     log.debug("ComponentIdentifier::fuzzyMatch(${ci},${owner}");

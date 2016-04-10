@@ -115,7 +115,8 @@ class Component {
                                                                             'identifiers', 
                                                                             ComponentIdentifier.class,
                                                                             grailsWebDataBinder,
-                                                                            'component');
+                                                                            'component',
+                                                                            true);
     }
     catch ( Throwable t ) {
       log.error("Problem",t);
