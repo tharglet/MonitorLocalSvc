@@ -1,8 +1,6 @@
 package uk.ac.jisc.monitorlocal
 
 import com.k_int.grails.tools.identifiers.Identifier
-import com.k_int.grails.tools.refdata.*
-
 
 /**
  *  A name attached to an AO - the link between AO and person, with the ability to specify a name.
@@ -10,19 +8,17 @@ import com.k_int.grails.tools.refdata.*
  *  In that case, the relationship from an AO may be terminated by here and not link to a Person, allowing
  *  an admin to resolve the ambiguity later, whilst still recording the name.
  */
-class AOName {
+class AOGrant {
   
   AcademicOutput academicOutput
-  Person person
-  String name
-
-  @Defaults([ 'Author'])
-  RefdataValue namerel
+  Org funder
+  String fund
+  String grantId
 
   static constraints = {
     'academicOutput'  (nullable: false, blank:false)
-    'person'          (nullable: true,  blank:false)
-    'name'            (nullable: true,  blank:false)
-    'namerel'         (nullable: true,  blank:false)
+    'funder'          (nullable: true,  blank:false)
+    'fund'            (nullable: true,  blank:false)
+    'grantId'         (nullable: true,  blank:false)
   }
 }

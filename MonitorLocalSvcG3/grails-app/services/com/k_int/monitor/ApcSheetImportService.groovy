@@ -19,10 +19,7 @@ import java.text.SimpleDateFormat
 // import org.grails.web.databinding.*
 // import org.grails.web.databinding.bindingsource.*
 import grails.databinding.SimpleMapDataBindingSource
-
-
-
-
+import com.k_int.grails.tools.refdata.*
 
 @Transactional
 class ApcSheetImportService {
@@ -115,6 +112,40 @@ class ApcSheetImportService {
         def dbs = new SimpleMapDataBindingSource(aoRecord)
         grailsWebDataBinder.bind(ao, dbs) // , null, AcademicOutput.getExcludeList())
         log.debug("Save...");
+        ao.save(flush:true, failOnError:true);
+
+        // Established baseline for AO - now process remaining data
+        // nl[1] - Submitted by - Name of local person submitting APC
+        // Lookup or create a person record within this institution
+        if ( ( nl[1] != null ) && ( nl[1].trim().length() > 0 ) ) {
+          Person person = null;
+          def submitted_by_rel = RefdataValue.lookupOrCreate('AOName.Namerel','SubmittedBy');
+          AOName name = new AOName(academicOutput:ao, name:nl[1], person:person, namerel:submitted_by_rel).save(flush:true, failOnError:true)
+        }
+
+        if ( ( nl[6] != null ) && ( nl[6].trim().length() > 0 ) ) {
+          Person person = null;
+          def author_rel = RefdataValue.lookupOrCreate('AOName.Namerel','Author');
+          AOName name = new AOName(academicOutput:ao, name:nl[6], person:person, namerel:author_rel).save(flush:true, failOnError:true)
+        }
+
+        if ( ( nl[7] != null ) && ( nl[7].trim().length() > 0 ) ) {
+          def publisher = Org.findByName(nl[7]);
+          ao.publisher = publisher;
+        }
+
+        // APC Spreadsheet allows three separate sets of values for grant informaiton, process each one here
+        [13,14,15].each { fund ->
+          if ( ( nl[fund+3] != null ) &&  ( nl[fund+3].trim().length() > 0 ) ) {
+            Org funder = Org.findByName(nl[fund+3]) ?: new Org(name:nl[fund+3]).save(flush:true, failOnError:true);
+            AOGrant grant = new AOGrant(academicOutput:ao,funder:funder,fund:nl[fund],grantId:nl[fund+6]).save(flush:true, failOnError:true);
+          }
+        }
+
+        if ( ( nl[34] ) && ( nl[34].trim().length() > 0 ) ) {
+          ao.license = RefdataValue.lookupOrCreate('AcademicOutput.License',nl[34])
+        }
+
         ao.save(flush:true, failOnError:true);
       }
 

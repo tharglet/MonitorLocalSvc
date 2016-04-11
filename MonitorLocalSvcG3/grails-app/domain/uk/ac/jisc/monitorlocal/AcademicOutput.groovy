@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.grails.databinding.BindUsing
 import grails.databinding.SimpleMapDataBindingSource
+import org.hibernate.proxy.HibernateProxy
 
 
 @Log4j
@@ -39,16 +40,23 @@ class AcademicOutput extends Component {
   RefdataValue publisherResponse
   Date publisherResponseDate
 
+  @Defaults(['CC BY-SA'])
+  RefdataValue license
+
   @BindUsing({obj,source ->
     Org.orgBinder(obj.ownerInstitution, new SimpleMapDataBindingSource(source['ownerInstitution']), true);
   })
   Org ownerInstitution
-  
+
+  // Ugh - hate this model - really would prefer publication to be separate to the AO
+  Org publisher
+
   
   List academicOutputCosts = []
   static hasMany = [
     academicOutputCosts: CostItem,
-    names: AOName
+    names: AOName,
+    grants: AOGrant
   ]
 
   static constraints = {
@@ -60,10 +68,13 @@ class AcademicOutput extends Component {
     publisherResponse nullable: true
     publisherResponseDate nullable: true
     ownerInstitution nullable: true
+    publisher nullable: true
+    license nullable: true
   }
   static mappedBy = [
     costs:'academicOutput',
-    names:'academicOutput'
+    names:'academicOutput',
+    grants:'academicOutput'
   ]
 
   static mapping = {
@@ -110,6 +121,9 @@ class AcademicOutput extends Component {
             break;
           case 1:
             result = matching_aos.get(0);
+            if (result instanceof HibernateProxy) {
+              result = (AcademicOutput) ((HibernateProxy) result).getHibernateLazyInitializer().getImplementation();
+            }
             break;
           default:
             throw new RuntimeException("Identifiers match multiple components - unable to continue");

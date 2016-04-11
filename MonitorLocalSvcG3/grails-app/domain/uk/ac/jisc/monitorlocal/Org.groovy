@@ -13,6 +13,7 @@ class Org extends Component {
   String taxCode
   
   @Defaults([
+    'Publisher',
     'Organisation type 1',
     'Organisation type 2'
   ])

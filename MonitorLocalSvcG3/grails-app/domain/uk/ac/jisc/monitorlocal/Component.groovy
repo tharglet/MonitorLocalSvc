@@ -7,6 +7,9 @@ import org.grails.databinding.BindUsing
 import grails.databinding.SimpleMapDataBindingSource
 import javax.persistence.Transient
 
+import org.hibernate.proxy.HibernateProxy
+
+
 
 @Log4j
 @EqualsAndHashCode(includes=["id"])
