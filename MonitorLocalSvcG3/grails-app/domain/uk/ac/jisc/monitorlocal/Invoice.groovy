@@ -65,6 +65,6 @@ class Invoice extends Component {
     paymentType nullable: true
     
     filename nullable: true, blank: false
-    costs nullable: false
+    invoiceCosts nullable: false
   }
 }
