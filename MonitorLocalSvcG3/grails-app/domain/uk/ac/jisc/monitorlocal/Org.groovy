@@ -11,11 +11,13 @@ import groovy.util.logging.Log4j
 class Org extends Component {
   String address
   String taxCode
+  Integer isni
+  String ringgold
   
   @Defaults([
     'Publisher',
-    'Organisation type 1',
-    'Organisation type 2'
+    'HEI',
+    'Funder'
   ])
   RefdataValue type
 
