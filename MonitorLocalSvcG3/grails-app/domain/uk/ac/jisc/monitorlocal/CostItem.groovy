@@ -3,7 +3,7 @@ package uk.ac.jisc.monitorlocal
 import com.k_int.grails.tools.refdata.*
 import com.k_int.grailt.tools.finance.MonetaryValue
 
-class CostItem extends Component {
+class CostItem {
   
   static hasMany = [
     awards:Tag,
@@ -38,8 +38,8 @@ class CostItem extends Component {
   ])
   RefdataValue status
   
-  List prepay
-  List awards
+  List prepay = []
+  List awards = []
   
   Currency currency = Constants.GBP
   
@@ -72,29 +72,25 @@ class CostItem extends Component {
 
     return val
   }
-  
-  def beforeValidate () {
-    
-    // Check if we have updates to values or Currency
-    if( !name || (isDirty() && getDirtyPropertyNames().intersect(["grossValue", "currency"]).size() > 0) ) {
-      
-      // Set the name just before validation as the name is required.
-      name = toString()
-    }
-  }
 
   static constraints = {
     'status'          ( nullable: true )
     'category'        ( nullable: true )
+    'budget'          ( nullable: true )
+    'academicOutput'  ( nullable: true )
+    'invoice'         ( nullable: true )
     'paid'            ( nullable: true )
     'status'          ( nullable: true )
     'category'        ( nullable: true )
-    'paid'            ( nullable: true )
+    'estimated'       ( nullable: true )
   }
   
   static mapping = {
     prepay cascade: "all"
     awards cascade: "all"
     budget cascade: "all"
+    grossValue cascade: 'all-delete-orphan'
+    grossValueGBP cascade: 'all-delete-orphan'
+    tax cascade: 'all-delete-orphan'
   }
 }
