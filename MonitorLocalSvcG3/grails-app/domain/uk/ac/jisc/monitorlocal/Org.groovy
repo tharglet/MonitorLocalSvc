@@ -11,8 +11,6 @@ import groovy.util.logging.Log4j
 class Org extends Component {
   String address
   String taxCode
-  Integer isni
-  String ringgold
   
   @Defaults([
     'Publisher',
@@ -46,5 +44,11 @@ class Org extends Component {
     // Bind all properties from source to obj
 
     return obj
+  }
+  
+  static constraints = {
+    address nullable: true, blank: false
+    taxCode nullable: true, blank: false
+    type nullable: true
   }
 }
