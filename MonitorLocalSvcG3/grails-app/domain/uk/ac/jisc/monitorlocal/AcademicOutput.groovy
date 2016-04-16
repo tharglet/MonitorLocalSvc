@@ -71,14 +71,15 @@ class AcademicOutput extends Component {
     publisher nullable: true
     license nullable: true
   }
+  
   static mappedBy = [
-    costs:'academicOutput',
+    academicOutputCosts:'academicOutput',
     names:'academicOutput',
     grants:'academicOutput'
   ]
 
   static mapping = {
-    costs sort:'category', order:'asc', cascade: "all"
+    academicOutputCosts sort:'category', order:'asc', cascade: "all"
 //    namedRoles sort:'role', order:'asc', cascade: "all"
   }
 
