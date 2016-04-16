@@ -5,19 +5,22 @@ import com.k_int.grails.tools.identifiers.Identifier
 import groovy.util.logging.Log4j
 import org.grails.databinding.BindUsing
 import grails.databinding.SimpleMapDataBindingSource
+import grails.web.databinding.GrailsWebDataBinder
 import javax.persistence.Transient
 
 import org.hibernate.proxy.HibernateProxy
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 
 @Log4j
 @EqualsAndHashCode(includes=["id"])
 class Component {
-
-  @Transient
+  
+  // Static property seems to work.
+  static transients = ['grailsWebDataBinder']
   def grailsWebDataBinder
-
+  
   String name
 
   @BindUsing({obj,source ->
