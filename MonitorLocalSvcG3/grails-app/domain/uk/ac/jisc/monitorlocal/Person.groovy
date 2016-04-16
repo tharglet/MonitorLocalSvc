@@ -31,4 +31,9 @@ class Person extends Component {
 
   static constraints = {
   }
+
+  def beforeValidate () {
+      // Set the name just before validation as the name is required.
+      name = surname + ", " + firstName;
+  }
 }

@@ -22,6 +22,9 @@ class AcademicOutput extends Component {
   static searchable = {
     type component: true
   }
+
+  Person assignedTo
+  Date contactDate
   
   @Defaults([
     'Green', 'Gold', 'Gold Paid by Other'
@@ -31,14 +34,17 @@ class AcademicOutput extends Component {
   @Defaults(['Accepted', 'Rejected', 'Unfunded', 'Unknown (follow up with author)'])
   RefdataValue apcFundingApproval
   Date apcFundingDate
+  String apcFundingNote
   
   @Defaults(['Submitted', 'Not Submitted'])
   RefdataValue publisherSubmissionStatus
   Date publisherSubmissionDate
+  String publisherSubmissionNote
   
   @Defaults(['Accepted', 'Rejected'])
   RefdataValue publisherResponse
   Date publisherResponseDate
+  String publisherResponseNote
 
   @Defaults(['CC BY-SA'])
   RefdataValue license

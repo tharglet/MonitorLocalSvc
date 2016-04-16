@@ -1,6 +1,6 @@
 package uk.ac.jisc.monitorlocal
 
-class ContactDetails extends Component{
+class ContactDetails {
 
     static mappedBy = [
             person:'personContactDetails',
