@@ -39,12 +39,14 @@ class Invoice extends Component {
     invoiceCosts: CostItem
   ]
 
-//  static mappedBy = [
-//    costs:'invoice'
-//  ]
+  static mappedBy = [
+    invoiceCosts:'invoice'
+  ]
 
   static mapping = {
-    costs sort:'category', order:'asc', cascade: "all"
+    invoiceCosts sort:'category', order:'asc', cascade: "all"
+    currency cascade: 'all-delete-orphan'
+    supplier cascade: 'all'
   }
   
   static constraints = {
