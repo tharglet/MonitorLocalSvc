@@ -12,28 +12,27 @@ class Person extends Component {
 
   String firstName
   String surname
-  String orcId
 
   @Defaults([
-          'Mr',
-          'Mrs',
-          'Miss',
-          'Ms',
-          'Dr',
-          'Professor'
+    'Mr',
+    'Mrs',
+    'Miss',
+    'Ms',
+    'Dr',
+    'Professor'
   ])
   RefdataValue title
 
   List personContactDetails = []
   static hasMany = [
-          personContactDetails: ContactDetails
+    personContactDetails: ContactDetails
   ]
 
   static constraints = {
   }
 
   def beforeValidate () {
-      // Set the name just before validation as the name is required.
-      name = surname + ", " + firstName;
+    // Set the name just before validation as the name is required.
+    name = surname + ", " + firstName;
   }
 }
