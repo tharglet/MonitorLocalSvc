@@ -12,6 +12,13 @@ class Org extends Component {
   FundingGroup fundingGroup
   String address
   String taxCode
+  
+  @Defaults([
+    'Publisher',
+    'HEI',
+    'Funder'
+  ])
+  RefdataValue type
 
   // A closure that can be used when databinding an instance of org
   // Called with the object that represents the property, and the source
