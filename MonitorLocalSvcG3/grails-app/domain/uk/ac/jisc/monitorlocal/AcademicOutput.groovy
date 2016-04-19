@@ -27,10 +27,18 @@ class AcademicOutput extends Component {
     'Green', 'Gold', 'Gold Paid by Other'
   ])
   RefdataValue publicationRoute
+
+  String publicationTitle
+
+  @Defaults(['Published', 'Awaiting Publication', 'Unknown'])
+  RefdataValue publicationStatus
   
   @Defaults(['Accepted', 'Rejected', 'Unfunded', 'Unknown (follow up with author)'])
   RefdataValue apcFundingApproval
   Date apcFundingDate
+
+  String publisherURL
+  Date publishedDate
   
   @Defaults(['Submitted', 'Not Submitted'])
   RefdataValue publisherSubmissionStatus
@@ -51,25 +59,10 @@ class AcademicOutput extends Component {
   // Ugh - hate this model - really would prefer publication to be separate to the AO
   Org publisher
 
-  String authorNameList
   String localReference
-  Identifier PMID
-  Identifier PMCID
-  Identifier DOI
 
   @Defaults(['Journal Article', 'Conference Paper'])
   RefdataValue outputType
-
-  String publicationStatusNote
-  String publisherURL
-  Date publishedDate
-
-  @Defaults(['Published', 'Awaiting Publication', 'Unknown'])
-  RefdataValue publicationStatus
-
-  Identifier ISSN
-  Identifier eISSN
-  String publicationTitle
 
   @Defaults(['Delayed', 'Hybrid', 'None', 'Pure'])
   RefdataValue openAccessStatus
@@ -94,6 +87,14 @@ class AcademicOutput extends Component {
     license nullable: true
     assignedTo nullable: true
     contactDate nullable: true
+    
+    publishedDate nullable: true
+    publicationStatus nullable: true
+    openAccessStatus nullable: true
+    outputType nullable: true
+    localReference nullable: true, blank:false
+    publicationTitle nullable: true, blank:false
+    publisherURL nullable: true, blank:false
   }
   
   static mappedBy = [
