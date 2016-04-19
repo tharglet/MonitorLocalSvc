@@ -137,7 +137,7 @@ class ApcSheetImportService {
             def grantId = (nl[fund+6]?.length() > 0 ? nl[fund+6] : null)
             
             // Find Grant
-            Grant grant = Grant.findByFunderAndFundAndGrantId (
+            AOGrant grant = AOGrant.findByFunderAndFundAndGrantId (
               funder,
               fundVal,
               grantId
@@ -145,7 +145,7 @@ class ApcSheetImportService {
             
             if (!grant) {
               // Create a new Grant
-              grant = new Grant(funder:(funder),fund:fundVal,grantId:(grantId))
+              grant = new AOGrant(funder:(funder),fund:fundVal,grantId:(grantId))
             }
             
             // Associate with AO and save.

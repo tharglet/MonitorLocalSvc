@@ -7,7 +7,7 @@ import com.k_int.grails.tools.rest.ExtendedRestfulController
  *  A funder, the fund name and the grant ID 
  */
 @Resource(uri="/grant", superClass=ExtendedRestfulController)
-class Grant extends Component {
+class AOGrant extends Component {
   
   AcademicOutput academicOutput
   Org funder
@@ -35,7 +35,7 @@ class Grant extends Component {
       setName( nameStr )
     }
   }
-
+  
   static constraints = {
     'academicOutput'  (nullable: true)
     'funder'          (nullable: true)

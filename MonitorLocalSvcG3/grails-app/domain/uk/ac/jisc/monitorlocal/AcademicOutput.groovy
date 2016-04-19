@@ -56,7 +56,7 @@ class AcademicOutput extends Component {
   static hasMany = [
     academicOutputCosts: CostItem,
     names: AOName,
-    grants: Grant
+    grants: AOGrant
   ]
 
   static constraints = {

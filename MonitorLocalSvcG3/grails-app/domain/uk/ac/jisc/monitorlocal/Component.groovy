@@ -32,11 +32,13 @@ class Component {
   List identifiers
 
   static hasMany = [
-    identifiers:ComponentIdentifier
+    identifiers:ComponentIdentifier,
+    notes:Note
   ]
 
   static mappedBy = [
-    identifiers:'component'
+    identifiers:'component',
+    notes:'owner'
   ]
 
   static constraints = {
@@ -45,7 +47,7 @@ class Component {
 
   static mapping = {
     identifiers cascade: "all"
-//    tablePerHierarchy false
+    tablePerHierarchy false
   }
 
   public String toString() {
@@ -91,7 +93,7 @@ class Component {
       def sw = new StringWriter()
       sw.write("select c from Component as c join c.identifiers as i where ")
 
-      def bindvars = []
+      def bindvars = [:]
       def first = true
       identifiers.each {
         if ( first ) {
@@ -101,9 +103,9 @@ class Component {
           sw.write(' or ');
         }
 
-        sw.write(' ( i.identifier.namespace.value = ? AND i.identifier.value = ? ) ')
-        bindvars.add(it.namespace)
-        bindvars.add(it.value)
+        sw.write(' ( i.identifier.namespace.value = :nsVal AND i.identifier.value = :idVal ) ')
+        bindvars['nsVal'] = (it.namespace)
+        bindvars['idVal'] = (it.value)
       }
 
       def qry = sw.toString();
@@ -111,6 +113,7 @@ class Component {
       log.debug("lookup ${qry} ${bindvars}");
 
       result = Component.executeQuery(qry,bindvars);
+      
     }
 
     result
