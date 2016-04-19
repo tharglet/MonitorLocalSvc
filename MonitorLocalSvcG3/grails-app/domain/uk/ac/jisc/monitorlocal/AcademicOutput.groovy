@@ -64,6 +64,16 @@ class AcademicOutput extends Component {
   @Defaults(['Journal Article', 'Conference Paper'])
   RefdataValue outputType
 
+  Date journalIssueDate
+  String journalVolume
+  String journalIssue
+  String journalPages
+
+  String publicationPlace
+  Date conferenceStartDate
+  Date conferenceEndDate
+  Org conferenceOrg
+
   @Defaults(['Delayed', 'Hybrid', 'None', 'Pure'])
   RefdataValue openAccessStatus
 
@@ -95,6 +105,15 @@ class AcademicOutput extends Component {
     localReference nullable: true, blank:false
     publicationTitle nullable: true, blank:false
     publisherURL nullable: true, blank:false
+
+    journalIssueDate nullable: true
+    journalVolume nullable: true
+    journalIssue nullable: true
+    journalPages nullable: true
+    publicationPlace nullable: true
+    conferenceStartDate nullable: true
+    conferenceEndDate nullable: true
+    conferenceOrg nullable: true
   }
   
   static mappedBy = [
