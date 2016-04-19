@@ -20,9 +20,9 @@ class AOName {
   RefdataValue namerel
 
   static constraints = {
-    'academicOutput'  (nullable: false, blank:false)
-    'person'          (nullable: true,  blank:false)
+    'academicOutput'  (nullable: false)
+    'person'          (nullable: true)
     'name'            (nullable: true,  blank:false)
-    'namerel'         (nullable: true,  blank:false)
+    'namerel'         (nullable: true)
   }
 }
