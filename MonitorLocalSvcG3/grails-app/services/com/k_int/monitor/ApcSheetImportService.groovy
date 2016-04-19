@@ -123,14 +123,23 @@ class ApcSheetImportService {
         }
 
         if ( ( nl[7] != null ) && ( nl[7].trim().length() > 0 ) ) {
-          def publisher = Org.findByName(nl[7]);
+          def publisher = Org.findByName(nl[7])
+          if (publisher) {
+            publisher.setTypeFromString('Publisher')
+          }
           ao.publisher = publisher;
         }
 
-        // APC Spreadsheet allows three separate sets of values for grant informaiton, process each one here
+        // APC Spreadsheet allows three separate sets of values for grant information, process each one here
         [13,14,15].each { fund ->
           if ( ( nl[fund+3] != null ) &&  ( nl[fund+3].trim().length() > 0 ) ) {
-            Org funder = Org.findByName(nl[fund+3]) ?: new Org(name:nl[fund+3]).save(flush:true, failOnError:true)
+            Org funder = Org.findByName(nl[fund+3]) ?: new Org(name:nl[fund+3])
+            
+            if (funder) {
+              // We should set the type of the org to funder.
+              funder.setTypeFromString('Funder')
+              funder.save(flush:true, failOnError:true)
+            }
             
             // The other properties.
             def fundVal = (nl[fund]?.length() > 0 ? nl[fund] : null)
