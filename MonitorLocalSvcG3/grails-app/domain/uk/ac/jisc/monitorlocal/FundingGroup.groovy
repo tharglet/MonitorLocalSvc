@@ -9,4 +9,8 @@ class FundingGroup extends RefdataValue {
   static hasMany = [
     funders: Org,
   ]
+  
+  static FundingGroup lookupOrCreate(category_name, value, sortkey = null) {
+    return this.lookupOrCreate(category_name, value, sortkey, this)
+  }
 }
