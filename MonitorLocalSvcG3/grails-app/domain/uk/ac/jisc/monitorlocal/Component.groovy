@@ -94,18 +94,17 @@ class Component {
       sw.write("select c from Component as c join c.identifiers as i where ")
 
       def bindvars = [:]
-      def first = true
-      identifiers.each {
-        if ( first ) {
-          first = false
-        }
-        else {
+      identifiers.eachWithIndex { id, idx ->
+        
+        // OR
+        if ( idx > 0 ) {
           sw.write(' or ');
         }
-
-        sw.write(' ( i.identifier.namespace.value = :nsVal AND i.identifier.value = :idVal ) ')
-        bindvars['nsVal'] = (it.namespace)
-        bindvars['idVal'] = (it.value)
+        
+        // Positional params have been deprecated in HQL in favour of named params
+        sw.write(" ( i.identifier.namespace.value = :nsVal${idx} AND i.identifier.value = :idVal${idx} ) ")
+        bindvars["nsVal${idx}"] = (id.namespace)
+        bindvars["idVal${idx}"] = (id.value)
       }
 
       def qry = sw.toString();
