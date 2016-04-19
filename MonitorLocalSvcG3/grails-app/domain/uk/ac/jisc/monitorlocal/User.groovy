@@ -5,7 +5,7 @@ import groovy.transform.ToString
 
 @EqualsAndHashCode(includes='username')
 @ToString(includes='username', includeNames=true, includePackage=false)
-class User implements Serializable {
+class User extends Component implements Serializable {
 
   private static final long serialVersionUID = 1
 
@@ -18,8 +18,6 @@ class User implements Serializable {
   boolean accountLocked
   boolean passwordExpired
 
-
-  String displayName
   String profilePic
   String email
   String biography
@@ -61,7 +59,6 @@ class User implements Serializable {
   static constraints = {
     username blank: false, unique: true
     password blank: false
-    displayName blank: true, nullable:true
     profilePic blank: true, nullable:true
     email blank: true, nullable:true
     biography blank: true, nullable:true
@@ -76,7 +73,7 @@ class User implements Serializable {
     def result = [
       userid:this.username,
       email:this.email,
-      displayName:this.displayName,
+      name:this.name,
       profilePic:this.profilePic,
       bio: this.biography,
       affiliations: [],

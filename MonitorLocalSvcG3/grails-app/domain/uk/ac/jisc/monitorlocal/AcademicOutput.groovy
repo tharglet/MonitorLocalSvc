@@ -20,7 +20,7 @@ class AcademicOutput extends Component {
     type component: true
   }
 
-  Person assignedTo
+  User assignedTo
   Date contactDate
   
   @Defaults([

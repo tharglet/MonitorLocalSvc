@@ -235,7 +235,7 @@ auth:
     query: {}
     userMapping:
       username: "sub"
-      displayName: "name"
+      name: "name"
       profilePic: "picture"
       email: "email"
       
@@ -251,7 +251,7 @@ auth:
     query: {}
     userMapping:
       username: "sub"
-      displayName: "name"
+      name: "name"
       profilePic: "picture"
       email: "email"
 
