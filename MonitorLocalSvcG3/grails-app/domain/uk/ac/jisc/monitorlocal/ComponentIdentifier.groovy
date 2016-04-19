@@ -28,8 +28,8 @@ class ComponentIdentifier {
   Component component
 
   static constraints = {
-    identifier nullable: false, blank:false
-    component nullable: false, blank:false
+    identifier nullable: false
+    component nullable: false
   }
 
   static belongsTo = [component:Component]
