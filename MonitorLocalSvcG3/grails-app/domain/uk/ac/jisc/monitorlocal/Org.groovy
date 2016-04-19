@@ -9,6 +9,12 @@ import groovy.util.logging.Log4j
 @Log4j
 @Resource(uri="/org", superClass=ExtendedRestfulController)
 class Org extends Component {
+  
+  @Defaults([
+    'Charity Open Access Fund (COAF)',
+    'Research Councils UK (RCUK)',
+    'Research Excellence Framework (REF)'
+  ])
   FundingGroup fundingGroup
   String address
   String taxCode
