@@ -1,15 +1,14 @@
 package uk.ac.jisc.monitorlocal
 
-import groovy.transform.EqualsAndHashCode
-import com.k_int.grails.tools.identifiers.Identifier
-import groovy.util.logging.Log4j
-import org.grails.databinding.BindUsing
-import grails.databinding.SimpleMapDataBindingSource
 import grails.web.databinding.GrailsWebDataBinder
-import javax.persistence.Transient
+import groovy.transform.EqualsAndHashCode
+import groovy.util.logging.Log4j
 
-import org.hibernate.proxy.HibernateProxy
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.persistence.Transient;
+
+import org.grails.databinding.BindUsing
+
+import com.k_int.grails.tools.identifiers.Identifier
 
 
 
@@ -17,9 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 @EqualsAndHashCode(includes=["id"])
 class Component {
   
-  // Static property seems to work.
-  static transients = ['grailsWebDataBinder']
-  def grailsWebDataBinder
+  @Transient
+  def gwdb
+  public setGrailsWebDataBinder( GrailsWebDataBinder gwdb ) {
+    this.gwdb = gwdb
+  }
   
   String name
 
@@ -44,6 +45,7 @@ class Component {
 
   static mapping = {
     identifiers cascade: "all"
+//    tablePerHierarchy false
   }
 
   public String toString() {
@@ -120,7 +122,7 @@ class Component {
                                                                             source,
                                                                             'identifiers', 
                                                                             ComponentIdentifier.class,
-                                                                            grailsWebDataBinder,
+                                                                            gwdb,
                                                                             'component',
                                                                             true);
     }

@@ -1,24 +1,15 @@
 package com.k_int.monitor
 
 
-import grails.core.GrailsApplication
-import grails.converters.*
-import groovyx.net.http.HTTPBuilder
 import static groovyx.net.http.ContentType.*
 import static groovyx.net.http.Method.GET
-import grails.transaction.Transactional
-
-import groovyx.net.http.*
-import uk.ac.jisc.monitorlocal.*;
-
-import au.com.bytecode.opencsv.CSVReader
-import au.com.bytecode.opencsv.bean.CsvToBean
-import au.com.bytecode.opencsv.bean.HeaderColumnNameMappingStrategy
-import au.com.bytecode.opencsv.bean.HeaderColumnNameTranslateMappingStrategy
-import java.text.SimpleDateFormat
-// import org.grails.web.databinding.*
-// import org.grails.web.databinding.bindingsource.*
+import grails.converters.*
 import grails.databinding.SimpleMapDataBindingSource
+import grails.transaction.Transactional
+import groovyx.net.http.*
+import uk.ac.jisc.monitorlocal.*
+import au.com.bytecode.opencsv.CSVReader
+
 import com.k_int.grails.tools.refdata.*
 
 @Transactional
@@ -119,14 +110,16 @@ class ApcSheetImportService {
         // Lookup or create a person record within this institution
         if ( ( nl[1] != null ) && ( nl[1].trim().length() > 0 ) ) {
           Person person = null;
-          def submitted_by_rel = RefdataValue.lookupOrCreate('AOName.Namerel','SubmittedBy');
-          AOName name = new AOName(academicOutput:ao, name:nl[1], person:person, namerel:submitted_by_rel).save(flush:true, failOnError:true)
+          AOName name = new AOName(academicOutput:ao, name:nl[1], person:person)
+          name.setNamerelFromString('SubmittedBy')
+          name.save(flush:true, failOnError:true)
         }
 
         if ( ( nl[6] != null ) && ( nl[6].trim().length() > 0 ) ) {
           Person person = null;
-          def author_rel = RefdataValue.lookupOrCreate('AOName.Namerel','Author');
-          AOName name = new AOName(academicOutput:ao, name:nl[6], person:person, namerel:author_rel).save(flush:true, failOnError:true)
+          AOName name = new AOName(academicOutput:ao, name:nl[6], person:person)
+          name.setNamerelFromString('Author')
+          name.save(flush:true, failOnError:true)
         }
 
         if ( ( nl[7] != null ) && ( nl[7].trim().length() > 0 ) ) {
@@ -137,13 +130,32 @@ class ApcSheetImportService {
         // APC Spreadsheet allows three separate sets of values for grant informaiton, process each one here
         [13,14,15].each { fund ->
           if ( ( nl[fund+3] != null ) &&  ( nl[fund+3].trim().length() > 0 ) ) {
-            Org funder = Org.findByName(nl[fund+3]) ?: new Org(name:nl[fund+3]).save(flush:true, failOnError:true);
-            AOGrant grant = new AOGrant(academicOutput:ao,funder:funder,fund:nl[fund],grantId:nl[fund+6]).save(flush:true, failOnError:true);
+            Org funder = Org.findByName(nl[fund+3]) ?: new Org(name:nl[fund+3]).save(flush:true, failOnError:true)
+            
+            // The other properties.
+            def fundVal = (nl[fund]?.length() > 0 ? nl[fund] : null)
+            def grantId = (nl[fund+6]?.length() > 0 ? nl[fund+6] : null)
+            
+            // Find Grant
+            Grant grant = Grant.findByFunderAndFundAndGrantId (
+              funder,
+              fundVal,
+              grantId
+            )
+            
+            if (!grant) {
+              // Create a new Grant
+              grant = new Grant(funder:(funder),fund:fundVal,grantId:(grantId))
+            }
+            
+            // Associate with AO and save.
+            grant.academicOutput = ao
+            grant.save(flush:true, failOnError:true)
           }
         }
 
         if ( ( nl[34] ) && ( nl[34].trim().length() > 0 ) ) {
-          ao.license = RefdataValue.lookupOrCreate('AcademicOutput.License',nl[34])
+          ao.setLicenseFromString( "${nl[34]}" )
         }
 
         ao.save(flush:true, failOnError:true);

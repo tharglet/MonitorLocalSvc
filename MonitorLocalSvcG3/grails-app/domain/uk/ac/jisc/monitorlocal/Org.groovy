@@ -9,15 +9,9 @@ import groovy.util.logging.Log4j
 @Log4j
 @Resource(uri="/org", superClass=ExtendedRestfulController)
 class Org extends Component {
+  FundingGroup fundingGroup
   String address
   String taxCode
-  
-  @Defaults([
-    'Publisher',
-    'HEI',
-    'Funder'
-  ])
-  RefdataValue type
 
   // A closure that can be used when databinding an instance of org
   // Called with the object that represents the property, and the source
@@ -49,6 +43,17 @@ class Org extends Component {
   static constraints = {
     address nullable: true, blank: false
     taxCode nullable: true, blank: false
-    type nullable: true
+    fundingGroup nullable: true
+  }
+  
+  static mapping = {
+    // Use a join table here to prevent a load of nulls in our table.
+    fundingGroup (
+      joinTable: [
+        name:     'org_funding_groups',
+        key:      'org_id',
+        column:   'funding_group_id'
+      ]
+    )
   }
 }

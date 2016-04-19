@@ -49,6 +49,9 @@ grails:
             maxsize: 1000
     controllers:
         defaultScope: singleton
+        upload:
+          maxFileSize: 20971520
+          maxRequestSize: 23068672
     converters:
         encoding: UTF-8
         json:
@@ -83,6 +86,7 @@ environments:
             password: k-int
             url: jdbc:mysql://localhost/MonitorLocalDev?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8
             pooled: true
+#            logSql: true
             properties:
               maxActive: -1
               minEvictableIdleTimeMillis: 1800000

@@ -1,18 +1,15 @@
 package uk.ac.jisc.monitorlocal;
 
 
+import grails.databinding.SimpleMapDataBindingSource
 import grails.rest.Resource
-
-import com.k_int.grails.tools.identifiers.Identifier
-import com.k_int.grails.tools.refdata.*
-import com.k_int.grails.tools.rest.ExtendedRestfulController
 import groovy.util.logging.Log4j
 
-import java.util.List;
-
 import org.grails.databinding.BindUsing
-import grails.databinding.SimpleMapDataBindingSource
 import org.hibernate.proxy.HibernateProxy
+
+import com.k_int.grails.tools.refdata.*
+import com.k_int.grails.tools.rest.ExtendedRestfulController
 
 
 @Log4j
@@ -34,17 +31,14 @@ class AcademicOutput extends Component {
   @Defaults(['Accepted', 'Rejected', 'Unfunded', 'Unknown (follow up with author)'])
   RefdataValue apcFundingApproval
   Date apcFundingDate
-  String apcFundingNote
   
   @Defaults(['Submitted', 'Not Submitted'])
   RefdataValue publisherSubmissionStatus
   Date publisherSubmissionDate
-  String publisherSubmissionNote
   
   @Defaults(['Accepted', 'Rejected'])
   RefdataValue publisherResponse
   Date publisherResponseDate
-  String publisherResponseNote
 
   @Defaults(['CC BY-SA'])
   RefdataValue license
@@ -62,7 +56,7 @@ class AcademicOutput extends Component {
   static hasMany = [
     academicOutputCosts: CostItem,
     names: AOName,
-    grants: AOGrant
+    grants: Grant
   ]
 
   static constraints = {
@@ -76,6 +70,8 @@ class AcademicOutput extends Component {
     ownerInstitution nullable: true
     publisher nullable: true
     license nullable: true
+    assignedTo nullable: true
+    contactDate nullable: true
   }
   
   static mappedBy = [
