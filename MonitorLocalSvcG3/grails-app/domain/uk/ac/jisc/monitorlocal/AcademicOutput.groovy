@@ -1,6 +1,6 @@
-package uk.ac.jisc.monitorlocal;
+package uk.ac.jisc.monitorlocal
 
-
+import com.k_int.grails.tools.identifiers.Identifier;
 import grails.databinding.SimpleMapDataBindingSource
 import grails.rest.Resource
 import groovy.util.logging.Log4j
@@ -51,7 +51,29 @@ class AcademicOutput extends Component {
   // Ugh - hate this model - really would prefer publication to be separate to the AO
   Org publisher
 
-  
+  String authorNameList
+  String localReference
+  Identifier PMID
+  Identifier PMCID
+  Identifier DOI
+
+  @Defaults(['Journal Article', 'Conference Paper'])
+  RefdataValue outputType
+
+  String publicationStatusNote
+  String publisherURL
+  Date publishedDate
+
+  @Defaults(['Published', 'Awaiting Publication', 'Unknown'])
+  RefdataValue publicationStatus
+
+  Identifier ISSN
+  Identifier eISSN
+  String publicationTitle
+
+  @Defaults(['Delayed', 'Hybrid', 'None', 'Pure'])
+  RefdataValue openAccessStatus
+
   List academicOutputCosts = []
   static hasMany = [
     academicOutputCosts: CostItem,
