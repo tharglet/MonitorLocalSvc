@@ -29,6 +29,7 @@ class Person extends Component {
   ]
 
   static constraints = {
+    title nullable: true
   }
 
   def beforeValidate () {
