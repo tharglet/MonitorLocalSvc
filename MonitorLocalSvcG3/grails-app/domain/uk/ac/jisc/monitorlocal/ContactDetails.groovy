@@ -11,7 +11,6 @@ class ContactDetails {
 
     String department
     String jobTitle
-    String ldapId
     String emailAddress
     String telephoneNumber
 
