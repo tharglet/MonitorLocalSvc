@@ -23,7 +23,7 @@ class ComponentIdentifier {
     println("BindUsing");
     return obj.bindIdentifier(obj,source['identifier']);
   })
-  Identifier identifier
+  Identifier identifier = new Identifier()
 
   Component component
 
