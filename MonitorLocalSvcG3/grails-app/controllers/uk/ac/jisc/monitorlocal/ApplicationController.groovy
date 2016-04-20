@@ -72,7 +72,7 @@ class ApplicationController implements PluginManagerAware {
       def upload_file = request.getFile("content");
 
       log.debug("Calling ingest");
-      apcSheetImportService.assimilateApcSpreadsheet(org, upload_file.getInputStream() )
+      apcSheetImportService.assimilateApcSpreadsheet(org, upload_file.getInputStream(),upload_filename )
 
     }
     else {
