@@ -56,14 +56,19 @@ class Component {
 
   public static Component lookupOrCreate(Class cls, String name, List identifiers) {
     def result
+
     def existingComponents = lookupByIdentifierValue(identifiers)
+
     switch ( existingComponents.size() ) {
       case 0:
         result = cls.newInstance();
         result.name = name
         result.identifiers = []
         identifiers.each {
-          result.addToIdentifiers(Identifier.lookupOrCreate(it.namespace, it.value))
+          def new_identifier = Identifier.lookupOrCreate(it.namespace, it.value)
+          def new_ci = new ComponentIdentifier();
+          new_ci.identifier=new_identifier
+          result.addToIdentifiers(new_ci);
         }
         result.save(flush:true, failOnError:true);
         break;

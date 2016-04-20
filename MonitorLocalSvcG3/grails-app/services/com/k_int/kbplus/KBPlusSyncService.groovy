@@ -40,17 +40,18 @@ class KbplusSyncService {
           result.ts = sdf.parse(record_ts_str)?.getTime()
 
           def identifiers = []
-          println("Process record ${r}");
+          log.debug("Process record ${r}");
           def title_id = r.metadata.kbplus.title.@id.text()
           def title = r.metadata.kbplus.title.title.text()
           def pub_name = r.metadata.kbplus.publisher.name.text()
 
           println("${title_id} ${title} ${pub_name}");
           r.metadata.kbplus.identifiers.identifier.each {
-            println("id ${it.@namespace} ${it.@value}");
-            identifiers.add([namespace:it.@namespace.text(), value:it.@value.text()])
+            log.debug("id ${it.@namespace} ${it.@value}");
+            identifiers.add([namespace:it.@namespace.text(),value:it.@value.text()]);
           }
 
+          log.debug("call PublicationTitle.lookupOrCreate");
           def t = PublicationTitle.lookupOrCreate(title, identifiers);
           result.title_id = t.id
         }
