@@ -31,6 +31,10 @@ class ComponentIdentifier {
     identifier nullable: false
     component nullable: false
   }
+  
+  static mapping = {
+    identifier cascade: 'all'
+  }
 
   static belongsTo = [component:Component]
 
