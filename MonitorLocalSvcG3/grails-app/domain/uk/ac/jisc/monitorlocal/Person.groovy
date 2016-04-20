@@ -28,6 +28,10 @@ class Person extends Component {
     personContactDetails: ContactDetails
   ]
 
+  static mappedBy = [
+          personContactDetails: 'person'
+  ]
+
   static constraints = {
     title nullable: true
   }
