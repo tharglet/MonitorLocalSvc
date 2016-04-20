@@ -66,10 +66,10 @@ class ApcSheetImportService {
     // APC paid (actual currency) excluding VAT
     // VAT (actual currency)
     // Currency of APC
-    // APC paid (�) including VAT if charged
-    // APC paid (�) excluding VAT
-    // VAT (�)
-    // Additional publication costs (�)
+    // APC paid (GBP) including VAT if charged
+    // APC paid (GBP) excluding VAT
+    // VAT (GBP)
+    // Additional publication costs (GBP)
     // "Discounts, memberships & pre-payment agreements"
     // Amount of APC charged to COAF grant (include VAT if charged) in �
     // Amount of APC charged to RCUK OA fund (include VAT if charged) in �
@@ -165,6 +165,7 @@ class ApcSheetImportService {
                   // Create a new Grant
                   grant = new AOGrant(funder:(funder),fund:fundVal,grantId:(grantId))
                 }
+
                 
                 // Associate with AO and save.
                 grant.academicOutput = ao
@@ -176,6 +177,24 @@ class ApcSheetImportService {
               ao.setLicenseFromString( "${nl[34]}" )
             }
     
+            // Column 18 -- Date of APC Payment
+
+            // 19 APC paid (actual currency) including VAT if charged
+            // def apc_cost_grossValue = new MonetaryValue(value:nl[19])
+
+            // 20 APC paid (actual currency) excluding VAT
+            // 21 VAT (actual currency)
+            // 22 Currency of APC
+
+            // def apc_cost_item_actual = new CostItem(grossValue:apc_cost_grossValue)
+
+            // 23 APC paid (GBP) including VAT if charged
+            // 24 APC paid (GBP) excluding VAT
+            // 25 VAT (GBP)
+            // 26 Additional publication costs (GBP)
+
+
+            // Process cost items  -- ao.addToAcademicOutputCosts()
             ao.save(flush:true, failOnError:true);
           }
         }
