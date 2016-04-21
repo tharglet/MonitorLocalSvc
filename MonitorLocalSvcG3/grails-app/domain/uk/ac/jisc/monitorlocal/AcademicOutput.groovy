@@ -21,7 +21,7 @@ class AcademicOutput extends Component {
   }
 
   User assignedTo
-  Date contactDate
+  Date contactDate = new Date()
   
   @Defaults([
     'Green', 'Gold', 'Gold Paid by Other'
