@@ -51,6 +51,7 @@ class AcademicOutput extends Component {
   // Ugh - hate this model - really would prefer publication to be separate to the AO
   Org publisher
 
+  PublicationTitle publishedIn
   
   List academicOutputCosts = []
   static hasMany = [
@@ -72,6 +73,7 @@ class AcademicOutput extends Component {
     license nullable: true
     assignedTo nullable: true
     contactDate nullable: true
+    publishedIn nullable: true
   }
   
   static mappedBy = [
