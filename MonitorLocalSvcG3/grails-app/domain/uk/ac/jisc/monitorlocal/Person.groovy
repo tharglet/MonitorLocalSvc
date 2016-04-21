@@ -23,14 +23,18 @@ class Person extends Component {
   ])
   RefdataValue title
 
-  List personContactDetails = []
+  Set personContactDetails = []
   static hasMany = [
     personContactDetails: ContactDetails
   ]
-
+  
   static mappedBy = [
-          personContactDetails: 'person'
+    personContactDetails:'person'
   ]
+  
+  static mapping = {
+    personContactDetails cascade: "all"
+  }
 
   static constraints = {
     title nullable: true
@@ -38,6 +42,6 @@ class Person extends Component {
 
   def beforeValidate () {
     // Set the name just before validation as the name is required.
-    name = surname + ", " + firstName;
+    name = "${surname}, ${title?.value ? title?.value + ' ' : ''}${firstName}";
   }
 }
