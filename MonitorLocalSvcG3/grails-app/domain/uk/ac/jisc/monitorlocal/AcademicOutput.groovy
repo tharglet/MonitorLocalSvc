@@ -52,7 +52,7 @@ class AcademicOutput extends Component {
   RefdataValue license
 
   @BindUsing({obj,source ->
-    Org.orgBinder(obj.ownerInstitution, new SimpleMapDataBindingSource(source['ownerInstitution']), true);
+    Org.orgBinder(obj.ownerInstitution, source['ownerInstitution'], true);
   })
   Org ownerInstitution
 
