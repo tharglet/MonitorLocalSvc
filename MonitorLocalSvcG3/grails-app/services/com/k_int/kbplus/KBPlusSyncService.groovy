@@ -54,6 +54,10 @@ class KbplusSyncService {
           log.debug("call PublicationTitle.lookupOrCreate");
           def t = PublicationTitle.lookupOrCreate(title, identifiers);
           result.title_id = t.id
+
+          def note = new Note(owner:t,note:'Created/Updated by KBPlus Title Sync')
+          note.save(flush:true, failOnError:true)
+
         }
       }
       catch ( Exception e ) {

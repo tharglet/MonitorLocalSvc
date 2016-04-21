@@ -216,6 +216,9 @@ class ApcSheetImportService {
 
             // Process cost items  -- ao.addToAcademicOutputCosts()
             ao.save(flush:true, failOnError:true);
+
+            def note = new Note(owner:ao,note:'Created by APC/TCO Sheet Import of file '+filename)
+            note.save(flush:true, failOnError:true)
           }
         }
         else {
