@@ -23,7 +23,7 @@ class ComponentIdentifier {
     println("BindUsing");
     return obj.bindIdentifier(obj,source['identifier']);
   })
-  Identifier identifier
+  Identifier identifier = new Identifier()
 
   Component component
 
@@ -31,15 +31,22 @@ class ComponentIdentifier {
     identifier nullable: false
     component nullable: false
   }
+  
+  static mapping = {
+    identifier cascade: 'all'
+  }
 
   static belongsTo = [component:Component]
 
-  static ComponentIdentifier fuzzyMatch(ci, owner) {
+  // See if we can match a component identifier - in the context of a parent object
+  static ComponentIdentifier fuzzyMatch(owner, ci) {
 
-    log.debug("ComponentIdentifier::fuzzyMatch(${ci},${owner}");
+    log.debug("ComponentIdentifier::fuzzyMatch(${owner},${ci})");
 
     def result = null;
+
     if ( ci['id'] ) {
+      log.debug("ComponentIdentifier::fuzzyMatch on id - perform get ${ci['id']}");
       result = ComponentIdentifier.get(ci['id']);
     }
     else if ( owner.id ) {

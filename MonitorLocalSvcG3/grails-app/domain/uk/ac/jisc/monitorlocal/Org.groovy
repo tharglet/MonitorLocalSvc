@@ -9,9 +9,22 @@ import groovy.util.logging.Log4j
 @Log4j
 @Resource(uri="/org", superClass=ExtendedRestfulController)
 class Org extends Component {
+  
+  @Defaults([
+    'Charity Open Access Fund (COAF)',
+    'Research Councils UK (RCUK)',
+    'Research Excellence Framework (REF)'
+  ])
   FundingGroup fundingGroup
   String address
   String taxCode
+  
+  @Defaults([
+    'Publisher',
+    'HEI',
+    'Funder'
+  ])
+  RefdataValue type
 
   // A closure that can be used when databinding an instance of org
   // Called with the object that represents the property, and the source

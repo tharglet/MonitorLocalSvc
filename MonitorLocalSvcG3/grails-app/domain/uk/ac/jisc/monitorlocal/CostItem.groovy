@@ -6,7 +6,7 @@ import com.k_int.grailt.tools.finance.MonetaryValue
 class CostItem {
   
   static hasMany = [
-    awards:Tag,
+    grants:AOGrant,
     prepay:Tag
   ]
   
@@ -39,7 +39,7 @@ class CostItem {
   RefdataValue status
   
   List prepay = []
-  List awards = []
+  List grants = []
   
   Currency currency = Constants.GBP
   
@@ -87,7 +87,7 @@ class CostItem {
   
   static mapping = {
     prepay cascade: "all"
-    awards cascade: "all"
+    grants cascade: "all"
     budget cascade: "all"
     grossValue cascade: 'all-delete-orphan'
     grossValueGBP cascade: 'all-delete-orphan'

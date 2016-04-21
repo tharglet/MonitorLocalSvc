@@ -58,7 +58,11 @@ class ApplicationController implements PluginManagerAware {
     def upload_mime_type = request.getFile("content")?.contentType  // getPart?
     def upload_filename = request.getFile("content")?.getOriginalFilename()
     def new_datafile_id = null
-    def org = Org.findByName(params.instname) ?: new Org(name:params.instname).save(flush:true, failOnError:true);
+    def org = Org.findByName(params.instname) ?: new Org(name:params.instname)
+    
+    // Set the type to HEI.
+    org.setTypeFromString('HEI')
+    org.save(flush:true, failOnError:true)
 
     if ( upload_mime_type && upload_filename && org ) {
 
@@ -68,7 +72,7 @@ class ApplicationController implements PluginManagerAware {
       def upload_file = request.getFile("content");
 
       log.debug("Calling ingest");
-      apcSheetImportService.assimilateApcSpreadsheet(org, upload_file.getInputStream() )
+      apcSheetImportService.assimilateApcSpreadsheet(org, upload_file.getInputStream(),upload_filename )
 
     }
     else {

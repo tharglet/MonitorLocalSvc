@@ -17,7 +17,7 @@ class AOGrant extends Component {
   
   def beforeValidate () {
     // Set the name if it isn't already.
-     if( !name || !id || isDirty()) {
+     if( !name ) {
       // Lets update the name
       def nameStr = "${funder?.name ?: ''}:${fund ? ' ' + fund : ''}"
       if (grantId) {
@@ -27,7 +27,7 @@ class AOGrant extends Component {
         nameStr += " / ${internalGrantId}"
       }
       
-      if ( !(nameStr?.length() > 1) ) {
+      if ( !(nameStr?.length() > 0) ) {
         // No string
         nameStr = "Grant ${id}"
       }

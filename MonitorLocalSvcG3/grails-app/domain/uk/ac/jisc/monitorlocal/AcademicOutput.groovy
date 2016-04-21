@@ -1,6 +1,6 @@
-package uk.ac.jisc.monitorlocal;
+package uk.ac.jisc.monitorlocal
 
-
+import com.k_int.grails.tools.identifiers.Identifier;
 import grails.databinding.SimpleMapDataBindingSource
 import grails.rest.Resource
 import groovy.util.logging.Log4j
@@ -27,10 +27,18 @@ class AcademicOutput extends Component {
     'Green', 'Gold', 'Gold Paid by Other'
   ])
   RefdataValue publicationRoute
+
+  String publicationTitle
+
+  @Defaults(['Published', 'Awaiting Publication', 'Unknown'])
+  RefdataValue publicationStatus
   
   @Defaults(['Accepted', 'Rejected', 'Unfunded', 'Unknown (follow up with author)'])
   RefdataValue apcFundingApproval
   Date apcFundingDate
+
+  String publisherURL
+  Date publishedDate
   
   @Defaults(['Submitted', 'Not Submitted'])
   RefdataValue publisherSubmissionStatus
@@ -53,11 +61,30 @@ class AcademicOutput extends Component {
 
   PublicationTitle publishedIn
   
+  String localReference
+
+  @Defaults(['Journal Article', 'Conference Paper'])
+  RefdataValue outputType
+
+  Date journalIssueDate
+  String journalVolume
+  String journalIssue
+  String journalPages
+
+  String publicationPlace
+  Date conferenceStartDate
+  Date conferenceEndDate
+  Org conferenceOrg
+
+  @Defaults(['Delayed', 'Hybrid', 'None', 'Pure'])
+  RefdataValue openAccessStatus
+
   List academicOutputCosts = []
   static hasMany = [
     academicOutputCosts: CostItem,
     names: AOName,
-    grants: AOGrant
+    grants: AOGrant,
+    funds: AOFunding
   ]
 
   static constraints = {
@@ -74,6 +101,21 @@ class AcademicOutput extends Component {
     assignedTo nullable: true
     contactDate nullable: true
     publishedIn nullable: true
+    publishedDate nullable: true
+    publicationStatus nullable: true
+    openAccessStatus nullable: true
+    outputType nullable: true
+    localReference nullable: true, blank:false
+    publicationTitle nullable: true, blank:false
+    publisherURL nullable: true, blank:false
+    journalIssueDate nullable: true
+    journalVolume nullable: true
+    journalIssue nullable: true
+    journalPages nullable: true
+    publicationPlace nullable: true
+    conferenceStartDate nullable: true
+    conferenceEndDate nullable: true
+    conferenceOrg nullable: true
   }
   
   static mappedBy = [
