@@ -31,21 +31,26 @@ class Org extends Component {
   public static orgBinder = { obj, source, createMissing=false ->
 
     println("orgBinder");
+    if (source) {
 
-    if ( obj == null ) {
-      if ( source['id'] ) {
-        obj = Org.get(source['id'])
+      if ( obj == null ) {
+        if ( source['id'] ) {
+          obj = Org.get(source['id'])
+        }
       }
-    }
-
-    if ( ( obj == null ) && ( source['name'] != null ) ) {
-      obj = Org.findByName(source['name']);
-    }
-
-    // Assuming we have a full set of properties, create a new Org
-    if ( ( obj == null ) && createMissing && ( source['name'] != null ) ) {
-      obj = new Org(name:source['name'])
-      obj.save(flush:true, failOnError:true);
+  
+      if ( ( obj == null ) && ( source['name'] != null ) ) {
+        obj = Org.findByName(source['name']);
+      }
+  
+      // Assuming we have a full set of properties, create a new Org
+      if ( ( obj == null ) && createMissing && ( source['name'] != null ) ) {
+        obj = new Org(name:source['name'])
+        obj.save(flush:true, failOnError:true);
+      }
+    } else {
+      // No org to bind.
+      println "no org to bind"
     }
 
     // Bind all properties from source to obj
