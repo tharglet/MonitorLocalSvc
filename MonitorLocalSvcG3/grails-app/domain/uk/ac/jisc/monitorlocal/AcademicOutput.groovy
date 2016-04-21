@@ -59,6 +59,8 @@ class AcademicOutput extends Component {
   // Ugh - hate this model - really would prefer publication to be separate to the AO
   Org publisher
 
+  PublicationTitle publishedIn
+  
   String localReference
 
   @Defaults(['Journal Article', 'Conference Paper'])
@@ -98,7 +100,7 @@ class AcademicOutput extends Component {
     license nullable: true
     assignedTo nullable: true
     contactDate nullable: true
-    
+    publishedIn nullable: true
     publishedDate nullable: true
     publicationStatus nullable: true
     openAccessStatus nullable: true
@@ -106,7 +108,6 @@ class AcademicOutput extends Component {
     localReference nullable: true, blank:false
     publicationTitle nullable: true, blank:false
     publisherURL nullable: true, blank:false
-
     journalIssueDate nullable: true
     journalVolume nullable: true
     journalIssue nullable: true

@@ -28,7 +28,8 @@ class ApcSheetImportService {
   def assimilateApcSpreadsheet(Org institution, InputStream is, String filename) {
     log.debug("assimilateApcSpreadsheet");
 
-    def charset = 'UTF-8' // 'ISO-8859-1' or 'UTF-8'
+    // def charset = 'UTF-8' // 'ISO-8859-1' or 'UTF-8'
+    def charset = 'ISO-8859-1' // 'UTF-8'
     // def csv = new CSVReader(new InputStreamReader(new org.apache.commons.io.input.BOMInputStream(is),java.nio.charset.Charset.forName(charset)),'\t' as char,'\0' as char)
     def csv = new CSVReader(new InputStreamReader(new org.apache.commons.io.input.BOMInputStream(is),java.nio.charset.Charset.forName(charset)),',' as char,'"' as char)
 
