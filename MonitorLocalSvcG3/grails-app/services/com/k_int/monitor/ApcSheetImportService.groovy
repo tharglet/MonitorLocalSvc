@@ -28,8 +28,8 @@ class ApcSheetImportService {
   def assimilateApcSpreadsheet(Org institution, InputStream is, String filename) {
     log.debug("assimilateApcSpreadsheet");
 
-    // def charset = 'UTF-8' // 'ISO-8859-1' or 'UTF-8'
-    def charset = 'ISO-8859-1' // 'UTF-8'
+    // def charset = 'UTF-8' // 'ISO-8859-1' or 'UTF-8' // Windows-1252
+    def charset = 'Windows-1252'
     // def csv = new CSVReader(new InputStreamReader(new org.apache.commons.io.input.BOMInputStream(is),java.nio.charset.Charset.forName(charset)),'\t' as char,'\0' as char)
     def csv = new CSVReader(new InputStreamReader(new org.apache.commons.io.input.BOMInputStream(is),java.nio.charset.Charset.forName(charset)),',' as char,'"' as char)
 
@@ -40,19 +40,21 @@ class ApcSheetImportService {
     int rownum = 0;
 
     // APC Columns
-    // Date of initial application by author
-    // Submitted by
-    // University department
-    // PubMed Central (PMC) ID
-    // PubMed ID
-    // DOI
-    // Affiliated author
-    // Publisher
-    // Journal
-    // ISSN
-    // Type of publication
-    // Article title
-    // Date of publication
+
+
+    //  0. Date of initial application by author
+    //  1. Submitted by
+    //  2. University department
+    //  3. PubMed Central (PMC) ID
+    //  4. PubMed ID
+    //  5. DOI
+    //  6. Affiliated author
+    //  7. Publisher
+    //  8. Journal
+    //  9. ISSN
+    // 10. Type of publication
+    // 11. Article title
+    // 12. Date of publication
     // Fund that APC is paid from (1)
     // Fund that APC is paid from (2)
     // Fund that APC is paid from (3)
@@ -62,22 +64,23 @@ class ApcSheetImportService {
     // Grant ID (1)
     // Grant ID (2)
     // Grant ID (3)
-    // Date of APC payment
-    // APC paid (actual currency) including VAT if charged
-    // APC paid (actual currency) excluding VAT
-    // VAT (actual currency)
-    // Currency of APC
+    // 22. Date of APC payment
+    // 23. APC paid (actual currency) including VAT if charged
+    // 24. APC paid (actual currency) excluding VAT
+    // 25. VAT (actual currency)
+    // 26. Currency of APC
     // APC paid (GBP) including VAT if charged
     // APC paid (GBP) excluding VAT
     // VAT (GBP)
-    // Additional publication costs (GBP)
-    // "Discounts, memberships & pre-payment agreements"
+    // 30. Additional publication costs (GBP)
+    // 31. "Discounts, memberships & pre-payment agreements"
     // Amount of APC charged to COAF grant (include VAT if charged) in �
     // Amount of APC charged to RCUK OA fund (include VAT if charged) in �
-    // Licence
-    // Correct license applied
-    // Problem-free open access publication
-    // Notes
+    // 34. Licence
+    // 35. Correct license applied
+    // 36. Problem-free open access publication
+    // 37. Notes
+
     while(nl!=null) {
       log.debug(nl);
 
@@ -138,6 +141,22 @@ class ApcSheetImportService {
                 publisher.setTypeFromString('Publisher')
               }
               ao.publisher = publisher;
+            }
+
+            // 8. Journal
+            // 9. ISSN
+            if ( ( nl[9] != null ) && ( nl[9].trim().length() > 0 ) ) {
+              def identifiers = []
+              identifiers.add([namespace:'issn',value:nl[9].trim()]);
+              def pubs =  Component.lookupByIdentifierValue(identifiers);
+              def pub = pubs.size() == 1 ? pubs[0] : null;
+ 
+              // If we didn't find based on ISSN, and we have a title, create a publication.
+              if ( ( pub == null ) && ( nl[8].trim().length() > 0 ) ) {
+                pub = PublicationTitle.lookupOrCreate(nl[8].trim(), identifiers);
+              }
+
+              ao.publishedIn=pub;
             }
     
             // APC Spreadsheet allows three separate sets of values for grant information, process each one here
