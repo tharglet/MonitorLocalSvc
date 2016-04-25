@@ -85,12 +85,15 @@ class AcademicOutput extends Component {
   RefdataValue verifiedAuthor
 
   List academicOutputCosts = []
+  
+  Set names = []
+  Set grants = []
+  Set funds = []
   static hasMany = [
     academicOutputCosts: CostItem,
     names: AOName,
     grants: AOGrant,
-    funds: AOFunding,
-    people: AOPeople
+    funds: AOFunding
   ]
 
   static constraints = {
