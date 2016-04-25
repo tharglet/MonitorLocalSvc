@@ -40,7 +40,7 @@ class AOGrant extends Component {
     'academicOutput'  (nullable: true)
     'funder'          (nullable: true)
     'fund'            (nullable: true,  blank:false)
-    'grantId'         (nullable: true,  blank:false)
+    'grantId'         (nullable: false,  blank:false)
     'internalGrantId' (nullable: true,  blank:false)
   }
 }
