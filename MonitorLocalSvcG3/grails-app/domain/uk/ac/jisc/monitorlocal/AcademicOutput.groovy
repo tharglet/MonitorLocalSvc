@@ -79,12 +79,16 @@ class AcademicOutput extends Component {
   @Defaults(['Delayed', 'Hybrid', 'None', 'Pure'])
   RefdataValue openAccessStatus
 
+  @Defaults(['Yes', 'No'])
+  RefdataValue verifiedAuthor
+
   List academicOutputCosts = []
   static hasMany = [
     academicOutputCosts: CostItem,
     names: AOName,
     grants: AOGrant,
-    funds: AOFunding
+    funds: AOFunding,
+    people: AOPeople
   ]
 
   static constraints = {
@@ -116,6 +120,7 @@ class AcademicOutput extends Component {
     conferenceStartDate nullable: true
     conferenceEndDate nullable: true
     conferenceOrg nullable: true
+    verifiedAuthor nullable: true
   }
   
   static mappedBy = [
