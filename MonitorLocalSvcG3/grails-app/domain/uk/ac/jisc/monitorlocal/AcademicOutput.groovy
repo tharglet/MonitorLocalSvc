@@ -123,6 +123,7 @@ class AcademicOutput extends Component {
     conferenceEndDate nullable: true
     conferenceOrg nullable: true
     verifiedAuthor nullable: true
+    authorNameList nullable: true
   }
   
   static mappedBy = [
