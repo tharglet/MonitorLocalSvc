@@ -29,6 +29,8 @@ class AcademicOutput extends Component {
   RefdataValue publicationRoute
 
   String publicationTitle
+  
+  String authorNameList
 
   @Defaults(['Published', 'Awaiting Publication', 'Unknown'])
   RefdataValue publicationStatus
