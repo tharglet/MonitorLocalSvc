@@ -29,7 +29,7 @@ class Component {
     // log.debug("Result of bind identifiers: ${result}")
     result
   })
-  List identifiers
+  List identifiers = []
 
   static hasMany = [
     identifiers:ComponentIdentifier,
