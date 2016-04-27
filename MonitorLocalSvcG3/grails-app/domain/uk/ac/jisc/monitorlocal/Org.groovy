@@ -62,7 +62,7 @@ class Org extends Component {
     address nullable: true, blank: false
     taxCode nullable: true, blank: false
     fundingGroup nullable: true
-    type nullable: false
+    type nullable: true
   }
   
   static mapping = {

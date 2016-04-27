@@ -68,7 +68,7 @@ class AcademicOutput extends Component {
   @Defaults(['Journal Article', 'Conference Paper'])
   RefdataValue outputType
 
-  Date journalIssueDate
+  String journalIssueDate
   String journalVolume
   String journalIssue
   String journalPages
