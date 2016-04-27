@@ -138,6 +138,9 @@ class AcademicOutput extends Component {
   static mapping = {
     academicOutputCosts sort:'category', order:'asc', cascade: "all"
 //    namedRoles sort:'role', order:'asc', cascade: "all"
+    names cascade: "all-delete-orphan"
+    grants cascade: "all"
+    funds cascade: "all"
   }
 
   // The default list of properties to exclude when data binding
