@@ -1,6 +1,5 @@
 package uk.ac.jisc.monitorlocal
 
-import com.k_int.grails.tools.identifiers.Identifier
 import com.k_int.grails.tools.refdata.*
 
 
@@ -12,11 +11,25 @@ import com.k_int.grails.tools.refdata.*
  */
 class AOName {
   
+  static belongsTo = [AcademicOutput]
+  
   AcademicOutput academicOutput
   Person person
   String name
+  
+  def beforeValidate() {
+    if (!name && person) {
+      name = person.getName();
+    }
+  }
 
-  @Defaults([ 'Author'])
+  @Defaults([
+    'Corresponding Author',
+    'Funded Author',
+    'Author',
+    'Principal Investigator',
+    'Publisher Contact',
+    'Funder Contact'])
   RefdataValue namerel
 
   static constraints = {
