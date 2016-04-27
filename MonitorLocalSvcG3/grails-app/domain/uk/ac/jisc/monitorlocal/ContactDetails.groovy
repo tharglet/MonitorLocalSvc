@@ -5,13 +5,12 @@ import groovy.transform.EqualsAndHashCode
 class ContactDetails {
 
     Org organisation
+    Person person
 
     String department
     String jobTitle
     String emailAddress
     String telephoneNumber
-    
-    Person person
     
     static belongsTo = [Person]
     
