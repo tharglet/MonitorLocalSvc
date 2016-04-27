@@ -10,10 +10,16 @@ import com.k_int.grails.tools.rest.ExtendedRestfulController
 class AOGrant extends Component {
   
   AcademicOutput academicOutput
+  CostItem costItem
   Org funder
   String fund
   String grantId
   String internalGrantId
+  
+  static mappedBy = [
+    costItem: 'grants',
+    academicOutput: 'grants',
+  ]
   
   def beforeValidate () {
     // Set the name if it isn't already.
@@ -39,6 +45,7 @@ class AOGrant extends Component {
   static constraints = {
     'academicOutput'  (nullable: true)
     'funder'          (nullable: true)
+    'costItem'        (nullable: true)
     'fund'            (nullable: true,  blank:false)
     'grantId'         (nullable: false,  blank:false)
     'internalGrantId' (nullable: true,  blank:false)
