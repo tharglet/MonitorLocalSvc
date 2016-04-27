@@ -42,6 +42,6 @@ class Person extends Component {
 
   def beforeValidate () {
     // Set the name just before validation as the name is required.
-    name = "${surname}, ${title?.value ? title?.value + ' ' : ''}${firstName}";
+    name = "${surname}, ${title?.value ? title.value + ' ' : ''}${firstName}";
   }
 }
