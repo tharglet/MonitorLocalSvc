@@ -84,16 +84,21 @@ class AcademicOutput extends Component {
   @Defaults(['Yes', 'No'])
   RefdataValue verifiedAuthor
 
+  @Defaults(['CC BY', 'CC BY-SA', 'CC BY-ND', 'CC BY-NC', 'CC BY-NC-SA', 'CC BY-NC-ND'])
+  RefdataValue appliedPublicationLicence
+
   List academicOutputCosts = []
   
   Set names = []
   Set grants = []
   Set funds = []
+  Set licenceEvidence = []
   static hasMany = [
     academicOutputCosts: CostItem,
     names: AOName,
     grants: AOGrant,
-    funds: AOFunding
+    funds: AOFunding,
+    licenceEvidence: AOLicenceEvidence
   ]
 
   static constraints = {
@@ -127,6 +132,7 @@ class AcademicOutput extends Component {
     conferenceOrg nullable: true
     verifiedAuthor nullable: true
     authorNameList nullable: true
+    appliedPublicationLicence nullable:true
   }
   
   static mappedBy = [
