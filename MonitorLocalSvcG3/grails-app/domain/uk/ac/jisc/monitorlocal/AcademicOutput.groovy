@@ -90,6 +90,12 @@ class AcademicOutput extends Component {
   Integer embargoPeriod
   Date embargoEndDate
 
+  @Defaults(['Unknown'])
+  RefdataValue acknowledgementPresent
+
+  @Defaults(['Unknown'])
+  RefdataValue accessStatement
+
   List academicOutputCosts = []
   
   Set names = []
@@ -97,6 +103,8 @@ class AcademicOutput extends Component {
   Set funds = []
   Set licenceEvidence = []
   Set embargoEvidence = []
+  Set acknowledgementEvidence = []
+  Set researchEvidence = []
 
   static hasMany = [
     academicOutputCosts: CostItem,
@@ -104,7 +112,9 @@ class AcademicOutput extends Component {
     grants: AOGrant,
     funds: AOFunding,
     licenceEvidence: AOLicenceEvidence,
-    embargoEvidence: AOEmbargoEvidence
+    embargoEvidence: AOEmbargoEvidence,
+    acknowledgementEvidence: AOAcknowledgementEvidence,
+    researchEvidence: AOResearchEvidence
   ]
 
   static constraints = {
@@ -141,6 +151,8 @@ class AcademicOutput extends Component {
     appliedPublicationLicence nullable:true
     embargoPeriod nullable:true
     embargoEndDate nullable:true
+    acknowledgementPresent nullable:true
+    accessStatement nullable:true
   }
   
   static mappedBy = [
