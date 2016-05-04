@@ -105,6 +105,7 @@ class AcademicOutput extends Component {
   Set embargoEvidence = []
   Set acknowledgementEvidence = []
   Set researchEvidence = []
+  Set deposits =[]
 
   static hasMany = [
     academicOutputCosts: CostItem,
@@ -114,7 +115,8 @@ class AcademicOutput extends Component {
     licenceEvidence: AOLicenceEvidence,
     embargoEvidence: AOEmbargoEvidence,
     acknowledgementEvidence: AOAcknowledgementEvidence,
-    researchEvidence: AOResearchEvidence
+    researchEvidence: AOResearchEvidence,
+    deposits: AODeposit
   ]
 
   static constraints = {
