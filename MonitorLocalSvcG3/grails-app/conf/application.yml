@@ -54,6 +54,10 @@ grails:
           maxRequestSize: 23068672
     converters:
         encoding: UTF-8
+        default:
+          circular:
+            reference:
+              behaviour: DEFAULT
         json:
           default:
             deep: true
@@ -86,7 +90,7 @@ environments:
             password: k-int
             url: jdbc:mysql://localhost/MonitorLocalDev?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8
             pooled: true
-            # logSql: true
+            logSql: true
             properties:
               maxActive: -1
               minEvictableIdleTimeMillis: 1800000

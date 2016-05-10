@@ -1,8 +1,20 @@
-package global
 import uk.ac.jisc.monitorlocal.Component
 
 model {
 	Component component
+  List excludes
+  List includes
+  Closure custom
 }
 
-json g.render( component, [deep:true] )
+// Default excludes...
+List allExcludes =  (excludes ?: []) + [
+  
+]
+
+// Default includes...
+List allIncludes = (includes ?: []) + [
+  
+]
+
+json g.render( component, [deep:true, excludes: allExcludes, includes: allIncludes],  custom ?: null ) 

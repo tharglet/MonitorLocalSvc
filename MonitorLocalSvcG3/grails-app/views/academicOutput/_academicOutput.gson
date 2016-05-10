@@ -1,0 +1,21 @@
+import uk.ac.jisc.monitorlocal.AcademicOutput
+
+model {
+	AcademicOutput academicOutput
+}
+
+def exlc = [
+  'academicOutputCosts',
+  'names',
+  'grants',
+  'funds',
+  'licenceEvidence',
+  'embargoEvidence',
+  'acknowledgementEvidence',
+  'researchEvidence',
+  'deposits'
+]
+
+json tmpl."/global/component" ( component: academicOutput, excludes: exlc, custom: {
+  academicOutputCosts g.render(template:"/costItem/costItem", collection: academicOutput.academicOutputCosts, var:'costItem')
+})

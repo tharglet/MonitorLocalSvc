@@ -1,0 +1,6 @@
+import uk.ac.jisc.monitorlocal.Note
+
+model {
+	Note note
+}
+json g.render( note, [deep:true, excludes: ['owner']]) 

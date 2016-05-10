@@ -1,0 +1,14 @@
+import com.k_int.grailt.tools.finance.MonetaryValue
+
+model {
+	MonetaryValue monetaryValue
+}
+if (monetaryValue) {
+  json {
+    value monetaryValue.value
+    baseCurrency monetaryValue.baseCurrency.currencyCode
+    display monetaryValue.toString()
+  }
+} else {
+  print "null"
+}

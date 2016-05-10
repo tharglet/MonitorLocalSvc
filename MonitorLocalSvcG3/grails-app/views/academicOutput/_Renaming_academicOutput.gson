@@ -1,7 +1,0 @@
-import uk.ac.jisc.monitorlocal.AcademicOutput
-
-model {
-	AcademicOutput academicOutput
-}
-
-json tmpl."/global/component" ( component: academicOutput )

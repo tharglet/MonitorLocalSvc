@@ -1,0 +1,6 @@
+import uk.ac.jisc.monitorlocal.ComponentIdentifier
+
+model {
+	ComponentIdentifier cid
+}
+json g.render( cid, [deep:true, excludes: ['component']]) 

@@ -1,0 +1,20 @@
+import uk.ac.jisc.monitorlocal.AOGrant
+import uk.ac.jisc.monitorlocal.CostItem
+import uk.ac.jisc.monitorlocal.GrantSpec;
+import uk.ac.jisc.monitorlocal.AcademicOutput
+import uk.ac.jisc.monitorlocal.Invoice
+
+model {
+	CostItem costItem
+}
+
+json g.render( costItem, [deep:true, excludes: ['grants', 'budget', 'academicOutput', 'invoice', 'currency' ]], {
+  
+  currency costItem.currency.currencyCode
+  
+  // Render these links as simple IDs. This will be enough.
+  invoice costItem.invoice?.id
+  academicOutput costItem.academicOutput?.id
+  
+  grants g.render ( collection: costItem.grants, var: 'component', template: "/global/component", model: [excludes: ['academicOutput', 'costItem']] )
+})
