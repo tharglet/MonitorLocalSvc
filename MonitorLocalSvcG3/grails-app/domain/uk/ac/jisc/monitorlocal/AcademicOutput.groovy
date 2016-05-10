@@ -35,7 +35,7 @@ class AcademicOutput extends Component {
   @Defaults(['Published', 'Awaiting Publication', 'Unknown'])
   RefdataValue publicationStatus
   
-  @Defaults(['Accepted', 'Rejected', 'Unfunded', 'Unknown (follow up with author)'])
+  @Defaults(['Accepted', 'Rejected', 'Pending', 'Eligible'])
   RefdataValue apcFundingApproval
   Date apcFundingDate
 

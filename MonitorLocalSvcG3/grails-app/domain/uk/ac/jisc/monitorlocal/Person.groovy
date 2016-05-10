@@ -13,16 +13,6 @@ class Person extends Component {
   String firstName
   String surname
 
-  @Defaults([
-    'Mr',
-    'Mrs',
-    'Miss',
-    'Ms',
-    'Dr',
-    'Professor'
-  ])
-  RefdataValue title
-
   Set personContactDetails = []
   static hasMany = [
     personContactDetails: ContactDetails
@@ -37,11 +27,12 @@ class Person extends Component {
   }
 
   static constraints = {
-    title nullable: true
+    firstName nullable: true
+    surname nullable: true
   }
 
   def beforeValidate () {
     // Set the name just before validation as the name is required.
-    name = "${surname}, ${title?.value ? title.value + ' ' : ''}${firstName}";
+    name = "${surname}, ${firstName}";
   }
 }
