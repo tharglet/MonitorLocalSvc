@@ -15,6 +15,7 @@ class AOGrant extends Component {
   String fund
   String grantId
   String internalGrantId
+  Person fundedAuthor
   
   static mappedBy = [
     costItem: 'grants',
@@ -49,5 +50,6 @@ class AOGrant extends Component {
     'fund'            (nullable: true,  blank:false)
     'grantId'         (nullable: true,  blank:false)
     'internalGrantId' (nullable: true,  blank:false)
+    'fundedAuthor'    (nullable: true)
   }
 }
