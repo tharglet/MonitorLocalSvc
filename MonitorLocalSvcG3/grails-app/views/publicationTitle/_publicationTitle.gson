@@ -1,0 +1,6 @@
+import uk.ac.jisc.monitorlocal.PublicationTitle
+
+model {
+  PublicationTitle publicationTitle
+}
+json tmpl."/global/component" ( component: publicationTitle )

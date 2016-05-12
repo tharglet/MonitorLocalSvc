@@ -1,0 +1,5 @@
+model {
+  def val
+}
+
+json g.render (val)

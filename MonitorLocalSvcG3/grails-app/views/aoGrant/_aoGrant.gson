@@ -1,0 +1,12 @@
+import uk.ac.jisc.monitorlocal.AOGrant
+
+
+model {
+	AOGrant aoGrant
+}
+json tmpl."/global/component" ( component: aoGrant, excludes: ['academicOutput', 'costItem'], custom: {
+  
+  academicOutput aoGrant.academicOutput ? { id aoGrant.academicOutput.id } : null
+  costItem aoGrant.costItem ? { id aoGrant.costItem.id } : null
+  
+})

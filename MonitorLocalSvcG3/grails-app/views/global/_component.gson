@@ -9,7 +9,8 @@ model {
 
 // Default excludes...
 List allExcludes =  (excludes ?: []) + [
-  
+  "identifiers",
+  "notes"
 ]
 
 // Default includes...
@@ -17,4 +18,20 @@ List allIncludes = (includes ?: []) + [
   
 ]
 
-json g.render( component, [deep:true, excludes: allExcludes, includes: allIncludes],  custom ?: null ) 
+json g.render( component, [deep:true, excludes: allExcludes, includes: allIncludes], {
+  
+  
+  // We excluded notes, and identifiers above so we can specify how to handle directly here.
+  // For some reason the templates, even though names appropriately are not being automatically
+  // run. 
+  notes g.render ( template:'/note/note', var:'note', collection: component.notes )
+  identifiers g.render ( template:'/componentIdentifier/componentIdentifier', var:'componentIdentifier', collection: component.identifiers )
+  
+  // Execute any extra templating supplied to this template.
+  if (custom) {
+    // Execute it against this delegate with it's own owner. Allows for resolution in it's original context,
+    // and the same context as this closure.
+    custom.setDelegate(delegate)
+    custom.run()
+  }
+})

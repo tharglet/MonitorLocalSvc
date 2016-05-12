@@ -1,14 +1,15 @@
 import com.k_int.grails.tools.refdata.RefdataValue
 
 model {
-	RefdataValue rdv
+	RefdataValue refdataValue
 }
 
-json g.render (rdv, [excludes: ['icon', 'sortKey', 'useInstead', 'owner']], {
+json g.render (refdataValue, [excludes: ['icon', 'sortKey', 'useInstead', 'owner']], {
   
   owner {
-    description   rdv.owner.description
-    label         rdv.owner.label
+    id            refdataValue.owner.id
+    description   refdataValue.owner.description
+    label         refdataValue.owner.label
   }
   
 })

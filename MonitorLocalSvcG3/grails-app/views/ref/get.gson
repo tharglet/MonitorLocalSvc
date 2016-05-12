@@ -1,0 +1,4 @@
+model {
+  Set vals
+}
+json g.render (collection: vals, var: 'val', template: '/global/genericRender')
