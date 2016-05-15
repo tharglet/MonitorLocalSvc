@@ -194,7 +194,7 @@ class ApcSheetImportService {
             }
     
             if ( ( nl[34] ) && ( nl[34].trim().length() > 0 ) ) {
-              ao.setLicenseFromString( "${nl[34]}" )
+              ao.setLicenceFromString( "${nl[34]}" )
             }
     
             // Column 18 -- Date of APC Payment

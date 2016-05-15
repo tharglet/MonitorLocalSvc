@@ -50,8 +50,8 @@ class AcademicOutput extends Component {
   RefdataValue publisherResponse
   Date publisherResponseDate
 
-  @Defaults(['CC BY-SA'])
-  RefdataValue license
+  @Defaults(['CC BY', 'CC BY-SA', 'CC BY-ND', 'CC BY-NC', 'CC BY-NC-SA', 'CC BY-NC-ND'])
+  RefdataValue licence
 
   @BindUsing({obj,source ->
     Org.orgBinder(obj.ownerInstitution, source['ownerInstitution'], true);
@@ -78,22 +78,19 @@ class AcademicOutput extends Component {
   Date conferenceEndDate
   Org conferenceOrg
 
-  @Defaults(['Delayed', 'Hybrid', 'None', 'Pure'])
+  @Defaults(['Delayed', 'Hybrid', 'Pure', 'None'])
   RefdataValue openAccessStatus
 
   @Defaults(['Yes', 'No'])
   RefdataValue verifiedAuthor
 
-  @Defaults(['CC BY', 'CC BY-SA', 'CC BY-ND', 'CC BY-NC', 'CC BY-NC-SA', 'CC BY-NC-ND'])
-  RefdataValue appliedPublicationLicence
-
-  Integer embargoPeriod
+  Integer embargoPeriod = 0
   Date embargoEndDate
 
-  @Defaults(['Unknown'])
-  RefdataValue acknowledgementPresent
+  @Defaults(['Yes', 'No'])
+  RefdataValue acknowledgement
 
-  @Defaults(['Unknown'])
+  @Defaults(['Yes', 'No'])
   RefdataValue accessStatement
 
   List academicOutputCosts = []
@@ -101,21 +98,19 @@ class AcademicOutput extends Component {
   Set names = []
   Set grants = []
   Set funds = []
-  Set licenceEvidence = []
-  Set embargoEvidence = []
-  Set acknowledgementEvidence = []
-  Set researchEvidence = []
-  Set deposits =[]
+  
+  Set complianceRules = []
+  Set deposits = []
+  
+  @Defaults(['Yes', 'No'])
+  RefdataValue deposited
 
   static hasMany = [
     academicOutputCosts: CostItem,
     names: AOName,
     grants: AOGrant,
     funds: AOFunding,
-    licenceEvidence: AOLicenceEvidence,
-    embargoEvidence: AOEmbargoEvidence,
-    acknowledgementEvidence: AOAcknowledgementEvidence,
-    researchEvidence: AOResearchEvidence,
+    complianceRules: ComplianceRule,
     deposits: AODeposit
   ]
 
@@ -129,7 +124,6 @@ class AcademicOutput extends Component {
     publisherResponseDate nullable: true
     ownerInstitution nullable: true
     publisher nullable: true
-    license nullable: true
     assignedTo nullable: true
     contactDate nullable: true
     publishedIn nullable: true
@@ -150,17 +144,19 @@ class AcademicOutput extends Component {
     conferenceOrg nullable: true
     verifiedAuthor nullable: true
     authorNameList nullable: true
-    appliedPublicationLicence nullable:true
+    deposited nullable: true
+    
+    licence nullable:true
     embargoPeriod nullable:true
     embargoEndDate nullable:true
-    acknowledgementPresent nullable:true
+    acknowledgement nullable:true
     accessStatement nullable:true
   }
   
   static mappedBy = [
     academicOutputCosts:'academicOutput',
     names:'academicOutput',
-    grants:'academicOutput'
+    grants:'academicOutput',
   ]
 
   static mapping = {
@@ -169,6 +165,7 @@ class AcademicOutput extends Component {
     names cascade: "all-delete-orphan"
     grants cascade: "all"
     funds cascade: "all"
+    complianceRules cascade: "all-delete-orphan"
   }
 
   // The default list of properties to exclude when data binding
