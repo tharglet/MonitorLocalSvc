@@ -1,8 +1,4 @@
-import uk.ac.jisc.monitorlocal.AOGrant
 import uk.ac.jisc.monitorlocal.CostItem
-import uk.ac.jisc.monitorlocal.GrantSpec;
-import uk.ac.jisc.monitorlocal.AcademicOutput
-import uk.ac.jisc.monitorlocal.Invoice
 
 model {
 	CostItem costItem
