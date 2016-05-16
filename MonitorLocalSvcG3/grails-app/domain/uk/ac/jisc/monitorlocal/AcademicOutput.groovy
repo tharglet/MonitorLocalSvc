@@ -165,6 +165,7 @@ class AcademicOutput extends Component {
     names cascade: "all-delete-orphan"
     grants cascade: "all"
     funds cascade: "all"
+    deposits cascade: "all-delete-orphan"
     complianceRules cascade: "all-delete-orphan"
   }
 
