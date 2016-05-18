@@ -123,14 +123,14 @@ class ApcSheetImportService {
             // Lookup or create a person record within this institution
             if ( ( nl[1] != null ) && ( nl[1].trim().length() > 0 ) ) {
               Person person = null;
-              AOName name = new AOName(academicOutput:ao, name:nl[1], person:person)
+              AoName name = new AoName(academicOutput:ao, name:nl[1], person:person)
               name.setNamerelFromString('SubmittedBy')
               name.save(flush:true, failOnError:true)
             }
     
             if ( ( nl[6] != null ) && ( nl[6].trim().length() > 0 ) ) {
               Person person = null;
-              AOName name = new AOName(academicOutput:ao, name:nl[6], person:person)
+              AoName name = new AoName(academicOutput:ao, name:nl[6], person:person)
               name.setNamerelFromString('Author')
               name.save(flush:true, failOnError:true)
             }
@@ -175,7 +175,7 @@ class ApcSheetImportService {
                 def grantId = (nl[fund+6]?.length() > 0 ? nl[fund+6] : null)
                 
                 // Find Grant
-                AOGrant grant = AOGrant.findByFunderAndFundAndGrantId (
+                AoGrant grant = AoGrant.findByFunderAndFundAndGrantId (
                   funder,
                   fundVal,
                   grantId
@@ -183,7 +183,7 @@ class ApcSheetImportService {
                 
                 if (!grant) {
                   // Create a new Grant
-                  grant = new AOGrant(funder:(funder),fund:fundVal,grantId:(grantId))
+                  grant = new AoGrant(funder:(funder),fund:fundVal,grantId:(grantId))
                 }
 
                 

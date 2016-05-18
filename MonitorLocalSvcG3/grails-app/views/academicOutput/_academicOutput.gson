@@ -6,14 +6,6 @@ model {
 
 def exlc = [
   'academicOutputCosts',
-  'names',
-  'grants',
-  'funds',
-  'licenceEvidence',
-  'embargoEvidence',
-  'acknowledgementEvidence',
-  'researchEvidence',
-  'deposits'
 ]
 
 json tmpl."/global/component" ( component: academicOutput, excludes: exlc, custom: {

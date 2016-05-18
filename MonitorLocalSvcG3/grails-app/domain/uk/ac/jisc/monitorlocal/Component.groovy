@@ -15,6 +15,7 @@ import com.k_int.grails.tools.identifiers.Identifier
 @Log4j
 @EqualsAndHashCode(includes=["id"])
 class Component {
+  static auditable = true
   
   @Transient
   def gwdb

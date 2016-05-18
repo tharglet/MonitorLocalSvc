@@ -7,7 +7,7 @@ import com.k_int.grails.tools.rest.ExtendedRestfulController
  *  A funder, the fund name and the grant ID 
  */
 @Resource(uri="/grant", superClass=ExtendedRestfulController)
-class AOGrant extends Component {
+class AoGrant extends Component {
   
   AcademicOutput academicOutput
   CostItem costItem

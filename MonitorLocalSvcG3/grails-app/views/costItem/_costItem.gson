@@ -4,7 +4,7 @@ model {
 	CostItem costItem
 }
 
-json g.render( costItem, [deep:true, excludes: ['grants', 'budget', 'academicOutput', 'invoice', 'currency' ]], {
+json g.render( costItem, [deep:true, excludes: ['budget', 'academicOutput', 'invoice', 'currency' ]], {
   
   currency costItem.currency.currencyCode
   
@@ -12,5 +12,5 @@ json g.render( costItem, [deep:true, excludes: ['grants', 'budget', 'academicOut
   invoice costItem.invoice ? { id costItem.invoice.id } : null
   academicOutput costItem.academicOutput ? { id costItem.academicOutput.id } : null
   
-  grants g.render ( collection: costItem.grants, template: "/aoGrant/aoGrant", var: 'aoGrant' )
+//  grants g.render ( collection: costItem.grants, template: "/aoGrant/aoGrant", var: 'aoGrant' )
 })

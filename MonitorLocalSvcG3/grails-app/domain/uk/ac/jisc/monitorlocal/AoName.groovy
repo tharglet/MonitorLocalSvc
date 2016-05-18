@@ -9,7 +9,7 @@ import com.k_int.grails.tools.refdata.*
  *  In that case, the relationship from an AO may be terminated by here and not link to a Person, allowing
  *  an admin to resolve the ambiguity later, whilst still recording the name.
  */
-class AOName {
+class AoName {
   
   static belongsTo = [AcademicOutput]
   

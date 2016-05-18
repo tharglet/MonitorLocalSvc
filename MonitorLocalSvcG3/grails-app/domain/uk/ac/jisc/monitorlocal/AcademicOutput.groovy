@@ -107,11 +107,11 @@ class AcademicOutput extends Component {
 
   static hasMany = [
     academicOutputCosts: CostItem,
-    names: AOName,
-    grants: AOGrant,
-    funds: AOFunding,
+    names: AoName,
+    grants: AoGrant,
+    funds: AoFunding,
     complianceRules: ComplianceRule,
-    deposits: AODeposit
+    deposits: AoDeposit
   ]
 
   static constraints = {
@@ -164,7 +164,7 @@ class AcademicOutput extends Component {
 //    namedRoles sort:'role', order:'asc', cascade: "all"
     names cascade: "all-delete-orphan"
     grants cascade: "all"
-    funds cascade: "all"
+    funds cascade: "all-delete-orphan"
     deposits cascade: "all-delete-orphan"
     complianceRules cascade: "all-delete-orphan"
   }

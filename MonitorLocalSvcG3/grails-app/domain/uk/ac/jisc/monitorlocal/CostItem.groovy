@@ -6,7 +6,7 @@ import com.k_int.grailt.tools.finance.MonetaryValue
 class CostItem {
   
   static hasMany = [
-    grants:AOGrant
+    grants:AoGrant
   ]
   
   static mappedBy = [

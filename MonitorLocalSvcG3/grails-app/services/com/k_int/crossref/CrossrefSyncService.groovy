@@ -52,7 +52,7 @@ class CrossrefSyncService {
       crossref_info.message.author.each { it ->
         // Resolve the author name if we are able
         Person p = null;
-        def author_entry = new AOName (academicOutput:result,person:p,name:"${it.given?:''} ${it.family?:''}").save(flush:true)
+        def author_entry = new AoName (academicOutput:result,person:p,name:"${it.given?:''} ${it.family?:''}").save(flush:true)
       }
 
       // Add AONames

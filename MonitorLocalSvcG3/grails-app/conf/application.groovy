@@ -17,3 +17,7 @@ grails.gorm.default.constraints = {
 //    if (!(value =~ /^(\-)?\d*$/)) return 'shared.number.error'
 //  })
 }
+
+// Added by the Audit-Logging plugin:
+grails.plugin.auditLog.auditDomainClassName = 'uk.ac.jisk.monitorlocal.AuditTrail'
+
