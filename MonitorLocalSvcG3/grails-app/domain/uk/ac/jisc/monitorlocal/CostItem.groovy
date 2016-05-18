@@ -5,10 +5,6 @@ import com.k_int.grailt.tools.finance.MonetaryValue
 
 class CostItem {
   
-  static hasMany = [
-    grants:AoGrant
-  ]
-  
   static mappedBy = [
     academicOutput:'academicOutputCosts',
     invoice:'invoiceCosts'
@@ -36,8 +32,6 @@ class CostItem {
     'Actual'
   ])
   RefdataValue status
-  
-  List grants = []
   
   Currency currency = Constants.GBP
   
@@ -84,7 +78,6 @@ class CostItem {
   }
   
   static mapping = {
-    grants cascade: "all"
     budget cascade: "all"
     grossValue cascade: 'all-delete-orphan'
     grossValueGBP cascade: 'all-delete-orphan'
