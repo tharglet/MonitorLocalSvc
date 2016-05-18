@@ -4,7 +4,7 @@ model {
 	CostItem costItem
 }
 
-json g.render( costItem, [deep:true, excludes: ['budget', 'academicOutput', 'invoice', 'currency' ]], {
+json g.render( costItem, [deep:true, excludes: ['academicOutput', 'invoice', 'currency' ]], {
   
   currency costItem.currency.currencyCode
   

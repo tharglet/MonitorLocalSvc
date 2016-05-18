@@ -1,7 +1,5 @@
 package uk.ac.jisc.monitorlocal
 
-import com.k_int.grails.tools.identifiers.Identifier;
-import grails.databinding.SimpleMapDataBindingSource
 import grails.rest.Resource
 import groovy.util.logging.Log4j
 
