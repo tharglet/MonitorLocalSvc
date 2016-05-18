@@ -74,7 +74,7 @@ class AcademicOutput extends Component {
   String publicationPlace
   Date conferenceStartDate
   Date conferenceEndDate
-  Org conferenceOrg
+  String conferenceOrg
 
   @Defaults(['Delayed', 'Hybrid', 'Pure', 'None'])
   RefdataValue openAccessStatus

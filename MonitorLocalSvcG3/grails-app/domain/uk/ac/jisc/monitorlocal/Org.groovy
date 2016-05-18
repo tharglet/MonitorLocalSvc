@@ -22,7 +22,8 @@ class Org extends Component {
   @Defaults([
     'Publisher',
     'HEI',
-    'Funder'
+    'Funder',
+    'Funder Group'
   ])
   RefdataValue type
 
