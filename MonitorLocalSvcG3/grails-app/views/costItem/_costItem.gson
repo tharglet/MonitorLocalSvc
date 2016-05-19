@@ -9,8 +9,13 @@ json g.render( costItem, [deep:true, excludes: ['academicOutput', 'invoice', 'cu
   currency costItem.currency.currencyCode
   
   // Render these links as simple IDs. This will be enough.
-  invoice costItem.invoice ? { id costItem.invoice.id } : null
-  academicOutput costItem.academicOutput ? { id costItem.academicOutput.id } : null
-  
-//  grants g.render ( collection: costItem.grants, template: "/aoGrant/aoGrant", var: 'aoGrant' )
+  invoice costItem.invoice ? {
+    id costItem.invoice.id
+    name costItem.invoice.name
+  } : null
+
+  academicOutput costItem.academicOutput ? {
+    id costItem.academicOutput.id
+    name costItem.academicOutput.name
+  } : null
 })
