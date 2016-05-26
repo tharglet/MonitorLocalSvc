@@ -1,7 +1,7 @@
 import uk.ac.jisc.monitorlocal.Component
 
 model {
-	Component component
+  Component component
   List excludes
   List includes
   Closure custom

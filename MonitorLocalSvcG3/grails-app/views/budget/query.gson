@@ -1,0 +1,21 @@
+// SO: The name 'integerMap' is derrived from the map type. Map<String, Integer> 
+// The map (by the time the script gets it) is not of this strict type, as the 
+// 'data' key holds a List, not an Integer. However because the map is initiallized as:
+// def result = ['keyname' : 1]
+// The groovy static type checking picks this up as the type. This variable name may change in the future
+// if the code that produces the map behaves differently.
+// Use the below to see what items are bound to this script.
+
+//getBinding().variables.each { k, v ->
+//  println "${k} = ${v}";
+//} 
+ 
+Map query = getBinding().variables.get ("integerMap")
+
+json {
+  draw query['draw']
+  recordsTotal query['recordsTotal']
+  recordsFiltered query['recordsFiltered']
+  
+  data g.render (template: "/budget/budget", collection: query['data'], var: 'budget')  
+}

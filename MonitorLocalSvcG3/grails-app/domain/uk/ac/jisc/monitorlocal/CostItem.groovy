@@ -43,7 +43,7 @@ class CostItem {
   
   MonetaryValue grossValue = new MonetaryValue("baseCurrency" : currency)
   MonetaryValue grossValueGBP = new MonetaryValue("baseCurrency" : Constants.GBP)
-  MonetaryValue tax = new MonetaryValue("baseCurrency" : currency)
+  MonetaryValue tax = new MonetaryValue("baseCurrency" : Constants.GBP)
   
   public String toString () {
     
@@ -82,5 +82,7 @@ class CostItem {
     grossValue cascade: 'all-delete-orphan'
     grossValueGBP cascade: 'all-delete-orphan'
     tax cascade: 'all-delete-orphan'
+    academicOutput cascade: 'all'
+    invoice cascade: 'all'
   }
 }

@@ -1,0 +1,9 @@
+import uk.ac.jisc.monitorlocal.Budget
+
+model {
+  Budget budget
+}
+
+json g.render( budget, [deep:true], {
+  remainingFunds tmpl."/monetaryValue/monetaryValue" (monetaryValue: budget.getRemainingFunds())
+})

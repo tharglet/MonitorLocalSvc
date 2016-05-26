@@ -7,6 +7,8 @@ if (monetaryValue) {
   json {
     value monetaryValue.value
     baseCurrency monetaryValue.baseCurrency.currencyCode
+    symbol monetaryValue.baseCurrency.symbol
+    decimals monetaryValue.currencyUnit.decimalPlaces
     display monetaryValue.toString()
   }
 } else {

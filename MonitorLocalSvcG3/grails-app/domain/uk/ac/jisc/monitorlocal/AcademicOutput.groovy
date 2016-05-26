@@ -143,7 +143,6 @@ class AcademicOutput extends Component {
     verifiedAuthor nullable: true
     authorNameList nullable: true
     deposited nullable: true
-    
     licence nullable:true
     embargoPeriod nullable:true
     embargoEndDate nullable:true
@@ -152,7 +151,6 @@ class AcademicOutput extends Component {
   }
   
   static mappedBy = [
-    academicOutputCosts:'academicOutput',
     names:'academicOutput',
     grants:'academicOutput',
   ]

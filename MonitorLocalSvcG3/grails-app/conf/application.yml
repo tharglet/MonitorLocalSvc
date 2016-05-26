@@ -281,4 +281,9 @@ elasticSearch:
       -
         host: localhost
         port: 9300
- 
+---
+k_int:
+  grails:
+    tools:
+      finance:
+        defaultCurrency: GBP

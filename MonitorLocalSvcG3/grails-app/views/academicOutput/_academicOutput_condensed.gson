@@ -1,0 +1,11 @@
+import uk.ac.jisc.monitorlocal.AcademicOutput
+
+model {
+	AcademicOutput academicOutput
+}
+
+def exlc = [
+  'academicOutputCosts',
+]
+
+json tmpl."/global/component" ( component: academicOutput, excludes: exlc)

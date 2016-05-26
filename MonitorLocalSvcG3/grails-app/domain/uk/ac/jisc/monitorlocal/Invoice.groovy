@@ -39,10 +39,6 @@ class Invoice extends Component {
     invoiceCosts: CostItem
   ]
 
-  static mappedBy = [
-    invoiceCosts:'invoice'
-  ]
-
   static mapping = {
     invoiceCosts sort:'category', order:'asc', cascade: "all"
     currency cascade: 'all-delete-orphan'

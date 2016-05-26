@@ -18,4 +18,6 @@ json g.render( costItem, [deep:true, excludes: ['academicOutput', 'invoice', 'cu
     id costItem.academicOutput.id
     name costItem.academicOutput.name
   } : null
+  
+  
 })
