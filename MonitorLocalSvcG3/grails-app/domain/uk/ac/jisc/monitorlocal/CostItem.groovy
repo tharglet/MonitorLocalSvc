@@ -1,19 +1,21 @@
 package uk.ac.jisc.monitorlocal
 
+import groovy.transform.EqualsAndHashCode
+
 import com.k_int.grails.tools.refdata.*
 import com.k_int.grailt.tools.finance.MonetaryValue
 
+@EqualsAndHashCode(includes=["id"])
 class CostItem {
   
   static mappedBy = [
     academicOutput:'academicOutputCosts',
     invoice:'invoiceCosts'
   ]
-
-  Budget budget
   
   AcademicOutput academicOutput
   Invoice invoice
+  Budget budget
   
   @Defaults([
     'Basic APC Cost',
@@ -83,6 +85,5 @@ class CostItem {
     grossValueGBP cascade: 'all-delete-orphan'
     tax cascade: 'all-delete-orphan'
     academicOutput cascade: 'all'
-    invoice cascade: 'all'
   }
 }

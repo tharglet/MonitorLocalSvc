@@ -91,7 +91,7 @@ class AcademicOutput extends Component {
   @Defaults(['Yes', 'No'])
   RefdataValue accessStatement
 
-  List academicOutputCosts = []
+  Set academicOutputCosts = []
   
   Set names = []
   Set grants = []
@@ -153,10 +153,10 @@ class AcademicOutput extends Component {
   static mappedBy = [
     names:'academicOutput',
     grants:'academicOutput',
+    academicOutputCosts:'academicOutput',
   ]
 
   static mapping = {
-    academicOutputCosts sort:'category', order:'asc', cascade: "all"
 //    namedRoles sort:'role', order:'asc', cascade: "all"
     names cascade: "all-delete-orphan"
     grants cascade: "all"
