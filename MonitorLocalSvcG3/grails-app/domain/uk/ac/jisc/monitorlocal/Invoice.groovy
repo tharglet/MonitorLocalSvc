@@ -34,7 +34,7 @@ class Invoice extends Component {
   
   String filename
   
-  List invoiceCosts = []
+  Set invoiceCosts = []
   static hasMany = [
     invoiceCosts: CostItem
   ]
