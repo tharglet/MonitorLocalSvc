@@ -1,4 +1,10 @@
-model {
-  Set vals
-}
+//model {
+//  Set vals
+//}
+//getBinding().variables.each { k, v ->
+//  println "${k} = ${v}";
+//}
+
+// grab the vals.
+Set vals = (Set) (getBinding().variables?.entrySet()?.iterator()?.next()?.getValue() ?: [])
 json g.render (collection: vals, var: 'val', template: '/global/genericRender')

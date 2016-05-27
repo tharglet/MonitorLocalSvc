@@ -1,5 +1,20 @@
+import uk.ac.jisc.monitorlocal.Budget
+import grails.views.mvc.renderer.DefaultViewRenderer
+
 model {
   def val
 }
 
-json g.render (val)
+// Use some groovy magic to lookup the template.
+String path = DefaultViewRenderer.templateNameForClass(val.getClass())
+
+// Try and get the default template.
+if (templateEngine?.resolveTemplate(path, locale)) {
+
+  String tmpName = path.replaceAll(/.*\/\_([^\/]+)/, '$1')
+  path = path.replaceAll(/(.*\/)\_([^\/]+)/, '$1$2')
+  
+  json g.render (model: [(tmpName) : val.getClass().cast(val)], template: path)
+} else {
+  json g.render (val)
+}

@@ -8,6 +8,10 @@ import com.k_int.grailt.tools.finance.MonetaryValue
 
 @Resource(uri="/budget", superClass=ExtendedRestfulController)
 class Budget extends Component {
+  
+  static transients = [ "remainingFunds", "allocatedFunds" ]
+  MonetaryValue remainingFunds = null
+  MonetaryValue allocatedFunds = null
 
   MonetaryValue totalFunds = new MonetaryValue()
   String code
@@ -15,25 +19,40 @@ class Budget extends Component {
 
   // Calculate the remaining funds from the CostItems.
   public MonetaryValue getRemainingFunds () {
-
-    // Start with a remaining value of the initial "total" funds.
-    final MonetaryValue remaining = new MonetaryValue(value: totalFunds.value)
-    final theId = getId()
     
-    // Grab all the costs.
-    def costs = CostItem.withCriteria {
-      budget {
-        idEq theId
+    if (this.remainingFunds == null) {
+
+      // Start with a remaining value of the initial "total" funds.
+      this.remainingFunds = new MonetaryValue()
+      this.remainingFunds.fromString("${getTotalFunds().value}")
+      this.remainingFunds.subtract("${getAllocatedFunds().value}")
+    }
+    this.remainingFunds
+  }
+  
+  public MonetaryValue getAllocatedFunds () {
+    
+    if (this.allocatedFunds == null) {
+    
+      // Calculate and store as a property, however hibernate should not persist.
+      this.allocatedFunds = new MonetaryValue()
+      final long theId = getId()
+      
+      // Grab all the costs.
+      def costs = CostItem.withCriteria {
+        budget {
+          idEq theId
+        }
+      }
+      
+      // Go through eaach cost and total them up.
+      for (CostItem ci : costs ) {
+        // Go through each cost item and subtract from the remaining.
+        this.allocatedFunds.add("${ci.grossValueGBP.value}")
       }
     }
     
-    // Go through eaach cost and total them up.
-    costs.each { CostItem ci ->
-      // Go through each cost item and subtract from the remaining.
-      MonetaryValue netValue = new MonetaryValue(value: ci.grossValueGBP)
-      remaining.subtract("${netValue.value}")
-    }
-    return remaining
+    this.allocatedFunds
   }
 
   @Defaults([
