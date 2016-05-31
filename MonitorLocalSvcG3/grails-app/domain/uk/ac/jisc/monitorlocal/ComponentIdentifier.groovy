@@ -1,13 +1,17 @@
 package uk.ac.jisc.monitorlocal
 
-import groovy.transform.EqualsAndHashCode
-import com.k_int.grails.tools.identifiers.Identifier
-import org.grails.databinding.BindUsing
 import grails.databinding.SimpleMapDataBindingSource
-import javax.persistence.Transient
+import groovy.transform.EqualsAndHashCode
 import groovy.util.logging.Log4j
 
+import javax.persistence.Transient
+
+import org.grails.databinding.BindUsing
+
+import com.k_int.grails.tools.identifiers.Identifier
+
 @Log4j
+@EqualsAndHashCode(includes=["id"])
 class ComponentIdentifier {
 
   @Transient

@@ -30,7 +30,7 @@ class Component {
     // log.debug("Result of bind identifiers: ${result}")
     result
   })
-  List identifiers = []
+  Set identifiers = []
 
   static hasMany = [
     identifiers:ComponentIdentifier,
@@ -47,7 +47,7 @@ class Component {
   }
 
   static mapping = {
-    identifiers cascade: "all"
+    identifiers cascade: "all-delete-orphan"
     tablePerHierarchy false
   }
 
