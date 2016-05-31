@@ -163,7 +163,7 @@ class AcademicOutput extends Component {
     funds cascade: "all-delete-orphan"
     deposits cascade: "all-delete-orphan"
     complianceRules cascade: "all-delete-orphan"
-    academicOutputCosts cascade: 'all'
+    academicOutputCosts cascade: 'all', sort: 'id', order: 'asc'
   }
 
   // The default list of properties to exclude when data binding

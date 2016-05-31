@@ -5,13 +5,13 @@ import groovy.transform.EqualsAndHashCode
 import com.k_int.grails.tools.refdata.*
 import com.k_int.grailt.tools.finance.MonetaryValue
 
-@EqualsAndHashCode(includes=["id"])
+@EqualsAndHashCode
 class CostItem {
   
   static mappedBy = [
     academicOutput:'academicOutputCosts',
     invoice:'invoiceCosts'
-  ]
+  ]  
   
   AcademicOutput academicOutput
   Invoice invoice
