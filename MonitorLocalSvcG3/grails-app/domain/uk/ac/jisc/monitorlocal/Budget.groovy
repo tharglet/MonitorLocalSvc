@@ -34,6 +34,9 @@ class Budget extends Component {
     
     if (this.allocatedFunds == null) {
     
+      // Grab the Refund value
+      Long refundId = RefdataValue.findByValue("Refund")?.id
+    
       // Calculate and store as a property, however hibernate should not persist.
       this.allocatedFunds = new MonetaryValue()
       final long theId = getId()
@@ -46,9 +49,15 @@ class Budget extends Component {
       }
       
       // Go through eaach cost and total them up.
-      for (CostItem ci : costs ) {
+      for (CostItem ci : costs) {
+        
+        def val = ci.grossValueGBP.value
+        if (refundId && ci?.category?.id == refundId) {
+          val = -val
+        }
+        
         // Go through each cost item and subtract from the remaining.
-        this.allocatedFunds.add("${ci.grossValueGBP.value}")
+        this.allocatedFunds.add("${val}")
       }
     }
     
