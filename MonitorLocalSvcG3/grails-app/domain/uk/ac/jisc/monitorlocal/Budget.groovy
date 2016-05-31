@@ -51,7 +51,7 @@ class Budget extends Component {
       // Go through eaach cost and total them up.
       for (CostItem ci : costs) {
         
-        def val = ci.grossValueGBP.value
+        def val = ci.grossValueGBP?.value ?: 0
         if (refundId && ci?.category?.id == refundId) {
           val = -val
         }
