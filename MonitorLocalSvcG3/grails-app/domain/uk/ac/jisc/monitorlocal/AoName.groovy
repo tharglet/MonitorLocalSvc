@@ -29,7 +29,8 @@ class AoName {
     'Author',
     'Principal Investigator',
     'Publisher Contact',
-    'Funder Contact'])
+    'Funder Contact',
+    'PhD Student'])
   RefdataValue namerel
 
   static constraints = {
