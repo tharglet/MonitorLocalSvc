@@ -1,5 +1,6 @@
 package uk.ac.jisc.monitorlocal
 
+import com.k_int.grails.tools.finance.YahooRatesService
 import grails.core.GrailsApplication
 import grails.util.Environment
 import grails.plugins.*
@@ -9,6 +10,8 @@ class ApplicationController implements PluginManagerAware {
 
     GrailsApplication grailsApplication
     GrailsPluginManager pluginManager
+    YahooRatesService yahooRatesService
+    
     def kbplusSyncService
     def crossrefSyncService
     def apcSheetImportService
@@ -34,6 +37,13 @@ class ApplicationController implements PluginManagerAware {
           if ( params.doi ) {
             crossrefSyncService.crossrefWizzard(params.doi);
           }
+          break;
+          
+        case 'exchange-rates':
+          log.debug("Grab the exchange rates from Yahoo");
+          
+          // Fetched all rates
+          response = yahooRatesService.getAllRates()
           break;
         default:
           log.debug("Unhandled command ${params.id}");

@@ -286,4 +286,16 @@ k_int:
   grails:
     tools:
       finance:
+        currencies:
+          - EUR
+          - USD
+          - GBP
         defaultCurrency: GBP
+        exchange:
+          yahoo:
+            host: 'http://query.yahooapis.com'
+            uri: '/v1/public/yql'
+            paramYql: q
+            paramOther:
+              format: json
+              env: 'store://datatables.org/alltableswithkeys'

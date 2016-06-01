@@ -2,8 +2,8 @@ package uk.ac.jisc.monitorlocal
 
 import groovy.transform.EqualsAndHashCode
 
+import com.k_int.grails.tools.finance.MonetaryValue
 import com.k_int.grails.tools.refdata.*
-import com.k_int.grailt.tools.finance.MonetaryValue
 
 @EqualsAndHashCode
 class CostItem {

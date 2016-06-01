@@ -2,9 +2,9 @@ package uk.ac.jisc.monitorlocal
 
 import grails.rest.Resource
 
+import com.k_int.grails.tools.finance.MonetaryValue;
 import com.k_int.grails.tools.refdata.*
 import com.k_int.grails.tools.rest.ExtendedRestfulController
-import com.k_int.grailt.tools.finance.MonetaryValue
 
 @Resource(uri="/budget", superClass=ExtendedRestfulController)
 class Budget extends Component {
