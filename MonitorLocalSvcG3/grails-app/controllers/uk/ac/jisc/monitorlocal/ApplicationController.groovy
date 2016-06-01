@@ -7,51 +7,52 @@ import grails.plugins.*
 import grails.converters.*
 
 class ApplicationController implements PluginManagerAware {
+  static responseFormats = ['json', 'xml']
 
-    GrailsApplication grailsApplication
-    GrailsPluginManager pluginManager
-    YahooRatesService yahooRatesService
-    
-    def kbplusSyncService
-    def crossrefSyncService
-    def apcSheetImportService
+  GrailsApplication grailsApplication
+  GrailsPluginManager pluginManager
+  YahooRatesService yahooRatesService
 
-    def index() {
-        [grailsApplication: grailsApplication, pluginManager: pluginManager]
+  def kbplusSyncService
+  def crossrefSyncService
+  def apcSheetImportService
+
+  def index() {
+    [grailsApplication: grailsApplication, pluginManager: pluginManager]
+  }
+
+  /**
+   *  /application/command/kbplus -- Sync with kb+
+   *  /application/command/AOWizard?doi=DOITOLOOKUP -- Create a new AO based on the DOI
+   */
+  def command() {
+    def response = [:]
+    log.debug("Command ${params}");
+    switch(params.id) {
+      case 'kbplus':
+        log.debug("Trigger KB+ Sync");
+        kbplusSyncService.getLatestKBPlusTitles()
+        break;
+      case 'AOWizard':
+        log.debug("AO Wizardi -- example :: curl -v -d \"doi=10.7567/ssdm.1986.c-3-1\" http://localhost:8080/application/command/AOWizard");
+        if ( params.doi ) {
+          crossrefSyncService.crossrefWizzard(params.doi);
+        }
+        break;
+
+      case 'exchange-rates':
+        log.debug("Grab the exchange rates from Yahoo");
+
+      // Fetched all rates
+        response = yahooRatesService.getAllRates()
+        break;
+      default:
+        log.debug("Unhandled command ${params.id}");
+        break;
     }
 
-    /**
-     *  /application/command/kbplus -- Sync with kb+
-     *  /application/command/AOWizard?doi=DOITOLOOKUP -- Create a new AO based on the DOI
-     */
-    def command() {
-      def response = [:]
-      log.debug("Command ${params}");
-      switch(params.id) {
-        case 'kbplus':
-          log.debug("Trigger KB+ Sync");
-          kbplusSyncService.getLatestKBPlusTitles()
-          break;
-        case 'AOWizard':
-          log.debug("AO Wizardi -- example :: curl -v -d \"doi=10.7567/ssdm.1986.c-3-1\" http://localhost:8080/application/command/AOWizard");
-          if ( params.doi ) {
-            crossrefSyncService.crossrefWizzard(params.doi);
-          }
-          break;
-          
-        case 'exchange-rates':
-          log.debug("Grab the exchange rates from Yahoo");
-          
-          // Fetched all rates
-          response = yahooRatesService.getAllRates()
-          break;
-        default:
-          log.debug("Unhandled command ${params.id}");
-          break;
-      }
-
-      render response as JSON
-    }
+    render response as JSON
+  }
 
 
   /**
@@ -69,7 +70,7 @@ class ApplicationController implements PluginManagerAware {
     def upload_filename = request.getFile("content")?.getOriginalFilename()
     def new_datafile_id = null
     def org = Org.findByName(params.instname) ?: new Org(name:params.instname)
-    
+
     // Set the type to HEI.
     org.setTypeFromString('HEI')
     org.save(flush:true, failOnError:true)
@@ -93,5 +94,19 @@ class ApplicationController implements PluginManagerAware {
 
     render result as JSON
 
+  }
+
+  /**
+   * This method is where we'll add the app config. This will eventually
+   * be behind auth and can therefore be used to return role based permissions etc...
+   */
+  def settings () {
+    // Grab the current currencies and exchange rates etc...
+    respond ([
+      currency : [
+        base: yahooRatesService.baseCurrency,
+        all:  yahooRatesService.allRates
+      ]
+    ])
   }
 }
