@@ -5,11 +5,9 @@ model {
 }
 
 def exlc = [
-  'invoiceCosts',
-  'currency'
+  'invoiceCosts'
 ]
 
 json tmpl."/global/component" ( component: invoice, excludes: exlc, custom: {
-  currency invoice.currency.currencyCode
   invoiceCosts g.render(template:"/costItem/costItem", collection: invoice.invoiceCosts, var:'costItem')
 })

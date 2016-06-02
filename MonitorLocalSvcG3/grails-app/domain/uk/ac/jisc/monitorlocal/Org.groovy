@@ -1,21 +1,15 @@
 package uk.ac.jisc.monitorlocal
 
 import grails.rest.Resource
+import groovy.util.logging.Log4j
 
 import com.k_int.grails.tools.refdata.*
 import com.k_int.grails.tools.rest.ExtendedRestfulController
-import groovy.util.logging.Log4j
 
 @Log4j
 @Resource(uri="/org", superClass=ExtendedRestfulController)
 class Org extends Component {
   
-  @Defaults([
-    'Charity Open Access Fund (COAF)',
-    'Research Councils UK (RCUK)',
-    'Research Excellence Framework (REF)'
-  ])
-  FundingGroup fundingGroup
   String address
   String taxCode
   
@@ -62,18 +56,6 @@ class Org extends Component {
   static constraints = {
     address nullable: true, blank: false
     taxCode nullable: true, blank: false
-    fundingGroup nullable: true
     type nullable: true
-  }
-  
-  static mapping = {
-    // Use a join table here to prevent a load of nulls in our table.
-    fundingGroup (
-      joinTable: [
-        name:     'org_funding_groups',
-        key:      'org_id',
-        column:   'funding_group_id'
-      ]
-    )
   }
 }

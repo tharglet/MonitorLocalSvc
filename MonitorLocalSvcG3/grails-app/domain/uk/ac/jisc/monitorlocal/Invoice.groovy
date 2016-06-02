@@ -13,9 +13,10 @@ class Invoice extends Component {
   // Ref is the component name.
   
   Date date
-  Currency currency = Constants.GBP
   Date dueDate
-  String supplier
+  
+  
+  Tag supplier
   
   @Defaults(['Yes','No'])
   RefdataValue received
