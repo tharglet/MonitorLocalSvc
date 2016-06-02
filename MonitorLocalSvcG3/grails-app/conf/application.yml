@@ -290,6 +290,7 @@ k_int:
           - EUR
           - USD
           - GBP
+          - CHF
         defaultCurrency: GBP
         exchange:
           yahoo:
