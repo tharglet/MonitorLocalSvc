@@ -42,13 +42,11 @@ class Invoice extends Component {
 
   static mapping = {
     invoiceCosts sort:'category', order:'asc', cascade: "all"
-    currency cascade: 'all-delete-orphan'
     supplier cascade: 'all'
   }
   
   static constraints = {
     date nullable: true
-    currency nullable: false
     dueDate nullable: true
     supplier nullable: true
     
