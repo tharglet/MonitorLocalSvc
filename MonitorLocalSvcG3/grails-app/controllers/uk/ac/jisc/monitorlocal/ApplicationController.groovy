@@ -101,11 +101,15 @@ class ApplicationController implements PluginManagerAware {
    * be behind auth and can therefore be used to return role based permissions etc...
    */
   def settings () {
+    
+    def rates = yahooRatesService.allRates
+    
     // Grab the current currencies and exchange rates etc...
     respond ([
       currency : [
-        base: yahooRatesService.baseCurrency,
-        all:  yahooRatesService.allRates
+        base:   yahooRatesService.baseCurrency,
+        rates:  rates,
+        all:    rates.keySet()
       ]
     ])
   }

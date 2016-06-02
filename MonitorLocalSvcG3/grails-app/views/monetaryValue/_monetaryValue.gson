@@ -1,4 +1,4 @@
-import com.k_int.grailt.tools.finance.MonetaryValue
+import com.k_int.grails.tools.finance.MonetaryValue
 
 model {
 	MonetaryValue monetaryValue
