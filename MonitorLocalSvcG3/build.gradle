@@ -96,7 +96,7 @@ dependencies {
   }
 
   // Elastic search plugin.
-//  compile ("org.grails.plugins:elasticsearch:1.0.0")
+//  compile ("org.grails.plugins:elasticsearch:1.0.0.2")
 
   // See if the Gradle project for the grails-tools plugin is declared.
   // If so, include locally, otherwise pull in distributed version from Maven

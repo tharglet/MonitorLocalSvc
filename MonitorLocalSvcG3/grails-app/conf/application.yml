@@ -91,7 +91,7 @@ environments:
             password: k-int
             url: jdbc:mysql://localhost/MonitorLocalDev?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8
             pooled: true
-            logSql: true
+            # logSql: true
             properties:
               maxActive: -1
               minEvictableIdleTimeMillis: 1800000
@@ -285,6 +285,9 @@ elasticSearch:
 k_int:
   grails:
     tools:
+      rules:
+        compliance: 'uk.ac.jisc.monitorlocal.rules.Compliance'
+        workflow: 'uk.ac.jisc.monitorlocal.rules.Workflow'
       finance:
         currencies:
           - EUR
@@ -300,3 +303,5 @@ k_int:
             paramOther:
               format: json
               env: 'store://datatables.org/alltableswithkeys'
+---
+      

@@ -4,17 +4,18 @@ import grails.web.databinding.GrailsWebDataBinder
 import groovy.transform.EqualsAndHashCode
 import groovy.util.logging.Log4j
 
-import javax.persistence.Transient;
+import javax.persistence.Transient
 
 import org.grails.databinding.BindUsing
 
 import com.k_int.grails.tools.identifiers.Identifier
+import com.k_int.grails.tools.rules.DomainRulePropertySource
 
 
 
 @Log4j
 @EqualsAndHashCode(includes=["id"])
-class Component {
+class Component implements DomainRulePropertySource{
   static auditable = true
   
   @Transient
