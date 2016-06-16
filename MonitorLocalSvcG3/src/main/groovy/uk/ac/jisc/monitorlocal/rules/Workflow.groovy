@@ -11,7 +11,7 @@ class Workflow {
 
     // General
     'Add a Title' 'name != null'
-    'Attach a grant' '(grants?.size() ?: 0) > 0'
+    'Attach a grant' '(funds?.size() ?: 0) > 0'
     'Set the publication route' 'publicationRoute != null'
     'Set APC Funding Approval' 'apcFundingApproval != null'
 
