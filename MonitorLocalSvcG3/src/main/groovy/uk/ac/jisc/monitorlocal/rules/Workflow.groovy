@@ -10,30 +10,32 @@ class Workflow {
   public static final RULES = {
 
     // General
-    'Add a Title' 'name != null'
+    'Add a title' 'name != null'
     'Attach a grant' '(funds?.size() ?: 0) > 0'
     'Set the publication route' 'publicationRoute != null'
-    'Set APC Funding Approval' 'apcFundingApproval != null'
+    'Set APC funding approval' 'apcFundingApproval != null'
 
     // People
     'Add a main contact' 'keyContact != null'
 
     // Publication
-    'Add an identifier' {
-      final def required_ns = ['doi', 'pmid', 'pmcid']
+    'Add an identifier (DOI/PMID/PMCID)' {
+      def required_ns = ['doi', 'pmid', 'pmcid']
       boolean found = false
-      for (int i=0; i< identifiers.size() && !found; i++ ) {
-        def ns = identifiers[i].identifier?.namespace?.value
+      for (int i=0; i< it.identifiers.size() && !found; i++ ) {
+        String ns = it.identifiers[i].identifier?.namespace?.value
         found = ns && required_ns.contains(ns)
       }
       return found
     }
-    'Add a Publication Title' 'publicationTitle != null'
+    'Add a journal/conference title' 'publicationTitle != null'
     'Add an ISSN or eISSN' {
-      final def required_ns = ['issn', 'eissn']
+      def required_ns = ['issn', 'eissn']
       boolean found = false
-      for (int i=0; i< identifiers.size() && !found; i++ ) {
-        def ns = identifiers[i].identifier?.namespace?.value
+      
+      def ids = it.identifiers
+      for (int i=0; i< ids.size() && !found; i++ ) {
+        String ns = ids.getAt(i)?.identifier?.namespace?.value?.toLowerCase()
         found = ns && required_ns.contains(ns)
       }
       return found
@@ -41,10 +43,12 @@ class Workflow {
 
     // Finance
     'Add a cost item for the actual expenditure' {
-      final def required_types = ['actual']
+      def required_types = ['actual']
       boolean found = false
-      for (int i=0; i< academicOutputCosts.size() && !found; i++ ) {
-        def type = academicOutputCosts[i].status?.value
+      def costs = it.academicOutputCosts
+      
+      for (int i=0; i< costs.size() && !found; i++ ) {
+        String type = costs.getAt(i)?.status?.value?.toLowerCase()
         found = type && required_types.contains(type)
       }
       return found

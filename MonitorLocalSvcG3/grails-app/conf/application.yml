@@ -286,7 +286,7 @@ k_int:
   grails:
     tools:
       rules:
-        compliance: 'uk.ac.jisc.monitorlocal.rules.Compliance'
+        compliance-rcuk: 'uk.ac.jisc.monitorlocal.rules.ComplianceRCUK'
         workflow: 'uk.ac.jisc.monitorlocal.rules.Workflow'
       finance:
         currencies:

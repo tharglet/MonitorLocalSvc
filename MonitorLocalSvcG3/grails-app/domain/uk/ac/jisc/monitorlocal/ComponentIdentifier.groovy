@@ -11,7 +11,7 @@ import org.grails.databinding.BindUsing
 import com.k_int.grails.tools.identifiers.Identifier
 
 @Log4j
-@EqualsAndHashCode(includes=["id"])
+@EqualsAndHashCode(includes=["component,identifier"])
 class ComponentIdentifier {
 
   @Transient
