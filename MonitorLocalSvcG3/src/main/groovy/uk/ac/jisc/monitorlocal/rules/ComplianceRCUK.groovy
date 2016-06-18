@@ -10,10 +10,10 @@ class ComplianceRCUK {
   public static final RULES = {
     "Embargo" {
       // Publication route.
-      def val = publicationRoute?.value?.toLowerCase()
+      def val = it.publicationRoute?.value?.toLowerCase()
       
       if (val == 'gold') {
-        val = (embargoPeriod == 0 && (embargoEndDate == null || embargoEndDate == publishedDate))
+        val = (it.embargoPeriod == 0 && (it.embargoEndDate == null || it.embargoEndDate == it.publishedDate))
       } else {
         // If not gold return null... As not a failure, but irrelevant.
         val = null
@@ -24,10 +24,10 @@ class ComplianceRCUK {
     
     "License" {
       // Publication route.
-      def val = publicationRoute?.value?.toLowerCase()
+      def val = it.publicationRoute?.value?.toLowerCase()
       
       if (val == 'gold') {
-        val = licence?.value
+        val = it.licence?.value
         if (val)  val = (val == 'CC BY')
       } else {
         val = null
@@ -37,15 +37,15 @@ class ComplianceRCUK {
     
     "Deposit" {
       // Publication route.
-      def val = publicationRoute?.value?.toLowerCase()
-
-      int num = deposits?.size() ?: 0
+      def val = it.publicationRoute?.value?.toLowerCase()
+      int num = it.deposits?.size() ?: 0
+      
       if (val == 'green' && num > 0) {
         
         
         val = false
         for (int i=0; i<num && !val; i++ ) {
-          def version = deposits[i].versionDeposited?.value?.toLowerCase()
+          def version = it.deposits[i].versionDeposited?.value?.toLowerCase()
           val = version == 'accepted manuscript'
         }
       } else {
@@ -56,7 +56,7 @@ class ComplianceRCUK {
     }
     
     "Funder acknowledgement" {
-      def val = acknowledgement?.value?.toLowerCase()
+      def val = it.acknowledgement?.value?.toLowerCase()
       if (val) {
         val = val == 'yes'
       }
@@ -64,7 +64,7 @@ class ComplianceRCUK {
     }
     
     "Research materials access" {
-      def val = accessStatement?.value?.toLowerCase()
+      def val = it.accessStatement?.value?.toLowerCase()
       if (val) {
         val = val == 'yes'
       }
