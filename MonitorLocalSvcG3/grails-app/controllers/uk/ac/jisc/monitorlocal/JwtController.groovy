@@ -170,7 +170,7 @@ class JwtController {
   
             response.failure = { resp2, reader ->
                 log.error("Failure result ${resp2.statusLine}");
-                log.errir(reader.text)
+                log.error(reader.text)
             }
   
           }

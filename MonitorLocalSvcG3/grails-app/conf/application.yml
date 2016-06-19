@@ -15,6 +15,8 @@ spring:
         template:
             check-template-location: false
 
+server:
+    contextPath: /monitorLocalSvc
 ---
 grails:
     mime:
@@ -245,8 +247,8 @@ auth:
       email: "email"
       
   google:
-    key: 'xxx'
-    secret: 'xxx'
+    key: '186678964269-tajnf5mojsdsa4mk66846apd0d0adc9q.apps.googleusercontent.com'
+    secret: 'yu28ndRVECEqQ1_PHpwddr0h'
     scope: ''
     defaultRoles:
       - 'ROLE_USER'
