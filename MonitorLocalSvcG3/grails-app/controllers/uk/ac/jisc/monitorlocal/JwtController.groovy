@@ -66,7 +66,7 @@ class JwtController {
 
         try {
 
-          log.debug("Fetch the person data via the people URI -- ${peopleUri} api -- ${peopleUri?.scheme}://${peopleUri?.host}")
+          log.debug("Fetch the person data via the people URI -- ${peopleUri} api -- ${peopleUri?.scheme}://${peopleUri?.host} auth:${accessToken}")
 
           people_api.request(GET,groovyx.net.http.ContentType.JSON) { req ->
   
