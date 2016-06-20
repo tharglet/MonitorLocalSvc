@@ -159,6 +159,11 @@ grails:
               -
                 'permitAll'
           -
+            pattern: '/angularHelper/**'
+            access:
+              -
+                'permitAll'
+          -
             pattern: '/error'
             access:
               -
