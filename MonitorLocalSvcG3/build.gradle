@@ -66,6 +66,8 @@ dependencies {
   compile "org.grails:grails-web-boot"
   compile "org.grails:grails-logging"
   compile "org.grails.plugins:cache"
+  compile 'org.grails.plugins:spring-security-core:3.0.3'
+
 //  compile "org.grails.plugins:hibernate4"
   compile "org.grails.plugins:hibernate4:$gormVersion"
   compile "org.hibernate:hibernate-core"
@@ -87,6 +89,7 @@ dependencies {
   
   /******************** Custom Incluldes below *********************/
   compile "org.springframework.security:spring-security-core:4.0.3.RELEASE"
+  compile "org.springframework.security:spring-security-web:4.0.3.RELEASE"
   runtime 'mysql:mysql-connector-java:5.1.30'
   compile "org.bitbucket.b_c:jose4j:0.4.2"
   compile "au.com.bytecode:opencsv:2.4"
