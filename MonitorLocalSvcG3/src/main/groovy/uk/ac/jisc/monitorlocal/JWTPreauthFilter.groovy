@@ -63,7 +63,7 @@ public class JWTPreauthFilter extends org.springframework.security.web.authentic
           if ( result ) {
             // log.debug("Attempting to locate user ${payload.subject}")
             User.withTransaction() {
-              def principal = cesvc.User.findByUsername(payload.subject)
+              def principal = User.findByUsername(payload.subject)
               // log.debug("Got user ${principal}")
               org.springframework.security.core.Authentication auth = new JWTAuthentication(token,payload,principal);
               auth.setAuthenticated(true);
