@@ -71,7 +71,7 @@ public class JWTPreauthFilter extends org.springframework.security.web.authentic
         }
       }
       else {
-        // log.debug("No auth header");
+        log.debug("No auth header present in request");
       }
     }
     catch ( Exception e ) {

@@ -5,6 +5,8 @@ import grails.core.GrailsApplication
 import grails.util.Environment
 import grails.plugins.*
 import grails.converters.*
+import grails.plugin.springsecurity.annotation.Secured
+
 
 class ApplicationController implements PluginManagerAware {
   static responseFormats = ['json', 'xml']
@@ -100,6 +102,7 @@ class ApplicationController implements PluginManagerAware {
    * This method is where we'll add the app config. This will eventually
    * be behind auth and can therefore be used to return role based permissions etc...
    */
+  // @Secured(['ROLE_USER'])
   def settings () {
     
     def rates = yahooRatesService.allRates

@@ -136,6 +136,9 @@ grails:
       userLookup:
         userDomainClassName: 'uk.ac.jisc.monitorlocal.User'
         authorityJoinClassName: 'uk.ac.jisc.monitorlocal.UserRole'
+      providerNames:
+        - 'preAuthenticatedAuthenticationProvider'
+        - 'daoAuthenticationProvider'
       authority:
         className: 'uk.ac.jisc.monitorlocal.Role'
       controllerAnnotations:
@@ -147,6 +150,11 @@ grails:
                 'permitAll'
           -
             pattern: '/jwt/**'
+            access:
+              -
+                'permitAll'
+          -
+            pattern: '/application/**'
             access:
               -
                 'permitAll'

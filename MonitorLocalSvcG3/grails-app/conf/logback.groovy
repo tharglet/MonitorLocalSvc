@@ -17,13 +17,16 @@ logger 'grails.app.controllers.uk.ac.jisc.monitorlocal', DEBUG
 logger 'grails.plugin.springsecurity', WARN
 logger 'org.springframework.security', WARN
 logger 'org.springframework.web', WARN
+
 //logger 'grails.artefact.Interceptor', WARN, ['STDOUT'], false
 
+logger 'com.k_int', DEBUG, ['STDOUT']
 logger 'com.k_int.grails.tools', DEBUG, ['STDOUT']
 logger 'com.k_int.grails.tools.refdata.GrailsDomainRefdataHelpers', DEBUG
 logger 'com.k_int.grails.tools.identifiers.GrailsDomainIdentifierHelpers', DEBUG
 logger 'grails.app.init.BootStrap', DEBUG
 logger 'grails.app.services', DEBUG
+logger 'grails.web.mapping.filter', DEBUG
 // logger 'grails.web.databinding.GrailsWebDataBinder',DEBUG
 
 
