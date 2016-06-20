@@ -1,5 +1,7 @@
 // Place your Spring DSL code here
 import grails.plugin.springsecurity.userdetails.GormUserDetailsService
+import org.springframework.boot.context.embedded.FilterRegistrationBean
+import org.springframework.core.Ordered
 
 beans = {
 
@@ -21,6 +23,14 @@ beans = {
       grailsApplication = ref('grailsApplication')
       authenticationManager = ref('authenticationManager')
       publicKeyService = ref('publicKeyService')
+    }
+
+
+    // Register our preauth filter
+    jwtPreauthRefistration(FilterRegistrationBean) {
+            filter = ref('jwtPreauthFilter')
+            urlPatterns = ['/*']
+            order = Ordered.HIGHEST_PRECEDENCE + 10
     }
 
 }

@@ -5,6 +5,10 @@ import org.jose4j.jwt.*
 import uk.ac.jisc.monitorlocal.*
 import org.springframework.security.core.context.SecurityContextHolder
 
+// http://www.learningthegoodstuff.com/2014/12/spring-security-pre-authentication-and.html
+// http://blog.serindu.com/2011/05/26/grails-spring-security-using-preauthenticated-authentication-provider/
+// https://github.com/kl4n4/grails-spring-security-webservice/blob/master/SpringSecurityWebserviceGrailsPlugin.groovy
+
 public class JWTPreauthFilter extends org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter {
 
   def grailsApplication
@@ -17,9 +21,10 @@ public class JWTPreauthFilter extends org.springframework.security.web.authentic
 
   // @javax.annotation.PostConstruct
   def init() {
-    // log.debug("Init");
+    log.debug("Init");
   }
 
+  @Override
   def getPreAuthenticatedPrincipal(javax.servlet.http.HttpServletRequest request) {
 
     log.debug("JWTPreauthFilter::getPreAuthenticatedPrincipal() -- starting");
@@ -85,7 +90,9 @@ public class JWTPreauthFilter extends org.springframework.security.web.authentic
   }
 
 
+  @Override
   def getPreAuthenticatedCredentials(javax.servlet.http.HttpServletRequest request) {
+    log.debug("getPreAuthenticatedCredentials....");
     return ""
   }
 
