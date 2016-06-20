@@ -4,11 +4,14 @@ import org.springframework.security.core.*;
 import org.jose4j.jwt.*
 import uk.ac.jisc.monitorlocal.*
 import org.springframework.security.core.context.SecurityContextHolder
+import groovy.util.logging.Log4j
 
 // http://www.learningthegoodstuff.com/2014/12/spring-security-pre-authentication-and.html
 // http://blog.serindu.com/2011/05/26/grails-spring-security-using-preauthenticated-authentication-provider/
 // https://github.com/kl4n4/grails-spring-security-webservice/blob/master/SpringSecurityWebserviceGrailsPlugin.groovy
 
+
+@Log4j
 public class JWTPreauthFilter extends org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter {
 
   def grailsApplication

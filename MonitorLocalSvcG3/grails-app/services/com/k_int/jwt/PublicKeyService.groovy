@@ -63,8 +63,8 @@ class PublicKeyService {
             .setRequireExpirationTime() // the JWT must have an expiration time
             .setAllowedClockSkewInSeconds(30) // allow some leeway in validating time based claims to account for clock skew
             .setRequireSubject() // the JWT must have a subject claim
-            .setExpectedIssuer("CultureEverywhere")  // who creates the token and signs it
-            .setExpectedAudience("CEUsers") // to whom the token is intended to be sent
+            .setExpectedIssuer("MonitorLocal")  // who creates the token and signs it
+            .setExpectedAudience("MonitorLocal") // to whom the token is intended to be sent
             .setVerificationKey(rsaJsonWebKey.getKey()) // verify the signature with the public key
             .build(); // create the JwtConsumer instance
 
