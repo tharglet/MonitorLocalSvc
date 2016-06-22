@@ -1,10 +1,10 @@
 package uk.ac.jisc.monitorlocal
 
-import org.springframework.security.core.*;
-import org.jose4j.jwt.*
-import uk.ac.jisc.monitorlocal.*
-import org.springframework.security.core.context.SecurityContextHolder
 import groovy.util.logging.Log4j
+
+import org.jose4j.jwt.*
+import org.springframework.security.core.*
+import org.springframework.security.core.context.SecurityContextHolder
 
 // http://www.learningthegoodstuff.com/2014/12/spring-security-pre-authentication-and.html
 // http://blog.serindu.com/2011/05/26/grails-spring-security-using-preauthenticated-authentication-provider/
