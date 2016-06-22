@@ -5,6 +5,7 @@ import grails.core.GrailsApplication
 import grails.util.Environment
 import grails.plugins.*
 import grails.converters.*
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.annotation.Secured
 
 
@@ -14,6 +15,7 @@ class ApplicationController implements PluginManagerAware {
   GrailsApplication grailsApplication
   GrailsPluginManager pluginManager
   YahooRatesService yahooRatesService
+  SpringSecurityService springSecurityService
 
   def kbplusSyncService
   def crossrefSyncService
@@ -104,6 +106,7 @@ class ApplicationController implements PluginManagerAware {
    */
   // @Secured(['ROLE_USER'])
   def settings () {
+
     
     def rates = yahooRatesService.allRates
     
@@ -113,7 +116,8 @@ class ApplicationController implements PluginManagerAware {
         base:   yahooRatesService.baseCurrency,
         rates:  rates,
         all:    rates.keySet()
-      ]
+      ],
+      user : springSecurityService.authentication.principal
     ])
   }
 }

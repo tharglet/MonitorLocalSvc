@@ -30,7 +30,7 @@ beans = {
     jwtPreauthRegistration(FilterRegistrationBean) {
       filter = ref('jwtPreauthFilter')
       urlPatterns = ['/*']
-      order = Ordered.HIGHEST_PRECEDENCE + 10
+//      order = Ordered.HIGHEST_PRECEDENCE + 10
     }
     
     // Change the authentication entry point so a 401 is sent instead of a redirect.

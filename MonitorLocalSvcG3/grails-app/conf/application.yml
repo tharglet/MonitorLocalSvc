@@ -171,7 +171,7 @@ grails:
             filters: 'none'
           -
             pattern: '/**'
-            filters: 'JOINED_FILTERS'
+            filters: 'JOINED_FILTERS,-anonymousAuthenticationFilter,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter'
 ---
 monitorLocal_jwk:
   kty: "RSA"
