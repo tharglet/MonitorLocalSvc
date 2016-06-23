@@ -1,12 +1,10 @@
 package uk.ac.jisc.monitorlocal
 
-import com.k_int.grails.tools.finance.YahooRatesService
-import grails.core.GrailsApplication
-import grails.util.Environment
-import grails.plugins.*
 import grails.converters.*
-import grails.plugin.springsecurity.SpringSecurityService
-import grails.plugin.springsecurity.annotation.Secured
+import grails.core.GrailsApplication
+import grails.plugins.*
+
+import com.k_int.grails.tools.finance.YahooRatesService
 
 
 class ApplicationController implements PluginManagerAware {
@@ -15,7 +13,6 @@ class ApplicationController implements PluginManagerAware {
   GrailsApplication grailsApplication
   GrailsPluginManager pluginManager
   YahooRatesService yahooRatesService
-  SpringSecurityService springSecurityService
 
   def kbplusSyncService
   def crossrefSyncService
@@ -117,7 +114,7 @@ class ApplicationController implements PluginManagerAware {
         rates:  rates,
         all:    rates.keySet()
       ],
-      user : springSecurityService.authentication.principal
+      user : principal
     ])
   }
 }
