@@ -30,7 +30,7 @@ public class JWTPreauthFilter extends org.springframework.security.web.authentic
   @Override
   def getPreAuthenticatedPrincipal(javax.servlet.http.HttpServletRequest request) {
 
-    log.debug("JWTPreauthFilter::getPreAuthenticatedPrincipal() -- starting");
+    // log.debug("JWTPreauthFilter::getPreAuthenticatedPrincipal() -- starting");
 
     // Result should be the username of the logged in user if present
     def result = null
@@ -41,34 +41,39 @@ public class JWTPreauthFilter extends org.springframework.security.web.authentic
     }
 
     try {
-      log.debug("checking auth header");
+      // log.debug("checking auth header");
       def authorization = request.getHeader("Authorization")
       if ( authorization ) {
-        log.debug("Got auth header");
+        // log.debug("Got auth header");
         def token = authorization.split(' ')[1];
   
         def payload = publicKeyService.decodeJWT(token)
 
-        log.debug("Got payload ${payload} ${payload?.subject} from ${token}");
+        // log.debug("Got payload ${payload} ${payload?.subject} from ${token}");
 
         if ( payload?.subject ) {
 
-          log.debug("payload.subject present, attempting to locate user ${payload.subject}")
+          // log.debug("payload.subject present, attempting to locate user ${payload.subject}")
 
-          log.debug("Got user ${payload.subject} ${payload.subject.class}")
+          // log.debug("Got user ${payload.subject} ${payload.subject.class}")
           result = payload.subject
 
 
           // Doing this here instead of in the standard filter should enable @secured annotations
-          if ( result ) {
+          if ( payload.subject ) {
             // log.debug("Attempting to locate user ${payload.subject}")
             User.withTransaction() {
               def principal = User.findByUsername(payload.subject)
               // log.debug("Got user ${principal}")
               org.springframework.security.core.Authentication auth = new JWTAuthentication(token,payload,principal);
-              auth.setAuthenticated(true);
-              // log.debug("Setting auth - principal is ${auth.principal}")
-              SecurityContextHolder.getContext().setAuthentication(auth);
+              result = auth
+
+              // log.debug("Auth authorities -- ${auth.getAuthorities()}");
+
+              //auth.setAuthenticated(true);
+              //log.debug("Setting auth - principal is ${auth.principal}")
+              //SecurityContextHolder.getContext().setAuthentication(auth);
+              // result = principal
             }
           }
 

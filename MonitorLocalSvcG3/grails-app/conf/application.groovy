@@ -21,3 +21,8 @@ grails.gorm.default.constraints = {
 // Added by the Audit-Logging plugin:
 grails.plugin.auditLog.auditDomainClassName = 'uk.ac.jisk.monitorlocal.AuditTrail'
 
+
+grails.plugin.springsecurity.useSecurityEventListener = true
+grails.plugin.springsecurity.onAbstractAuthenticationFailureEvent = { e, appCtx ->
+   println "\nERROR auth failed for user $e.authentication.name: $e.exception.message\n"
+}

@@ -16,6 +16,7 @@ logger 'grails.app.controllers.com.k_int', DEBUG
 logger 'grails.app.controllers.uk.ac.jisc.monitorlocal', DEBUG
 logger 'grails.plugin.springsecurity', WARN
 logger 'org.springframework.security', WARN
+logger 'org.springframework.security.web.FilterChainProxy', WARN
 logger 'org.springframework.web', WARN
 
 //logger 'grails.artefact.Interceptor', WARN, ['STDOUT'], false

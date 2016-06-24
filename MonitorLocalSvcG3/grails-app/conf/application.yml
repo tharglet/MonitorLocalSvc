@@ -153,6 +153,41 @@ grails:
             access:
               -
                 'permitAll'
+          -
+            pattern: '/angularHelper/**'
+            access:
+              -
+                'permitAll'
+          -
+            pattern: '/budget/**'
+            access:
+              -
+                'ROLE_USER'
+          -
+            pattern: '/grant/**'
+            access:
+              -
+                'ROLE_USER'
+          -
+            pattern: '/person/**'
+            access:
+              -
+                'ROLE_USER'
+          -
+            pattern: '/invoice/**'
+            access:
+              -
+                'ROLE_USER'
+          -
+            pattern: '/org/**'
+            access:
+              -
+                'ROLE_USER'
+          -
+            pattern: '/ao/**'
+            access:
+              -
+                'ROLE_USER'
         chainMap:
           -
             pattern: '/assets/**'

@@ -3,6 +3,8 @@ package uk.ac.jisc.monitorlocal
 import grails.converters.*
 import grails.core.GrailsApplication
 import grails.plugins.*
+import grails.plugin.springsecurity.annotation.Secured
+
 
 import com.k_int.grails.tools.finance.YahooRatesService
 
@@ -17,6 +19,7 @@ class ApplicationController implements PluginManagerAware {
   def kbplusSyncService
   def crossrefSyncService
   def apcSheetImportService
+  def springSecurityService
 
   def index() {
     [grailsApplication: grailsApplication, pluginManager: pluginManager]
@@ -102,8 +105,11 @@ class ApplicationController implements PluginManagerAware {
    * be behind auth and can therefore be used to return role based permissions etc...
    */
   // @Secured(['ROLE_USER'])
+  @Secured
   def settings () {
 
+    def user = springSecurityService.currentUser
+    log.debug("Application::Settings - user us ${user}");
     
     def rates = yahooRatesService.allRates
     
@@ -113,8 +119,8 @@ class ApplicationController implements PluginManagerAware {
         base:   yahooRatesService.baseCurrency,
         rates:  rates,
         all:    rates.keySet()
-      ],
-      user : principal
+      ] // ,
+      // user : principal
     ])
   }
 }

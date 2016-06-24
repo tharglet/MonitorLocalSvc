@@ -2,6 +2,7 @@ package uk.ac.jisc.monitorlocal
 
 import org.springframework.security.core.*;
 import org.jose4j.jwt.*
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 
 public class JWTAuthentication implements Authentication {
 
@@ -19,11 +20,11 @@ public class JWTAuthentication implements Authentication {
         this.authenticated = false;
 
         List<GrantedAuthority> tmp = new ArrayList<>();
-        //if (roles != null) {
-        //    for (String role : roles) {
-        //        tmp.add(new SimpleGrantedAuthority(role));
-        //    }
-        // }
+        if (principal.authorities != null) {
+          principal.authorities.each { role ->
+            tmp.add(new SimpleGrantedAuthority(role.authority));
+          }
+        }
         this.authorities = Collections.unmodifiableList(tmp);
         this.principal = principal;
     }
