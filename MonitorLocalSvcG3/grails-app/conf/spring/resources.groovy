@@ -32,7 +32,11 @@ beans = {
     jwtPreauthRefistration(FilterRegistrationBean) {
             filter = ref('jwtPreauthFilter')
             urlPatterns = ['/*']
-            order = SecurityFilterPosition.PRE_AUTH_FILTER
+            order = SecurityFilterPosition.PRE_AUTH_FILTER.getOrder()
             // order = Ordered.HIGHEST_PRECEDENCE + 10
     }
+    
+    // Change the authentication entry point so a 401 is sent instead of a redirect.
+    authenticationEntryPoint(org.springframework.boot.autoconfigure.security.Http401AuthenticationEntryPoint,  "JWT")
+
 }

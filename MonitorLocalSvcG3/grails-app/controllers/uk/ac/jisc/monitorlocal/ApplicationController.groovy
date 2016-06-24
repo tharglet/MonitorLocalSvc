@@ -1,11 +1,10 @@
 package uk.ac.jisc.monitorlocal
 
-import com.k_int.grails.tools.finance.YahooRatesService
-import grails.core.GrailsApplication
-import grails.util.Environment
-import grails.plugins.*
 import grails.converters.*
-import grails.plugin.springsecurity.annotation.Secured
+import grails.core.GrailsApplication
+import grails.plugins.*
+
+import com.k_int.grails.tools.finance.YahooRatesService
 
 
 class ApplicationController implements PluginManagerAware {
@@ -104,6 +103,7 @@ class ApplicationController implements PluginManagerAware {
    */
   // @Secured(['ROLE_USER'])
   def settings () {
+
     
     def rates = yahooRatesService.allRates
     
@@ -113,7 +113,8 @@ class ApplicationController implements PluginManagerAware {
         base:   yahooRatesService.baseCurrency,
         rates:  rates,
         all:    rates.keySet()
-      ]
+      ],
+      user : principal
     ])
   }
 }
