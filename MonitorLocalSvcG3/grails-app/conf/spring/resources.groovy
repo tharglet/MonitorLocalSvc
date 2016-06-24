@@ -2,6 +2,8 @@
 import grails.plugin.springsecurity.userdetails.GormUserDetailsService
 import org.springframework.boot.context.embedded.FilterRegistrationBean
 import org.springframework.core.Ordered
+import grails.plugin.springsecurity.SecurityFilterPosition
+
 
 beans = {
 
@@ -30,7 +32,7 @@ beans = {
     jwtPreauthRefistration(FilterRegistrationBean) {
             filter = ref('jwtPreauthFilter')
             urlPatterns = ['/*']
-            order = Ordered.HIGHEST_PRECEDENCE + 10
+            order = SecurityFilterPosition.PRE_AUTH_FILTER
+            // order = Ordered.HIGHEST_PRECEDENCE + 10
     }
-
 }
