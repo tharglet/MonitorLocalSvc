@@ -119,8 +119,8 @@ class ApplicationController implements PluginManagerAware {
         base:   yahooRatesService.baseCurrency,
         rates:  rates,
         all:    rates.keySet()
-      ] // ,
-      // user : principal
+      ],
+      user : user.createUserDTO()
     ])
   }
 }

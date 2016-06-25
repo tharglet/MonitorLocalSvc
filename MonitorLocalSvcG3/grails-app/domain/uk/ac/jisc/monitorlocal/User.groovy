@@ -79,7 +79,9 @@ class User implements Serializable {
   }
   
   public createUserDTO() {
+
     def verified_user = Role.findByAuthority('ROLE_VERIFIED_USER')
+
     def result = [
       userid:this.username,
       email:this.email,
@@ -89,6 +91,11 @@ class User implements Serializable {
       affiliations: [],
       verified: this.authorities.contains(verified_user)
     ]
+
+    orgAffiliations.each {
+      result.affiliations.add([org:it.org.name,role:it.formalRole?.value,status:it.status?.value]);
+    }
+    
     return result;
   }
 }
