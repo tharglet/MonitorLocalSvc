@@ -142,6 +142,9 @@ grails:
       authority:
         className: 'uk.ac.jisc.monitorlocal.Role'
       controllerAnnotations:
+        #
+        # N.B. Static Rules need to be the name of the controller, not the mapped URL - so /aoGrant/** and NOT /grant/** or you'll get a 403.
+        #
         staticRules:
           -
             pattern: '/jwt/**'
@@ -152,19 +155,14 @@ grails:
             pattern: '/application/**'
             access:
               -
-                'permitAll'
+                'ROLE_USER'
           -
             pattern: '/angularHelper/**'
             access:
               -
-                'permitAll'
-          -
-            pattern: '/budget/**'
-            access:
-              -
                 'ROLE_USER'
           -
-            pattern: '/grant/**'
+            pattern: '/budget/**'
             access:
               -
                 'ROLE_USER'
@@ -179,12 +177,27 @@ grails:
               -
                 'ROLE_USER'
           -
+            pattern: '/ao/**'
+            access:
+              -
+                'ROLE_USER'
+          -
             pattern: '/org/**'
             access:
               -
                 'ROLE_USER'
           -
-            pattern: '/ao/**'
+            pattern: '/grant/**'
+            access:
+              -
+                'ROLE_USER'
+          -
+            pattern: '/aoGrant/**'
+            access:
+              -
+                'ROLE_USER'
+          -
+            pattern: '/academicOutput/**'
             access:
               -
                 'ROLE_USER'
