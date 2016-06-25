@@ -24,11 +24,13 @@ class User implements Serializable {
   String name
 
   static hasMany = [
-    socialIdentities : SocialIdentity
+    socialIdentities : SocialIdentity,
+    orgAffiliations: UserOrg
   ]
 
   static mappedBy = [
-    socialIdentities : 'user'
+    socialIdentities : 'user',
+    orgAffiliations: 'user'
   ]
 
   User(String username, String password) {

@@ -12,7 +12,13 @@ class Org extends Component {
   
   String address
   String taxCode
+
+  // Can users be affiliated with this org?
+  Boolean membershipOrg
   
+
+  // Still don't like this - these are roles, not types really, and an org needs to be able to play multiple. Not for this release
+  // But pretty critical to fix
   @Defaults([
     'Publisher',
     'HEI',
@@ -20,6 +26,14 @@ class Org extends Component {
     'Funder Group'
   ])
   RefdataValue type
+
+  static hasMany = [
+    userAffiliations: UserOrg
+  ]
+
+  static mappedBy = [
+    userAffiliations: 'org'
+  ]
 
   // A closure that can be used when databinding an instance of org
   // Called with the object that represents the property, and the source
@@ -56,6 +70,7 @@ class Org extends Component {
   static constraints = {
     address nullable: true, blank: false
     taxCode nullable: true, blank: false
+    membershipOrg nullable:true, blank:false
     type nullable: true
   }
 }
