@@ -18,6 +18,7 @@ logger 'grails.plugin.springsecurity', WARN
 logger 'org.springframework.security', WARN
 logger 'org.springframework.security.web.FilterChainProxy', WARN
 logger 'org.springframework.web', WARN
+logger 'uk.ac.jisc.monitorlocal.JWTPreauthFilter', WARN
 
 //logger 'grails.artefact.Interceptor', WARN, ['STDOUT'], false
 
