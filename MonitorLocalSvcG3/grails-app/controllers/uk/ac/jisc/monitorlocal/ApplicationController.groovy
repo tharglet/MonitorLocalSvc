@@ -104,8 +104,6 @@ class ApplicationController implements PluginManagerAware {
    * This method is where we'll add the app config. This will eventually
    * be behind auth and can therefore be used to return role based permissions etc...
    */
-  // @Secured(['ROLE_USER'])
-  @Secured
   def settings () {
 
     def user = springSecurityService.currentUser
@@ -120,7 +118,8 @@ class ApplicationController implements PluginManagerAware {
         rates:  rates,
         all:    rates.keySet()
       ],
-      user : user.createUserDTO()
+      // Comment out as the app is not sending the bearer token when the user first visits the app
+      // user : user.createUserDTO()
     ])
   }
 }
