@@ -155,7 +155,7 @@ grails:
             pattern: '/application/**'
             access:
               -
-                'ROLE_USER'
+                'permitAll'
           -
             pattern: '/angularHelper/**'
             access:
