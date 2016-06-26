@@ -106,8 +106,8 @@ class ApplicationController implements PluginManagerAware {
    */
   def settings () {
 
-    def user = springSecurityService.currentUser
-    log.debug("Application::Settings - user us ${user}");
+    // def user = springSecurityService.currentUser
+    // log.debug("Application::Settings - user us ${user}");
     
     def rates = yahooRatesService.allRates
     
