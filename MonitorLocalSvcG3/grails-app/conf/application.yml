@@ -133,6 +133,9 @@ environments:
 grails:
   plugin:
     springsecurity:
+      basic:
+        realmName : "Jisc Monitor"
+      useBasicAuth: true
       userLookup:
         userDomainClassName: 'uk.ac.jisc.monitorlocal.User'
         authorityJoinClassName: 'uk.ac.jisc.monitorlocal.UserRole'
@@ -166,6 +169,11 @@ grails:
             access:
               -
                 'ROLE_USER'
+          -
+            pattern: '/internalApi/**'
+            access:
+              -
+                'ROLE_SYSTEM'
           -
             pattern: '/person/**'
             access:
@@ -203,6 +211,10 @@ grails:
                 'ROLE_USER'
         chainMap:
           -
+            # Register /internalApi as using basic auth -- ONLY for usage when triggering local scripts etc
+            pattern: '/internalApi/**'
+            filters: 'JOINED_FILTERS,-exceptionTranslationFilter'
+          -
             pattern: '/assets/**'
             filters: 'none'
           -
@@ -219,7 +231,7 @@ grails:
             filters: 'none'
           -
             pattern: '/**'
-            filters: 'JOINED_FILTERS,-anonymousAuthenticationFilter,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter'
+            filters: 'JOINED_FILTERS,-anonymousAuthenticationFilter,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter,-basicAuthenticationFilter,-basicExceptionTranslationFilter'
 ---
 monitorLocal_jwk:
   kty: "RSA"
