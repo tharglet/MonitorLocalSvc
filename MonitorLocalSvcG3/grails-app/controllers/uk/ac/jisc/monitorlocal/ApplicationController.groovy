@@ -106,8 +106,13 @@ class ApplicationController implements PluginManagerAware {
    */
   def settings () {
 
-    // def user = springSecurityService.currentUser
-    // log.debug("Application::Settings - user us ${user}");
+    def user = springSecurityService.currentUser
+    log.debug("Application::Settings - user us ${user}");
+    
+    def user_dto = null
+    if ( (user) && ( user instanceof uk.ac.jisc.monitorlocal.User ) ) {
+      user_dto = ((uk.ac.jisc.monitorlocal.User)user).createUserDTO()
+    }
     
     def rates = yahooRatesService.allRates
     
@@ -118,8 +123,7 @@ class ApplicationController implements PluginManagerAware {
         rates:  rates,
         all:    rates.keySet()
       ],
-      // Comment out as the app is not sending the bearer token when the user first visits the app
-      // user : user.createUserDTO()
+      user : user_dto
     ])
   }
 }

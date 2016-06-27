@@ -16,7 +16,7 @@ class UserOrg  implements Comparable {
 
   Long dateRequested
   Long dateActioned
-  int status  // 0=Pending, 1=Approved, 2=Rejected, 3=AutoApproved
+  int status=0  // 0=Pending, 1=Approved, 2=Rejected, 3=AutoApproved
 
   Org org
   User user
@@ -26,7 +26,7 @@ class UserOrg  implements Comparable {
     dateActioned(nullable:true)
     dateRequested(nullable:true)
     formalRole(nullable:true)
-    role(nullable:true)
+    status(nullable:false)
   }
 
   @Transient
