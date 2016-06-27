@@ -4,7 +4,11 @@ import grails.converters.*
 import grails.core.GrailsApplication
 import grails.plugins.*
 import grails.plugin.springsecurity.annotation.Secured
-
+import static groovyx.net.http.ContentType.*
+import static groovyx.net.http.Method.GET
+import uk.ac.jisc.monitorlocal.*
+import au.com.bytecode.opencsv.CSVReader
+import com.k_int.grails.tools.refdata.*
 
 import com.k_int.grails.tools.finance.YahooRatesService
 
@@ -99,5 +103,34 @@ class InternalApiController implements PluginManagerAware {
     render result as JSON
 
   }
+
+
+  def OrgsIngest() {
+    if ( upload_mime_type && upload_filename ) {
+      log.debug("got mime type, upload org is ${org}");
+      processOrgsIngest(upload_file.getInputStream());
+    }
+  }
+
+  private def processOrgsIngest(InputStream is) {
+ 
+    log.debug("assimilateOrgsData");
+
+    // def charset = 'UTF-8' // 'ISO-8859-1' or 'UTF-8' // Windows-1252
+    def charset = 'UTF-8'
+    // def csv = new CSVReader(new InputStreamReader(new org.apache.commons.io.input.BOMInputStream(is),java.nio.charset.Charset.forName(charset)),'\t' as char,'\0' as char)
+    def csv = new CSVReader(new InputStreamReader(new org.apache.commons.io.input.BOMInputStream(is),java.nio.charset.Charset.forName(charset)),',' as char,'"' as char)
+
+    String[] header = csv.readNext()
+    log.debug("Got header ${header}");
+    int ctr = 0
+    String[] nl=csv.readNext()
+    int rownum = 0;
+    while ( nl ) {
+      log.debug(nl);
+      nl=csv.readNext()
+    }
+  }
+
 
 }
