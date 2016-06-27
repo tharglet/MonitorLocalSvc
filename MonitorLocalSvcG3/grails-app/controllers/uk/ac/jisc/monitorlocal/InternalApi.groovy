@@ -106,10 +106,20 @@ class InternalApiController implements PluginManagerAware {
 
 
   def OrgsIngest() {
+    def result = [ status:'OK' ]
+
+    def upload_mime_type = request.getFile("content")?.contentType 
+    def upload_filename = request.getFile("content")?.getOriginalFilename()
+
     if ( upload_mime_type && upload_filename ) {
-      log.debug("got mime type, upload org is ${org}");
+      def upload_file = request.getFile("content");
       processOrgsIngest(upload_file.getInputStream());
     }
+    else {
+      log.warn("No mimetype or filename ${upload_mime_type} or ${upload_filename}");
+    }
+
+    render result as JSON
   }
 
   private def processOrgsIngest(InputStream is) {
