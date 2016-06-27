@@ -213,7 +213,7 @@ grails:
           -
             # Register /internalApi as using basic auth -- ONLY for usage when triggering local scripts etc
             pattern: '/internalApi/**'
-            filters: 'JOINED_FILTERS,-exceptionTranslationFilter'
+            filters: 'JOINED_FILTERS,-exceptionTranslationFilter,-jwtPreauthFilter'
           -
             pattern: '/assets/**'
             filters: 'none'

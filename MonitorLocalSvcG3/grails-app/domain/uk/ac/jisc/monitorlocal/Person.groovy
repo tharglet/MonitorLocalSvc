@@ -12,6 +12,7 @@ class Person extends Component {
 
   String firstName
   String surname
+  Org institution
 
   Set personContactDetails = []
   static hasMany = [
@@ -29,6 +30,7 @@ class Person extends Component {
   static constraints = {
     firstName nullable: true
     surname nullable: true
+    institution nullable: true
   }
 
   def beforeValidate () {
