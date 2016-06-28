@@ -14,6 +14,7 @@ import com.k_int.grails.tools.finance.YahooRatesService
 
 
 class InternalApiController implements PluginManagerAware {
+
   static responseFormats = ['json', 'xml']
 
   static orgs_import_cfg = [
@@ -68,6 +69,9 @@ class InternalApiController implements PluginManagerAware {
   def crossrefSyncService
   def apcSheetImportService
   def springSecurityService
+  def sessionFactory
+  def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
+
 
 
   /**
@@ -210,6 +214,10 @@ class InternalApiController implements PluginManagerAware {
         }
       }
 
+      if ( rownum++ % 50 == 0 ) {
+        cleanUpGorm()
+      }
+
       nl=csv.readNext()
     }
   }
@@ -307,4 +315,19 @@ class InternalApiController implements PluginManagerAware {
     }
 
   }
+
+  private def cleanUpGorm() {
+    // log.debug("Clean up GORM");
+
+    // Get the current session.
+    def session = sessionFactory.currentSession
+
+    // flush and clear the session.
+    session.flush()
+    session.clear()
+
+    // Clear the property instance map.
+    propertyInstanceMap.get().clear()
+  }
+
 }
