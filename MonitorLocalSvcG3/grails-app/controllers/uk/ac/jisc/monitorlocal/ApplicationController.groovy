@@ -126,4 +126,5 @@ class ApplicationController implements PluginManagerAware {
       user : user_dto
     ])
   }
+
 }
