@@ -155,6 +155,11 @@ grails:
               -
                 'permitAll'
           -
+            pattern: '/ghHelp/**'
+            access:
+              -
+                'ROLE_USER'
+          -
             pattern: '/application/**'
             access:
               -
@@ -328,4 +333,6 @@ k_int:
               format: json
               env: 'store://datatables.org/alltableswithkeys'
 ---
-      
+monitor:
+    helpHost : 'https://github.com'
+    helpUri     : '/k-int/MonitorLocalUX/wiki'
