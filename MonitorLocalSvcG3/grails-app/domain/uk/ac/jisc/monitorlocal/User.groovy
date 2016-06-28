@@ -89,6 +89,7 @@ class User implements Serializable {
       profilePic:this.profilePic,
       bio: this.biography,
       affiliations: [],
+      roles: [],
       verified: this.authorities.contains(verified_user)
     ]
 
@@ -96,6 +97,10 @@ class User implements Serializable {
       result.affiliations.add([org:it.org.name,role:it.formalRole?.value,status:it.status?.value]);
     }
     
+    getAuthorities().each {
+      result.roles.add(it.authority);
+    }
+
     return result;
   }
 }
