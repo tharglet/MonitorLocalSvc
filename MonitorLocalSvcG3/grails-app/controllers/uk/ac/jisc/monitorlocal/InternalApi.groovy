@@ -70,9 +70,6 @@ class InternalApiController implements PluginManagerAware {
   def apcSheetImportService
   def springSecurityService
   def sessionFactory
-  def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
-
-
 
   /**
    *  /application/command/kbplus -- Sync with kb+
@@ -325,9 +322,6 @@ class InternalApiController implements PluginManagerAware {
     // flush and clear the session.
     session.flush()
     session.clear()
-
-    // Clear the property instance map.
-    propertyInstanceMap.get().clear()
   }
 
 }
