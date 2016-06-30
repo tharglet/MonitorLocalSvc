@@ -2,6 +2,7 @@ package uk.ac.jisc.monitorlocal
 
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
+import uk.ac.jisc.monitorlocal.databinding.AbsoluteCollection;
 
 @EqualsAndHashCode(includes='username')
 @ToString(includes='username', includeNames=true, includePackage=false)
@@ -23,6 +24,12 @@ class User implements Serializable {
   String biography
   String name
 
+  @AbsoluteCollection
+  Set socialIdentities = []
+  
+  @AbsoluteCollection
+  Set orgAffiliations = []
+  
   static hasMany = [
     socialIdentities : SocialIdentity,
     orgAffiliations: UserOrg

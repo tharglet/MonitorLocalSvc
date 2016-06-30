@@ -5,6 +5,7 @@ import com.k_int.grails.tools.identifiers.Identifier
 import com.k_int.grails.tools.refdata.*
 import com.k_int.grails.tools.rest.ExtendedRestfulController
 import groovy.util.logging.Log4j
+import uk.ac.jisc.monitorlocal.databinding.AbsoluteCollection;
 
 @Log4j
 @Resource(uri="/person", superClass=ExtendedRestfulController)
@@ -14,6 +15,7 @@ class Person extends Component {
   String surname
   Org institution
 
+  @AbsoluteCollection
   Set personContactDetails = []
   static hasMany = [
     personContactDetails: ContactDetails

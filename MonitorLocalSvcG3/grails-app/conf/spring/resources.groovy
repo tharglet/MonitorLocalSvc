@@ -1,8 +1,7 @@
 // Place your Spring DSL code here
 import grails.plugin.springsecurity.userdetails.GormUserDetailsService
-import org.springframework.boot.context.embedded.FilterRegistrationBean
-import org.springframework.core.Ordered
-import grails.plugin.springsecurity.SecurityFilterPosition
+import grails.web.databinding.DataBindingUtils
+import uk.ac.jisc.monitorlocal.databinding.AbsoluteCollectionListener
 
 
 beans = {
@@ -44,4 +43,8 @@ beans = {
     // Change the authentication entry point so a 401 is sent instead of a redirect.
     authenticationEntryPoint(org.springframework.boot.autoconfigure.security.Http401AuthenticationEntryPoint,  "JWT")
 
+    // Register the binding listener to act on collection properties.
+    absoluteCollectionListener (AbsoluteCollectionListener) {
+      binder = ref (DataBindingUtils.DATA_BINDER_BEAN_NAME)
+    }
 }

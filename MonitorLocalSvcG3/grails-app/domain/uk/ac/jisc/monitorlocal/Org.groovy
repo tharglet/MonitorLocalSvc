@@ -2,6 +2,7 @@ package uk.ac.jisc.monitorlocal
 
 import grails.rest.Resource
 import groovy.util.logging.Log4j
+import uk.ac.jisc.monitorlocal.databinding.AbsoluteCollection;
 
 import com.k_int.grails.tools.refdata.*
 import com.k_int.grails.tools.rest.ExtendedRestfulController
@@ -27,6 +28,8 @@ class Org extends Component {
   ])
   RefdataValue type
 
+  @AbsoluteCollection
+  Set userAffiliations = []
   static hasMany = [
     userAffiliations: UserOrg
   ]

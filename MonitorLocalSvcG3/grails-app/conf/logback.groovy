@@ -30,6 +30,8 @@ logger 'grails.app.init.BootStrap', DEBUG
 logger 'grails.app.services', DEBUG
 logger 'grails.web.mapping.filter', DEBUG
 // logger 'grails.web.databinding.GrailsWebDataBinder',DEBUG
+logger 'uk.ac.jisc.monitorlocal.databinding', DEBUG
+logger 'com.k_int.grails.tools.finance.YahooRatesService', DEBUG
 
 
 def targetDir = BuildSettings.TARGET_DIR

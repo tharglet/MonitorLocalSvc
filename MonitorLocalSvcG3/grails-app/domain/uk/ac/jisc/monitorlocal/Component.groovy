@@ -3,6 +3,7 @@ package uk.ac.jisc.monitorlocal
 import grails.web.databinding.GrailsWebDataBinder
 import groovy.transform.EqualsAndHashCode
 import groovy.util.logging.Log4j
+import uk.ac.jisc.monitorlocal.databinding.AbsoluteCollection;
 
 import javax.persistence.Transient
 
@@ -32,6 +33,9 @@ class Component implements DomainRulePropertySource{
     result
   })
   Set identifiers = []
+  
+  @AbsoluteCollection
+  Set notes = []
 
   static hasMany = [
     identifiers:ComponentIdentifier,

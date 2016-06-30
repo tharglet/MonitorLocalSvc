@@ -1,6 +1,7 @@
 package uk.ac.jisc.monitorlocal
 
 import grails.rest.Resource
+import uk.ac.jisc.monitorlocal.databinding.AbsoluteCollection;
 
 import java.util.List;
 
@@ -35,6 +36,7 @@ class Invoice extends Component {
   
   String filename
   
+  @AbsoluteCollection
   Set invoiceCosts = []
   static hasMany = [
     invoiceCosts: CostItem

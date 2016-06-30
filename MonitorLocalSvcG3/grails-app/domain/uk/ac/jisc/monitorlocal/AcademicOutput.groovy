@@ -5,6 +5,7 @@ import groovy.util.logging.Log4j
 
 import org.grails.databinding.BindUsing
 import org.hibernate.proxy.HibernateProxy
+import uk.ac.jisc.monitorlocal.databinding.AbsoluteCollection
 
 import com.k_int.grails.tools.refdata.*
 import com.k_int.grails.tools.rest.ExtendedRestfulController
@@ -91,13 +92,19 @@ class AcademicOutput extends Component {
   @Defaults(['Yes', 'No'])
   RefdataValue accessStatement
 
+  @AbsoluteCollection
   Set academicOutputCosts = []
   
+  @AbsoluteCollection
   Set names = []
-  Set grants = []
+  
+  @AbsoluteCollection
   Set funds = []
   
+  @AbsoluteCollection
   Set complianceRules = []
+  
+  @AbsoluteCollection
   Set deposits = []
   
   @Defaults(['Yes', 'No'])
@@ -106,7 +113,6 @@ class AcademicOutput extends Component {
   static hasMany = [
     academicOutputCosts: CostItem,
     names: AoName,
-    grants: AoGrant,
     funds: AoFunding,
     complianceRules: ComplianceRule,
     deposits: AoDeposit
