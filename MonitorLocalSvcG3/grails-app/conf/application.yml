@@ -171,6 +171,11 @@ grails:
               -
                 'ROLE_USER'
           -
+            pattern: '/validate/**'
+            access:
+              -
+                'ROLE_USER'
+          -
             pattern: '/ref/**'
             access:
               -
