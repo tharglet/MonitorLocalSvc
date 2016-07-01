@@ -1,5 +1,6 @@
 package uk.ac.jisc.monitorlocal
 
+import grails.plugins.orm.auditable.Stamp
 import grails.web.databinding.GrailsWebDataBinder
 import groovy.transform.EqualsAndHashCode
 import groovy.util.logging.Log4j
@@ -16,6 +17,7 @@ import com.k_int.grails.tools.rules.DomainRulePropertySource
 
 @Log4j
 @EqualsAndHashCode(includes=["id"])
+@Stamp
 class Component implements DomainRulePropertySource{
   static auditable = true
   

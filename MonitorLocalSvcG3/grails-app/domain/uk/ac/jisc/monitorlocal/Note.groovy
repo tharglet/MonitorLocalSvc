@@ -1,12 +1,15 @@
 package uk.ac.jisc.monitorlocal
 
+import grails.plugins.orm.auditable.Stamp
+
+@Stamp
 class Note {
 
   Component owner
   String typeString
   String note
-  Date dateCreated
-  Date lastUpdated
+  
+  User author
 
   static mapping = {
     note column:'note_txt', type:'text'
