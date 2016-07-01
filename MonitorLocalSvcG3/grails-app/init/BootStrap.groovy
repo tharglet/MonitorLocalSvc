@@ -38,11 +38,13 @@ class BootStrap {
 
   def registerUsers() {
 
+    log.debug("registerUsers");
 
     def cfg_file = new File("${System.properties['user.home']}/.grails/monitor_users.groovy")
-    if ( cfg_file.exists() ) {
-      def cfg = cfg_file.text
 
+    if ( cfg_file.exists() ) {
+
+      def cfg = cfg_file.text
       def usercfg = new groovy.util.ConfigSlurper().parse(cfg);
       log.debug("Processing additional users:: ${cfg} \n${usercfg} ");
   
