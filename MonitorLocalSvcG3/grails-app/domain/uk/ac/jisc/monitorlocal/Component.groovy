@@ -88,7 +88,7 @@ class Component  implements DomainRulePropertySource{
   static mapping = {
     identifiers cascade: "all-delete-orphan"
     tablePerHierarchy false
-    notes cascade: "all-delete-orphan"
+    notes cascade: "all-delete-orphan", sort: 'created', order: 'desc'
   }
 
   public String toString() {
