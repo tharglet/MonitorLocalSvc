@@ -1,10 +1,13 @@
 package uk.ac.jisc.monitorlocal
 
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugins.orm.auditable.Stamp
 import grails.web.databinding.GrailsWebDataBinder
 import groovy.transform.EqualsAndHashCode
 import groovy.util.logging.Log4j
-import uk.ac.jisc.monitorlocal.databinding.AbsoluteCollection;
+import uk.ac.jisc.monitorlocal.databinding.AbsoluteCollection
+
+import java.util.Date;
 
 import javax.persistence.Transient
 
@@ -17,9 +20,34 @@ import com.k_int.grails.tools.rules.DomainRulePropertySource
 
 @Log4j
 @EqualsAndHashCode(includes=["id"])
-@Stamp
-class Component implements DomainRulePropertySource{
-  static auditable = true
+class Component  implements DomainRulePropertySource{
+  static auditable = [ignore:['version','lastUpdated','created','lastUpdatedBy','createdBy']]
+  static transients = ["springSecurityService"]
+  
+  @Transient
+  SpringSecurityService springSecurityService  
+  Date created
+  User createdBy
+  Date lastUpdated
+  User lastUpdatedBy
+  
+  def onSave = {
+    def now = new Date()
+    created = now
+    createdBy =  springSecurityService.currentUser ?: null
+    
+    // Run the onchange too, passing in the dates so they match.!
+    currentUpdateStamps (now)
+  }
+  
+  def onChange = { oldVals, newVals ->
+    currentUpdateStamps ()
+  }
+  
+  def currentUpdateStamps(Date changed = new Date()) {
+    lastUpdated = changed
+    lastUpdatedBy = springSecurityService.currentUser ?: null
+  }
   
   @Transient
   def gwdb
@@ -28,7 +56,7 @@ class Component implements DomainRulePropertySource{
   }
   
   String name
-
+  
   @BindUsing({obj,source ->
     def result = obj.bindIdentifiers(obj,source);
     // log.debug("Result of bind identifiers: ${result}")
@@ -51,11 +79,16 @@ class Component implements DomainRulePropertySource{
 
   static constraints = {
     name nullable: false, blank:false,maxSize:512
+    createdBy nullable: true
+    lastUpdatedBy nullable: true
+    created nullable: true
+    lastUpdated nullable: true
   }
 
   static mapping = {
     identifiers cascade: "all-delete-orphan"
     tablePerHierarchy false
+    notes cascade: "all-delete-orphan"
   }
 
   public String toString() {

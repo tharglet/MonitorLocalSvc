@@ -67,13 +67,20 @@ class AbsoluteCollectionListener extends DataBindingListenerAdapter {
   }
 
   protected boolean hasSpecialHeader () {
-
-    // Grab the request from the existing thread local in Spring.
-    HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).request
-
-    // Check the value of a specific header.
-    boolean headerPresent = request.getHeader("Binding-Source")?.toLowerCase() == 'ng-app'
-    log.debug ("hasSpecialHeader ${headerPresent}")
+    boolean headerPresent = false
+    try {
+      // Grab the request from the existing thread local in Spring.
+      HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).request
+  
+      // Check the value of a specific header.
+      headerPresent = request.getHeader("Binding-Source")?.toLowerCase() == 'ng-app'
+      log.debug ("hasSpecialHeader ${headerPresent}")
+    } catch ( IllegalStateException e ) {
+      // This simply means no request was found bound to the thread. Some system processes
+      // will validly not create a request. We can safely ignore this in the context of our listener,
+      // and return false.
+      headerPresent = false
+    }
     headerPresent
   }
 

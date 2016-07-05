@@ -13,7 +13,7 @@ buildscript {
   dependencies {
     classpath "org.grails:grails-gradle-plugin:$grailsVersion"
     classpath "org.grails.plugins:hibernate4:$gormVersion"
-    classpath "org.grails.plugins:views-gradle:1.0.11"
+    classpath "org.grails.plugins:views-gradle:1.0.12"
   }
 }
 
@@ -73,7 +73,7 @@ dependencies {
   compile "org.hibernate:hibernate-core"
   compile "org.hibernate:hibernate-ehcache"
 //  compile "org.hibernate:hibernate-ehcache"
-  compile "org.grails.plugins:views-json:1.0.11"
+  compile "org.grails.plugins:views-json:1.0.12"
   compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.2'
   compile 'org.apache.httpcomponents:httpclient:4.5.2'
   compile 'net.sf.opencsv:opencsv:2.0'

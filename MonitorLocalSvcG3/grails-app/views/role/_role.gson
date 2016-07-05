@@ -1,0 +1,7 @@
+import uk.ac.jisc.monitorlocal.Role
+
+model {
+  Role role
+}
+
+out <<  "\"${role?.authority}\""

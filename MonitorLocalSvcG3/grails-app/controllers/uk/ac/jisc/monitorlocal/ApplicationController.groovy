@@ -109,22 +109,7 @@ class ApplicationController implements PluginManagerAware {
     def user = springSecurityService.currentUser
     log.debug("Application::Settings - user us ${user}");
     
-    def user_dto = null
-    if ( (user) && ( user instanceof uk.ac.jisc.monitorlocal.User ) ) {
-      user_dto = ((uk.ac.jisc.monitorlocal.User)user).createUserDTO()
-    }
-    
-    def rates = yahooRatesService.allRates
-    
-    // Grab the current currencies and exchange rates etc...
-    respond ([
-      currency : [
-        base:   yahooRatesService.baseCurrency,
-        rates:  rates,
-        all:    rates.keySet()
-      ],
-      user : user_dto
-    ])
+    [yahooRatesService: yahooRatesService, user: user]
   }
 
 }
