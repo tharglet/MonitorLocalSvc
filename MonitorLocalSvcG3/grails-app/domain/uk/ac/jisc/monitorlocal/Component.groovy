@@ -62,6 +62,7 @@ class Component  implements DomainRulePropertySource{
     // log.debug("Result of bind identifiers: ${result}")
     result
   })
+  @AbsoluteCollection
   Set identifiers = []
   
   @AbsoluteCollection
