@@ -31,20 +31,20 @@ class Component  implements DomainRulePropertySource{
   Date lastUpdated
   User lastUpdatedBy
   
-  def onSave = {
+  def beforeInsert () {
     def now = new Date()
-    created = now
-    createdBy =  springSecurityService.currentUser ?: null
+    if (created == null) {
+      created = now
+    }
     
+    if (createdBy == null && springSecurityService.currentUser != null) {
+      createdBy =  springSecurityService.currentUser
+    }
     // Run the onchange too, passing in the dates so they match.!
-    currentUpdateStamps (now)
+    beforeUpdate (now)
   }
   
-  def onChange = { oldVals, newVals ->
-    currentUpdateStamps ()
-  }
-  
-  def currentUpdateStamps(Date changed = new Date()) {
+  def beforeUpdate(Date changed = new Date()) {
     lastUpdated = changed
     lastUpdatedBy = springSecurityService.currentUser ?: null
   }
