@@ -29,17 +29,7 @@ class Workflow {
       return found
     }
     'Add a journal/conference title' 'publicationTitle != null'
-    'Add an ISSN or eISSN' {
-      def required_ns = ['issn', 'eissn']
-      boolean found = false
-      
-      def ids = it.identifiers
-      for (int i=0; i< ids.size() && !found; i++ ) {
-        String ns = ids.getAt(i)?.identifier?.namespace?.value?.toLowerCase()
-        found = ns && required_ns.contains(ns)
-      }
-      return found
-    }
+    'Add a publisher' 'publisher != null'
 
     // Finance
     'Add a cost item for the actual expenditure' {

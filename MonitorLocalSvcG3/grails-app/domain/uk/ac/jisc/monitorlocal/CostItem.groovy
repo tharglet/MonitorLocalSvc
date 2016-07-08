@@ -22,7 +22,8 @@ class CostItem {
     'Bank Charge',
     'Admin Cost',
     'Discount',
-    'Refund',
+    'Licensing Charge',
+    'Currency Adjustment',
     'Page Charge',
     'Colour Charge',
     'Other'
