@@ -58,9 +58,9 @@ class Note {
     owner nullable: false
     typeString nullable: true, blank:false
     note nullable: true, blank:false
-    createdBy nullable: true
-    lastUpdatedBy nullable: true
-    created nullable: true
-    lastUpdated nullable: true
+    createdBy nullable: true, bindable:false
+    lastUpdatedBy nullable: true, bindable:false
+    created nullable: true, bindable:false
+    lastUpdated nullable: true, bindable:false
   }
 }

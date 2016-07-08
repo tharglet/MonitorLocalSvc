@@ -112,11 +112,15 @@ class AbsoluteCollectionListener extends DataBindingListenerAdapter {
       log.debug "Treating property ${propertyName} on ${obj} as absolute collection."
 
       // Grab the ids of the items to not remove.
-      Set ids = value?.collect {
-        if ("${it?.id}".isLong()) {
-          return "${it?.id}".toLong()
+      Set<Long> ids = []
+      
+      value?.each {
+        if (it?.id) {
+          String val = "${it.id}"
+          if (val.isLong()) {
+            ids << val.toLong()
+          }
         }
-        null
       }
             
       // Remove each item not in the supplied vals.

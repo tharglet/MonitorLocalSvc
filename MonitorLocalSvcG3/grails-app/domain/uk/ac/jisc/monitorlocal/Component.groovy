@@ -80,10 +80,10 @@ class Component  implements DomainRulePropertySource{
 
   static constraints = {
     name nullable: false, blank:false,maxSize:512
-    createdBy nullable: true
-    lastUpdatedBy nullable: true
-    created nullable: true
-    lastUpdated nullable: true
+    createdBy nullable: true, bindable:false
+    lastUpdatedBy nullable: true, bindable:false
+    created nullable: true, bindable:false
+    lastUpdated nullable: true, bindable:false
   }
 
   static mapping = {
