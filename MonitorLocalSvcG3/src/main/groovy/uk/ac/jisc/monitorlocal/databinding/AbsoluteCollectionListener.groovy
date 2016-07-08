@@ -4,6 +4,7 @@ import grails.databinding.events.DataBindingListener
 import grails.databinding.events.DataBindingListenerAdapter
 import grails.util.GrailsNameUtils
 import grails.web.databinding.GrailsWebDataBinder
+import groovy.transform.CompileStatic
 import groovy.util.logging.Log4j
 
 import java.lang.reflect.Field
@@ -12,6 +13,7 @@ import javax.annotation.PostConstruct
 import javax.servlet.http.HttpServletRequest
 
 import org.grails.core.artefact.DomainClassArtefactHandler
+import org.grails.web.json.JSONArray
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
@@ -21,7 +23,8 @@ class AbsoluteCollectionListener extends DataBindingListenerAdapter {
 
   @Autowired
   GrailsWebDataBinder binder
-
+  
+  @CompileStatic
   @PostConstruct
   void init () {
     log.debug ("Instantiating and registering...")
@@ -30,6 +33,7 @@ class AbsoluteCollectionListener extends DataBindingListenerAdapter {
     binder.setDataBindingListeners ( listeners )
   }
 
+  @CompileStatic
   protected Field getField(Class clazz, String fieldName) {
     Field field = null
     try {
@@ -43,29 +47,40 @@ class AbsoluteCollectionListener extends DataBindingListenerAdapter {
     return field
   }
 
+  
+  private final Map<String, Set<String>> annotatedFields = [:]
+  
+  @CompileStatic
   protected Set findAnnotatedFields ( Class clazz ) {
-    def results = []
-    Class c = clazz
-    while (c != null) {
-      for (Field field : c.getDeclaredFields()) {
-        if (field.isAnnotationPresent(AbsoluteCollection)) {
-          results << field
+    Set<String> results = annotatedFields[clazz.name]
+    
+    if (results == null) {
+      results = []
+      Class c = clazz
+      while (c != null) {
+        for (Field field : c.getDeclaredFields()) {
+          if (field.isAnnotationPresent(AbsoluteCollection)) {
+            results << field.name
+          }
         }
+        c = c.getSuperclass()
       }
-      c = c.getSuperclass()
+      annotatedFields[clazz.name] = results
     }
     results
   }
 
-  protected Set actOn ( obj ) {
-    def results = []
+  @CompileStatic
+  protected Set<String> actOn ( obj ) {
+    Set<String> results = []
     if (hasSpecialHeader()) {
       results = findAnnotatedFields (obj.class)
     }
     
     results
   }
-
+  
+  @CompileStatic
   protected boolean hasSpecialHeader () {
     boolean headerPresent = false
     try {
@@ -84,27 +99,34 @@ class AbsoluteCollectionListener extends DataBindingListenerAdapter {
     headerPresent
   }
 
+  @CompileStatic
   public boolean supports(Class<?> clazz) {
     boolean supported = DomainClassArtefactHandler.isDomainClass(clazz)
     log.debug ("supports ${clazz} == ${supported}")
     supported
   }
+  
+  public Boolean beforeBinding(Object obj, String propertyName, Object value, Object errors) {
+    
+    if (obj[propertyName] instanceof Collection && actOn (obj).contains(propertyName)) {
+      log.debug "Treating property ${propertyName} on ${obj} as absolute collection."
 
-  public Boolean beforeBinding(Object obj, Object errors) {
-    actOn (obj)?.each { Field f ->
-      if (obj."${f.name}" instanceof Collection ) {
-        log.debug "Clearing property ${f.name} on ${obj}"
-//        obj."${f.name}".clear()
-        
-        // clear doesn't work as you would expect it to. Lets remove each item.
-        obj."${f.name}".collect().each {
-          obj."removeFrom${GrailsNameUtils.getClassName(f.name)}" (it)
+      // Grab the ids of the items to not remove.
+      Set ids = value?.collect {
+        if ("${it?.id}".isLong()) {
+          return "${it?.id}".toLong()
         }
-      } else {
-        log.error "AbsoluteCollection annotation used on none-collection type property ${f.name} on ${obj.class}"
+        null
+      }
+            
+      // Remove each item not in the supplied vals.
+      obj[propertyName].collect().each {
+        if (it.id && !ids.contains(it.id)) {
+          log.debug "Item with id ${it.id} was not present in data for ${propertyName} on ${obj}, so we should remove it."
+          obj."removeFrom${GrailsNameUtils.getClassName(propertyName)}" (it)
+        }
       }
     }
-
     // Return true to state that we still want binding to continue no matter what happens above.
     true
   }
