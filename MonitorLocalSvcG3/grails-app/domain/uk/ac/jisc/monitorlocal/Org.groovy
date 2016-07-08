@@ -76,4 +76,31 @@ class Org extends Component {
     membershipOrg nullable:true, blank:false
     type nullable: true
   }
+
+  transient def getDbSearchConfig() {
+    [
+      title:'Organizations',
+      group:'Secondary',
+      defaultSort:'name',
+      defaultOrder:'asc',
+      qbeConfig:[
+        qbeForm:[
+          [
+            prompt:'Name or Title',
+            qparam:'qp_name',
+            placeholder:'Name or title of item',
+            contextTree:['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R']
+          ],
+        ],
+        qbeGlobals:[
+          ['ctxtp':'filter', 'prop':'status.value', 'comparator' : 'eq', 'value':'Deleted', 'negate' : true, 'prompt':'Hide Deleted',
+           'qparam':'qp_showDeleted', 'default':'on']
+        ],
+        qbeResults:[
+          [heading:'Name', property:'name',sort:'name', link:[controller:'resource',action:'show',id:'x.r.class.name+\':\'+x.r.id'] ],
+          [heading:'Status', sort:'status', property:'status.value'],
+        ]
+      ]
+    ]
+  }
 }
