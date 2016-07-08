@@ -3,6 +3,8 @@ package uk.ac.jisc.monitorlocal
 import grails.rest.Resource
 import groovy.util.logging.Log4j
 
+import java.util.Map;
+
 import org.grails.databinding.BindUsing
 import org.hibernate.proxy.HibernateProxy
 import uk.ac.jisc.monitorlocal.databinding.AbsoluteCollection

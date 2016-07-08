@@ -65,6 +65,11 @@ class Budget extends Component {
   }
 
   @Defaults([
+          'Yes', 'No'
+  ])
+  RefdataValue credit
+
+  @Defaults([
     'Yes', 'No'
   ])
   RefdataValue prepay
@@ -73,7 +78,8 @@ class Budget extends Component {
     'totalFunds'      ( nullable: true )
     'code'            ( nullable: true, blank: false )
     'source'          ( nullable: true )
-    'prepay'          ( nullable: true )
+    'credit'          ( nullable: true )
+    'prepay'          ( nullable: false )
   }
 
   static mapping = {

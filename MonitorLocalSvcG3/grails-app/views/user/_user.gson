@@ -1,0 +1,29 @@
+import uk.ac.jisc.monitorlocal.User
+import uk.ac.jisc.monitorlocal.Role
+import uk.ac.jisc.monitorlocal.UserOrg
+
+model {
+  User user
+}
+
+def exlc = [
+  'password',
+  'enabled',
+  'accountExpired',
+  'accountLocked',
+  'passwordExpired',
+  'socialIdentities',
+  'orgAffiliations'
+]
+json g.render( user, [excludes: exlc]) {
+
+  affiliations (user.orgAffiliations) { UserOrg affil ->
+    org   affil.org?.name
+    role  affil.formalRole?.authority
+    status    affil.status?.value
+  }
+  
+  verified user.verified
+  
+  roles g.render(template:"/role/role", collection: user.getAuthorities(), var:'role')
+}

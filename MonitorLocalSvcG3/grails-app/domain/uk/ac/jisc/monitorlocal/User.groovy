@@ -24,10 +24,8 @@ class User implements Serializable {
   String biography
   String name
 
-  @AbsoluteCollection
   Set socialIdentities = []
   
-  @AbsoluteCollection
   Set orgAffiliations = []
   
   static hasMany = [
@@ -70,24 +68,34 @@ class User implements Serializable {
     password = springSecurityService?.passwordEncoder ? springSecurityService.encodePassword(password) : password
   }
 
-  static transients = ['springSecurityService']
+  static transients = ['springSecurityService', 'verified']
 
   static constraints = {
-    username blank: false, unique: true
-    password blank: false
-    profilePic blank: true, nullable:true
-    email blank: true, nullable:true
-    name blank: true, nullable:true
-    biography blank: true, nullable:true
+    username blank: false, unique: true, bindable: false
+    password blank: false, bindable: false
+    profilePic blank: true, nullable:true, bindable: false
+    email blank: true, nullable:true, bindable: false
+    name blank: true, nullable:true, bindable: false
+    biography blank: true, nullable:true, bindable: false
+    
+    enabled bindable: false
+    accountExpired bindable: false
+    accountLocked bindable: false
+    passwordExpired bindable: false
+  
+    socialIdentities bindable: false
+    orgAffiliations bindable: false
   }
 
   static mapping = {
     password column: '`password`'
   }
   
+  public boolean isVerified () {
+    this.authorities.contains ( Role.findByAuthority('ROLE_VERIFIED_USER') )
+  }
+  
   public createUserDTO() {
-
-    def verified_user = Role.findByAuthority('ROLE_VERIFIED_USER')
 
     def result = [
       userid:this.username,
@@ -97,7 +105,7 @@ class User implements Serializable {
       bio: this.biography,
       affiliations: [],
       roles: [],
-      verified: this.authorities.contains(verified_user)
+      verified: this.verified
     ]
 
     orgAffiliations.each {

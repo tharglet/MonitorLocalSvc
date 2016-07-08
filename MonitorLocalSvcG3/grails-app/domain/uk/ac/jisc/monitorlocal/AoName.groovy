@@ -22,6 +22,8 @@ class AoName {
       name = person.getName();
     }
   }
+  
+  boolean keyContact = false;
 
   @Defaults([
     'Corresponding Author',
@@ -35,8 +37,9 @@ class AoName {
 
   static constraints = {
     'academicOutput'  (nullable: false)
-    'person'          (nullable: true)
-    'name'            (nullable: true,  blank:false)
-    'namerel'         (nullable: true)
+    'person'                     (nullable: true)
+    'name'                        (nullable: true,  blank:false)
+    'keyContact'             (nullable: false, blank:false)
+    'namerel'                   (nullable: true)
   }
 }

@@ -1,4 +1,3 @@
-import uk.ac.jisc.monitorlocal.Budget
 import grails.views.mvc.renderer.DefaultViewRenderer
 
 model {

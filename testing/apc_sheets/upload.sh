@@ -12,7 +12,7 @@ do
     then
         institution="${BASH_REMATCH[1]}"
         echo "Sending file '${f}' for '${institution}'"
-        curl -v --user admin:admin -X POST --form content=@$f --form instname="${institution}" http://localhost:8080/application/apcIngest
+        curl -v --user admin:adminpass -X POST --form content=@$f --form instname="${institution}" http://localhost:8080/monitorLocalSvc/internalApi/apcIngest
     else
         echo "Skipping '$f'"
     fi

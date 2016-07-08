@@ -77,8 +77,11 @@ class Org extends Component {
     type nullable: true
   }
 
-  transient def getDbSearchConfig() {
-    [
+  public static Map getSearchConfig() {
+    log.debug("getSearchConfig()");
+
+    return [
+      baseclass:'uk.ac.jisc.monitorlocal.Org',
       title:'Organizations',
       group:'Secondary',
       defaultSort:'name',
@@ -87,14 +90,13 @@ class Org extends Component {
         qbeForm:[
           [
             prompt:'Name or Title',
-            qparam:'qp_name',
+            qparam:'name',
             placeholder:'Name or title of item',
             contextTree:['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R']
           ],
         ],
         qbeGlobals:[
-          ['ctxtp':'filter', 'prop':'status.value', 'comparator' : 'eq', 'value':'Deleted', 'negate' : true, 'prompt':'Hide Deleted',
-           'qparam':'qp_showDeleted', 'default':'on']
+          // ['ctxtp':'filter', 'prop':'status.value', 'comparator' : 'eq', 'value':'Deleted', 'negate' : true, 'prompt':'Hide Deleted', 'qparam':'qp_showDeleted', 'default':'on']
         ],
         qbeResults:[
           [heading:'Name', property:'name',sort:'name', link:[controller:'resource',action:'show',id:'x.r.class.name+\':\'+x.r.id'] ],

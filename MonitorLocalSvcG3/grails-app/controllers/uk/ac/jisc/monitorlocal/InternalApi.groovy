@@ -1,16 +1,14 @@
 package uk.ac.jisc.monitorlocal
 
+import static groovyx.net.http.ContentType.*
+import static groovyx.net.http.Method.GET
 import grails.converters.*
 import grails.core.GrailsApplication
 import grails.plugins.*
-import grails.plugin.springsecurity.annotation.Secured
-import static groovyx.net.http.ContentType.*
-import static groovyx.net.http.Method.GET
-import uk.ac.jisc.monitorlocal.*
 import au.com.bytecode.opencsv.CSVReader
-import com.k_int.grails.tools.refdata.*
 
 import com.k_int.grails.tools.finance.YahooRatesService
+import com.k_int.grails.tools.refdata.*
 
 
 class InternalApiController implements PluginManagerAware {

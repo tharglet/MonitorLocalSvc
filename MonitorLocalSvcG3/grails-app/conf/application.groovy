@@ -1,3 +1,4 @@
+
 grails.gorm.default.constraints = {
   // Default everything to nullable but not blank.
   '*' ( nullable: true, blank:false )
@@ -18,8 +19,43 @@ grails.gorm.default.constraints = {
 //  })
 }
 
-// Added by the Audit-Logging plugin:
-grails.plugin.auditLog.auditDomainClassName = 'uk.ac.jisk.monitorlocal.AuditTrail'
+// AuditLog Plugin config
+grails {
+  plugin {
+    auditLog {
+      auditDomainClassName = 'uk.ac.jisc.monitorlocal.AuditTrail'
+      
+      stampEnabled = true // enable stamping support
+      stampAlways = false // always stamp domain classes, regardless of @Stamp or static stampable = true existence
+      stampCreatedBy = 'createdBy' // fieldname
+      stampLastUpdatedBy = 'lastUpdatedBy' // fieldname
+      
+      // Add field information added to the Database
+      verbose = true
+      
+      // Log the IDs of  associated objects.
+      logIds = true
+      
+      // Do not log a deletion of each field, just that it was deleted.
+      nonVerboseDelete = true
+
+      // Current user.
+      actorClosure = { request, session ->
+        def name = request.applicationContext.springSecurityService.currentUser?.name
+        
+        if (!name && request.applicationContext.springSecurityService.principal instanceof String){
+         name = request.applicationContext.springSecurityService.principal
+        }
+        
+//        if (SpringSecurityUtils.isSwitched()){
+//          SpringSecurityUtils.
+//          name = SpringSecurityUtils.switchedUserOriginalUsername +" AS "+ name
+//        }
+        return name
+      }
+    }
+  }
+}
 
 
 grails.plugin.springsecurity.useSecurityEventListener = true
