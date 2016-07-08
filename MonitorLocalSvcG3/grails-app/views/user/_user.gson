@@ -12,9 +12,10 @@ def exlc = [
   'accountExpired',
   'accountLocked',
   'passwordExpired',
+  'socialIdentities',
   'orgAffiliations'
 ]
-json g.render( user, [deep:true, excludes: exlc]) {
+json g.render( user, [excludes: exlc]) {
 
   affiliations (user.orgAffiliations) { UserOrg affil ->
     org   affil.org?.name
