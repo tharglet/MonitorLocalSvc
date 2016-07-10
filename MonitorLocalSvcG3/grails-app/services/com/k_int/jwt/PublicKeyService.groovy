@@ -32,20 +32,11 @@ class PublicKeyService {
     // See if the app has a public key, if not generate one and store it
     if ( thekey == null ) {
       log.debug("Creating public key");
-      // thekey = RsaJwkGenerator.generateJwk(2048);
-      // Give the JWK a Key ID (kid), which is just the polite thing to do
-      // thekey.setKeyId("k1");
-
       Map<String, Object> keyparams = grailsApplication.config.monitorLocal_jwk
-      // keyparams.n = 'nB-sbsjkNr7AH4hzsH-_3P6UlWlYA0Izy2UgjowJkNQfiaPvILS320FJaHqBQ6r2qP86xssPYqxSIvXS4qxWgxaKkwNx5myYKVNO4aIN6DpnIGmtzcjdVMZYWSVe4dGXwrGJ8dqLxEL6FthVu6DkTkCICpqIPU2gsgRqPPgt61GAu87_3Q8qGjgeb-gm1YfLZdlm_JQqWEPDmiwEiR7PARVPkNByhZISWX9U1CG0LBPRDh9eLnm6hdFdQAgesHqhRMB7UXrNJftCnDKw8Ay_m6wk2Tv86Mwi3jx0RBWm0sVnjVlHVqgGeDk1IMJQaWkcUC5KvfXcSTpn4ZX_IneIuQ'
-      // keyparams.e = 'AQAB'
       thekey = new org.jose4j.jwk.RsaJsonWebKey(keyparams)
-
-      //log.debug("Got json key ${thekey.toJson()}")
-      //log.debug("Got public key ${thekey.getRsaPublicKey().class.name}")
-      //log.debug("Got private key ${thekey.getRsaPrivateKey().class.name}")
-      //log.debug("JWK to params ${thekey.toParams(JsonWebKey.OutputControlLevel.INCLUDE_PRIVATE)}")
-      //log.debug("JWK to json ${thekey.toJson(JsonWebKey.OutputControlLevel.INCLUDE_PRIVATE)}")
+    }
+    else {
+      log.warn("No KEY");
     }
 
     return thekey;
