@@ -244,9 +244,9 @@ class AcademicOutput extends Component {
             placeholder:'Name or title of item',
             contextTree: [ 'ctxtp':'disjunctive',
                              'terms':[
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R']//,
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R'],
                                   // ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'identifiers.identifier.value', 'wildcard':'R'],
-                                  // ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'assignedTo.name', 'wildcard':'R'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'assignedTo.name', 'wildcard':'R']
                              ]
                            ]
 
