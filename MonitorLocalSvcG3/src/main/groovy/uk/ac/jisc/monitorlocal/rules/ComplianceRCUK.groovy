@@ -12,7 +12,7 @@ class ComplianceRCUK {
       // Publication route.
       def val = it.publicationRoute?.value?.toLowerCase()
       
-      if (val == 'gold') {
+      if (val == 'gold' || 'gold paid by other') {
         val = (it.embargoPeriod == 0 && (it.embargoEndDate == null || it.embargoEndDate == it.publishedDate))
       } else {
         // If not gold return null... As not a failure, but irrelevant.
@@ -26,7 +26,7 @@ class ComplianceRCUK {
       // Publication route.
       def val = it.publicationRoute?.value?.toLowerCase()
       
-      if (val == 'gold') {
+      if (val == 'gold' || 'gold paid by other') {
         val = it.licence?.value
         if (val)  val = (val == 'CC BY')
       } else {
