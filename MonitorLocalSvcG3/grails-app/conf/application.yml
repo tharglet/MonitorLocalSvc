@@ -146,7 +146,9 @@ grails:
         
       ipRestrictions:
         - 
-          '/internalApi/**': '127.0.0.1'
+          pattern: '/internalApi/**'
+          access: 
+            - '127.0.0.1'
       authority:
         className: 'uk.ac.jisc.monitorlocal.Role'
       controllerAnnotations:
