@@ -1,6 +1,7 @@
 package uk.ac.jisc.monitorlocal
 
 import com.k_int.grails.tools.refdata.*
+import groovy.transform.EqualsAndHashCode
 
 
 /**
@@ -9,6 +10,8 @@ import com.k_int.grails.tools.refdata.*
  *  In that case, the relationship from an AO may be terminated by here and not link to a Person, allowing
  *  an admin to resolve the ambiguity later, whilst still recording the name.
  */
+
+@EqualsAndHashCode(includes=["person", "namerel", "name"])
 class AoName {
   
   static belongsTo = [AcademicOutput]
@@ -16,12 +19,6 @@ class AoName {
   AcademicOutput academicOutput
   Person person
   String name
-  
-  def beforeValidate() {
-    if (!name && person) {
-      name = person.getName();
-    }
-  }
   
   boolean keyContact = false;
 
@@ -34,6 +31,12 @@ class AoName {
     'Funder Contact',
     'PhD Student'])
   RefdataValue namerel
+  
+  def beforeValidate() {
+    if (!name && person) {
+      name = person.getName();
+    }
+  }
 
   static constraints = {
     'academicOutput'  (nullable: false)

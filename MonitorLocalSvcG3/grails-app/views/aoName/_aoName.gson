@@ -1,0 +1,15 @@
+import uk.ac.jisc.monitorlocal.AoName
+
+model {
+	AoName aoName
+}
+
+json {
+  
+  id aoName.id
+  academicOutput g.render(aoName.academicOutput)
+  keyContact aoName.keyContact
+  name aoName.name
+  namerel g.render(aoName.namerel)
+  person g.render(aoName.person)
+}
