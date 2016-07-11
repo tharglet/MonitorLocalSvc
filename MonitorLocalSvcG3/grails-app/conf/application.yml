@@ -195,7 +195,7 @@ grails:
             pattern: '/internalApi/**'
             access:
               -
-                'ROLE_SYSTEM'
+                'permitAll'
           -
             pattern: '/person/**'
             access:
@@ -232,10 +232,10 @@ grails:
               -
                 'ROLE_USER'
         chainMap:
-          # -
-            # # Register /internalApi as using basic auth -- ONLY for usage when triggering local scripts etc
-            # pattern: '/internalApi/**'
-            # filters: 'JOINED_FILTERS,-exceptionTranslationFilter,-jwtPreauthFilter'
+          -
+            # Register /internalApi as using basic auth -- ONLY for usage when triggering local scripts etc
+            pattern: '/internalApi/**'
+            filters: 'JOINED_FILTERS,-exceptionTranslationFilter,-jwtPreauthFilter'
           -
             pattern: '/assets/**'
             filters: 'none'
