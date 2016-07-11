@@ -13,7 +13,11 @@ def exlc = [
   'accountLocked',
   'passwordExpired',
   'socialIdentities',
-  'orgAffiliations'
+  'orgAffiliations',
+  'created',
+  'createdBy',
+  'updated',
+  'updatedBy'
 ]
 json g.render( user, [excludes: exlc]) {
 

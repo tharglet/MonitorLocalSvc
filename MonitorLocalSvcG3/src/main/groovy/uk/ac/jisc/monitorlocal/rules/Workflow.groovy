@@ -43,5 +43,18 @@ class Workflow {
       }
       return found
     }
+
+    //Compliance
+    'Compliance checks for review' {
+      def excluded_status = ['for review']
+      boolean reviewed = true;
+      def rules = it.complianceRules
+      for (int i=0; i< rules.size() && reviewed; i++) {
+        String status = rules.getAt(i).status?.value?.toLowerCase()
+        reviewed = !excluded_status.contains(status)
+      }
+
+      return reviewed
+    }
   }
 }

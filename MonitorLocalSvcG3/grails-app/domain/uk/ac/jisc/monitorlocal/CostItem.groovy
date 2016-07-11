@@ -26,6 +26,8 @@ class CostItem {
     'Currency Adjustment',
     'Page Charge',
     'Colour Charge',
+    'Membership',
+    'Pre-Pay Deposit',
     'Other'
   ])
   RefdataValue category
@@ -35,6 +37,14 @@ class CostItem {
     'Actual'
   ])
   RefdataValue status
+
+  String purchaseOrder
+
+  @Defaults([
+          'Credit',
+          'Debit'
+  ])
+  RefdataValue payee
   
   Currency currency = Constants.GBP
   
@@ -78,6 +88,8 @@ class CostItem {
     'status'          ( nullable: true )
     'category'        ( nullable: true )
     'estimated'       ( nullable: true )
+    'payee'           ( nullable: true )
+    'purchaseOrder'   ( nullable: true )
   }
   
   static mapping = {

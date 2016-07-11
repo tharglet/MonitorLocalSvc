@@ -124,11 +124,16 @@ class AbsoluteCollectionListener extends DataBindingListenerAdapter {
       }
             
       // Remove each item not in the supplied vals.
+      boolean needsSave = false
       obj[propertyName].collect().each {
         if (it.id && !ids.contains(it.id)) {
           log.debug "Item with id ${it.id} was not present in data for ${propertyName} on ${obj}, so we should remove it."
           obj."removeFrom${GrailsNameUtils.getClassName(propertyName)}" (it)
+          needsSave = true
         }
+      }
+      if (needsSave) {
+        obj.save(failOnError:true, flush:true)
       }
     }
     // Return true to state that we still want binding to continue no matter what happens above.

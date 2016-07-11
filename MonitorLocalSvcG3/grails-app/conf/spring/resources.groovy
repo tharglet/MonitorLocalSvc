@@ -41,7 +41,7 @@ beans = {
     // }
     
     // Change the authentication entry point so a 401 is sent instead of a redirect.
-    authenticationEntryPoint(org.springframework.boot.autoconfigure.security.Http401AuthenticationEntryPoint,  "JWT")
+    authenticationEntryPoint(org.springframework.boot.autoconfigure.security.Http401AuthenticationEntryPoint,  'JWT: realm="Monitor Local"')
 
     // Register the binding listener to act on collection properties.
     absoluteCollectionListener (AbsoluteCollectionListener) {

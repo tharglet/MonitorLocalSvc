@@ -140,15 +140,21 @@ environments:
 grails:
   plugin:
     springsecurity:
-      basic:
-        realmName : "Jisc Monitor"
-      useBasicAuth: true
+      # basic:
+        # realmName : "Jisc Monitor"
+      # useBasicAuth: true
       userLookup:
         userDomainClassName: 'uk.ac.jisc.monitorlocal.User'
         authorityJoinClassName: 'uk.ac.jisc.monitorlocal.UserRole'
       providerNames:
         - 'preAuthenticatedAuthenticationProvider'
         - 'daoAuthenticationProvider'
+        
+      ipRestrictions:
+        - 
+          pattern: '/internalApi/**'
+          access: 
+            - '127.0.0.1'
       authority:
         className: 'uk.ac.jisc.monitorlocal.Role'
       controllerAnnotations:
@@ -195,7 +201,7 @@ grails:
             pattern: '/internalApi/**'
             access:
               -
-                'ROLE_SYSTEM'
+                'permitAll'
           -
             pattern: '/person/**'
             access:

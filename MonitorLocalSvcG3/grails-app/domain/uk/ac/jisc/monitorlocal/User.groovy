@@ -49,7 +49,9 @@ class User implements Serializable {
   }
 
   def beforeInsert() {
-    encodePassword()
+    if (password) {
+      encodePassword()
+    }
   }
   
   def beforeValidate() {
@@ -89,6 +91,7 @@ class User implements Serializable {
 
   static mapping = {
     password column: '`password`'
+    orgAffiliations joinTable: [name: "user_affiliations" ]
   }
   
   public boolean isVerified () {

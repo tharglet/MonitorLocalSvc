@@ -1,0 +1,7 @@
+import uk.ac.jisc.monitorlocal.Person
+
+model {
+	Person person
+}
+
+json tmpl."/global/component" ( component: person)
