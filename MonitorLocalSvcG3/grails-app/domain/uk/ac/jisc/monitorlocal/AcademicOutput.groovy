@@ -226,4 +226,40 @@ class AcademicOutput extends Component {
 
     return result;
   }
+
+  public static Map getSearchConfig() {
+    log.debug("getSearchConfig()");
+
+    return [
+      baseclass:'uk.ac.jisc.monitorlocal.AcademicOutput',
+      title:'AO',
+      group:'Secondary',
+      defaultSort:'name',
+      defaultOrder:'asc',
+      qbeConfig:[
+        qbeForm:[
+          [
+            prompt:'Name or Title',
+            qparam:'q',
+            placeholder:'Name or title of item',
+            contextTree: [ 'ctxtp':'disjunctive',
+                             'terms':[
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R']//,
+                                  // ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'identifiers.identifier.value', 'wildcard':'R'],
+                                  // ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'assignedTo.name', 'wildcard':'R'],
+                             ]
+                           ]
+
+          ],
+        ],
+        qbeGlobals:[
+        ],
+        qbeResults:[
+          [heading:'Name', property:'name',sort:'name', link:[controller:'resource',action:'show',id:'x.r.class.name+\':\'+x.r.id'] ],
+          [heading:'Status', sort:'status', property:'status.value'],
+        ]
+      ]
+    ]
+  }
+
 }
