@@ -124,33 +124,40 @@ class JwtController {
                       log.error('missing role "user"')
                       response.status(500, "invalid system state")
                   } else {
-                      log.debug("Creating new user");
+                      log.debug("Creating new user :: ${user.username}");
+
+                      if ( ( user.username ) && ( user.username.trim().length() > 0 ) ) {
   
-                      user = new User()
+                        user = new User()
   
-                      // copy properties from the social API to the User object.
-                      if (userMapping) {
-                          userMapping.each{ k, v ->
-                              log.debug("Copy user mapping ${k} ${v} ${j2[v]}");
-                              user[k] = j2[v]
-                          }
+                        // copy properties from the social API to the User object.
+                        if (userMapping) {
+                            userMapping.each{ k, v ->
+                                log.debug("Copy user mapping ${k} ${v} ${j2[v]}");
+                                user[k] = j2[v]
+                            }
+                        }
+  
+                        // prefix the username with the social provider.
+                        user.username = provider + '_' + user.username
+                        user.password = java.util.UUID.randomUUID().toString()
+                        user.accountExpired=false;
+                        user.accountLocked=false;
+                        user.passwordExpired=false;
+                        // TODO: add created and lastUsed timestamp fields?
+                        user.save(flush:true, failOnError:true);
+  
+                        social_identity = new SocialIdentity(provider: provider,reference:userReference,user:user).save(flush:true, failOnError:true);
+  
+                        log.debug("Grant user role");
+                        def new_grant = new UserRole(role:role_user, user:user).save(flush:true, failOnError:true);
+  
+                        result.token = createToken(social_identity)
                       }
-  
-                      // prefix the username with the social provider.
-                      user.username = provider + '_' + user.username
-                      user.password = java.util.UUID.randomUUID().toString()
-                      user.accountExpired=false;
-                      user.accountLocked=false;
-                      user.passwordExpired=false;
-                      // TODO: add created and lastUsed timestamp fields?
-                      user.save(flush:true, failOnError:true);
-  
-                      social_identity = new SocialIdentity(provider: provider,reference:userReference,user:user).save(flush:true, failOnError:true);
-  
-                      log.debug("Grant user role");
-                      def new_grant = new UserRole(role:role_user, user:user).save(flush:true, failOnError:true);
-  
-                      result.token = createToken(social_identity)
+                      else {
+                        // Trying to stop database filling with null users
+                        throw new RuntimeException("No username available to create new user - perhaps this is meant to be anonymous?");
+                      }
                   }
                 }
   
