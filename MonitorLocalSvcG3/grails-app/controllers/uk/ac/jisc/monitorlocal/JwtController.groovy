@@ -90,15 +90,17 @@ class JwtController {
               def social_identity = SocialIdentity.findByProviderAndReference(provider, userReference)
   
               if ( authorization_header ) {
-                log.debug("Request already contains an Authorization header :  ${authorization_header} so we should already have neen through this process")
+                log.debug("Request already contains an Authorization header :  ${authorization_header} so we should already have been through this process")
                 if ( social_identity ) {
                   log.debug("Got user for that JWT")
                   result.message =  'There is already a Google account that belongs to you'
                   response.status = 409;
                 }
                 else {
+                  
+                  log.debug("Process auth header to get token ${token}")
                   def token = authorization_header.split(' ')[1];
-                  log.debug("Create token ${token}")
+                  log.debug("Token = ${token}")
                   def payload = publicKeyService.decodeJWT(token);
                   result.token = createToken(social_identity)
                 }
@@ -122,7 +124,7 @@ class JwtController {
                       log.error('missing role "user"')
                       response.status(500, "invalid system state")
                   } else {
-                      // log.debug("Creating new user");
+                      log.debug("Creating new user");
   
                       user = new User()
   
@@ -190,6 +192,8 @@ class JwtController {
   }
 
   private String createToken(user) {
+
+    log.debug("Request seems to contain a legitimate user - create and sign a token for that user");
 
     // See https://bitbucket.org/b_c/jose4j/wiki/JWT%20Examples
 

@@ -20,7 +20,7 @@ public class JWTAuthentication implements Authentication {
         this.authenticated = false;
 
         List<GrantedAuthority> tmp = new ArrayList<>();
-        if (principal.authorities != null) {
+        if (principal?.authorities != null) {
           principal.authorities.each { role ->
             tmp.add(new SimpleGrantedAuthority(role.authority));
           }
