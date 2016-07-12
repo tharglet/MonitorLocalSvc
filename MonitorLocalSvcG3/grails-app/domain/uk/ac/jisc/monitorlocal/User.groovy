@@ -97,8 +97,10 @@ class User implements Serializable {
   public boolean isVerified () {
     this.authorities.contains ( Role.findByAuthority('ROLE_VERIFIED_USER') )
   }
-  
+
   public createUserDTO() {
+
+    def userInstitution = getHomeInstitution()
 
     def result = [
       userid:this.username,
@@ -113,6 +115,13 @@ class User implements Serializable {
 
     orgAffiliations.each {
       result.affiliations.add([org:it.org.name,role:it.formalRole?.value,status:it.status?.value]);
+      // Maybe have a status that lets the user set their home institution
+      if ( result.instCtx == null ) {
+        result.instCtx=[
+          id:userInstitution?.id,
+          name:userInstitution?.name
+        ]
+      }
     }
     
     getAuthorities().each {

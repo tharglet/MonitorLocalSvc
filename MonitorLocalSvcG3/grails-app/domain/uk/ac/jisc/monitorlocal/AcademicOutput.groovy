@@ -245,12 +245,18 @@ class AcademicOutput extends Component {
             contextTree: [ 'ctxtp':'disjunctive',
                              'terms':[
                                   ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R'],
-                                  // ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'identifiers.identifier.value', 'wildcard':'R'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'identifiers.identifier.value', 'wildcard':'R'],
                                   ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'assignedTo.name', 'wildcard':'R']
                              ]
-                           ]
+                         ]
 
           ],
+          [
+            prompt:'Owner Institution',
+            qparam:'owner',
+            placeholder:'Owner Institution',
+            contextTree: [ 'ctxtp':'qry', 'comparator' : 'eq', 'prop':'ownerInstitution' ],
+          ]
         ],
         qbeGlobals:[
         ],
