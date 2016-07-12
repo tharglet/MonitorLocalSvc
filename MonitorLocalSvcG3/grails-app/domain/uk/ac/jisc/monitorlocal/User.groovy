@@ -111,7 +111,8 @@ class User implements Serializable {
       bio: this.biography,
       affiliations: [],
       roles: [],
-      verified: this.verified
+      verified: this.verified,
+      wibble:true
     ]
 
     orgAffiliations.each {

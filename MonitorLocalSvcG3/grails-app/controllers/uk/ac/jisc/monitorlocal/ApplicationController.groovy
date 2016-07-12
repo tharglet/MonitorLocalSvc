@@ -112,4 +112,33 @@ class ApplicationController implements PluginManagerAware {
     [yahooRatesService: yahooRatesService, user: user]
   }
 
+
+  def requestAffiliation() {
+    def result = [:]
+    def user = springSecurityService.currentUser
+    log.debug("Application::requestAffiliation - ${request.JSON}");
+
+    // [details:[institution:[lastUpdated:2016-07-12T08:13:09+0000, created:2016-07-12T08:13:09+0000, name:University of Jisc, id:3]]]
+    def org = Org.get(request.JSON.details.institution.id)
+
+    if ( org ) {
+      def existing_affiliation = UserOrg.findByOrgAndUser(org, user)
+      def requested_role = Role.findByAuthority(request.JSON.details.role)
+
+      if ( existing_affiliation ) {
+        log.debug("Found existing affiliation");
+      }
+      else {
+        // Status == 1 is approved
+        existing_affiliation = new UserOrg(org:org, user:user, formalRole:requested_role, status: 1).save(flush:true, failOnError:true)
+        result.message="Affiliation Requested"
+        result.org_id=org.id
+        result.org=org.name
+        result.role = request.JSON.details.role
+      }
+    }
+
+    render result as JSON
+  }
+  
 }

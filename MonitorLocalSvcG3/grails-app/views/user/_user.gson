@@ -28,11 +28,15 @@ json g.render( user, [excludes: exlc]) {
     status    affil.status?.value
   }
 
-  userOrg(user.userOrg) { org ->
-    orgId org?.id
-    orgName org?.name
+  if ( user.userOrg ) {
+    userOrg {
+      name user.userOrg?.name
+      id user.userOrg?.id
+    }
   }
-  
+
+  ts (new Date())
+
   verified user.verified
   
   roles g.render(template:"/role/role", collection: user.getAuthorities(), var:'role')
