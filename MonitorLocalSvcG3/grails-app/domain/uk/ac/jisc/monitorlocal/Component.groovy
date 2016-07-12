@@ -30,6 +30,11 @@ class Component  implements DomainRulePropertySource{
   User createdBy
   Date lastUpdated
   User lastUpdatedBy
+
+  @BindUsing({obj,source ->
+    Org.orgBinder(obj.ownerInstitution, source['ownerInstitution'], true);
+  })
+  Org ownerInstitution
   
   def beforeInsert () {
     def now = new Date()
@@ -84,6 +89,7 @@ class Component  implements DomainRulePropertySource{
     lastUpdatedBy nullable: true, bindable:false
     created nullable: true, bindable:false
     lastUpdated nullable: true, bindable:false
+    ownerInstitution nullable: true
   }
 
   static mapping = {
