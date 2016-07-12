@@ -19,12 +19,18 @@ def exlc = [
   'updated',
   'updatedBy'
 ]
+
 json g.render( user, [excludes: exlc]) {
 
   affiliations (user.orgAffiliations) { UserOrg affil ->
     org   affil.org?.name
     role  affil.formalRole?.authority
     status    affil.status?.value
+  }
+
+  userOrg(user.userOrg) { org ->
+    orgId org?.id
+    orgName org?.name
   }
   
   verified user.verified

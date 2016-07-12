@@ -3,6 +3,7 @@ package uk.ac.jisc.monitorlocal
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 import uk.ac.jisc.monitorlocal.databinding.AbsoluteCollection;
+import javax.persistence.Transient
 
 @EqualsAndHashCode(includes='username')
 @ToString(includes='username', includeNames=true, includePackage=false)
@@ -18,6 +19,7 @@ class User implements Serializable {
   boolean accountExpired
   boolean accountLocked
   boolean passwordExpired
+  String localId
 
   String profilePic
   String email
@@ -79,6 +81,7 @@ class User implements Serializable {
     email blank: true, nullable:true, bindable: false
     name blank: true, nullable:true, bindable: false
     biography blank: true, nullable:true, bindable: false
+    localId blank: true, nullable:true, bindable: false
     
     enabled bindable: false
     accountExpired bindable: false
@@ -99,8 +102,6 @@ class User implements Serializable {
   }
 
   public createUserDTO() {
-
-    def userInstitution = getHomeInstitution()
 
     def result = [
       userid:this.username,
@@ -130,4 +131,14 @@ class User implements Serializable {
 
     return result;
   }
+
+  @Transient
+  public Org getUserOrg() {
+    def result = null
+    if ( orgAffiliations.size() > 0 ) {
+      result = orgAffiliations.getAt(0);
+    }
+    result
+  }
+
 }
