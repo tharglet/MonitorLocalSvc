@@ -247,9 +247,9 @@ class AcademicOutput extends Component {
           ],
           [
             prompt:'Owner Institution',
-            qparam:'owner',
+            qparam:'instCtx',
             placeholder:'Owner Institution',
-            contextTree: [ 'ctxtp':'qry', 'comparator' : 'eq', 'prop':'ownerInstitution' ],
+            contextTree: [ 'ctxtp':'qry', 'comparator' : 'eq', 'prop':'ownerInstitution.id', type:'java.lang.Long' ],
           ]
         ],
         qbeGlobals:[

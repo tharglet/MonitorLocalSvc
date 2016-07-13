@@ -66,4 +66,44 @@ class Invoice extends Component {
     filename nullable: true, blank: false
     invoiceCosts nullable: false
   }
+
+  public static Map getSearchConfig() {
+    log.debug("getSearchConfig()");
+
+    return [
+      baseclass:'uk.ac.jisc.monitorlocal.Invoice',
+      title:'Invoice',
+      group:'Secondary',
+      defaultSort:'name',
+      defaultOrder:'asc',
+      qbeConfig:[
+        qbeForm:[
+          [
+            prompt:'Name or Title',
+            qparam:'q',
+            placeholder:'Name or title of item',
+            contextTree: [ 'ctxtp':'disjunctive',
+                             'terms':[
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R']
+                             ]
+                         ]
+
+          ],
+          [
+            prompt:'Owner Institution',
+            qparam:'instCtx',
+            placeholder:'Owner Institution',
+            contextTree: [ 'ctxtp':'qry', 'comparator' : 'eq', 'prop':'ownerInstitution.id', type:'java.lang.Long' ],
+          ]
+        ],
+        qbeGlobals:[
+        ],
+        qbeResults:[
+          [heading:'Name', property:'name',sort:'name', link:[controller:'resource',action:'show',id:'x.r.class.name+\':\'+x.r.id'] ],
+          [heading:'Status', sort:'status', property:'status.value'],
+        ]
+      ]
+    ]
+  }
+
 }
