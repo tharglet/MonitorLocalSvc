@@ -1,0 +1,13 @@
+import uk.ac.jisc.monitorlocal.User
+
+model {
+  User user
+  String message
+  String token
+}
+
+json {
+  "message" (message)
+  "token"       (token)
+  "user"          tmpl."/user/user" (user)
+}

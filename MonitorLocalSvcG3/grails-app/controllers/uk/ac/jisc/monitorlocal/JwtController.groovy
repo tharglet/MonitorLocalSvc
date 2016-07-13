@@ -162,7 +162,7 @@ class JwtController {
                       response.status(500, "invalid system state")
                   } else {
                       // create a user object to push down with the JWT to the client.
-                      result.user = user.createUserDTO()
+                      result.user = user
                   }
                 }
               }
@@ -186,7 +186,7 @@ class JwtController {
     }
 
     log.debug("JwtController returning...");
-    render result as JSON;
+    result
   }
 
   private String createToken(user) {
