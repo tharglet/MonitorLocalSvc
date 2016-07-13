@@ -137,7 +137,7 @@ class User implements Serializable {
   public Org getUserOrg() {
     def result = null
     if ( orgAffiliations.size() > 0 ) {
-      result = orgAffiliations.getAt(0);
+      result = orgAffiliations.getAt(0).org
     }
     result
   }
