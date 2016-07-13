@@ -210,6 +210,10 @@ class InternalApiController implements PluginManagerAware {
            ( orgdata.identifiers.size() > 0 ) ) {
         Org.withNewTransaction() {
           uk.ac.jisc.monitorlocal.Org o = Component.lookupOrCreate(uk.ac.jisc.monitorlocal.Org.class, orgdata.name, orgdata.identifiers)
+          if ( orgdata.type ) {
+            o.type = orgdata.type;
+          }
+          o.save(flush:true, failOnError:true);
         }
       }
 
