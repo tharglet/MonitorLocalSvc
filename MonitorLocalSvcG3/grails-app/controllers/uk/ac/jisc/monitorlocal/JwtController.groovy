@@ -119,14 +119,14 @@ class JwtController {
                   // on bootstrap.
                   log.debug("Create user ${user}")
                   def role_user = Role.findByAuthority('ROLE_USER')
+
                   if (!role_user) {
                       // no "user" role, log an error and respond with a 500 InternalServerError.
                       log.error('missing role "user"')
                       response.status(500, "invalid system state")
                   } else {
-                      log.debug("Creating new user :: ${user.username}");
+                      log.debug("Creating new user :: Source data ${j2}, user mapping is ${userMapping}");
 
-  
                       user = new User()
   
                       // copy properties from the social API to the User object.
