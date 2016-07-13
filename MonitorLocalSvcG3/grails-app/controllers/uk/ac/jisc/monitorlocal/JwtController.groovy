@@ -117,7 +117,7 @@ class JwtController {
                 else {
                   // if there is no "user" role, the system is in an invalid state, this should be created as necessary
                   // on bootstrap.
-                  log.debug("Create user")
+                  log.debug("Create user ${user}")
                   def role_user = Role.findByAuthority('ROLE_USER')
                   if (!role_user) {
                       // no "user" role, log an error and respond with a 500 InternalServerError.
@@ -126,18 +126,18 @@ class JwtController {
                   } else {
                       log.debug("Creating new user :: ${user.username}");
 
+  
+                      user = new User()
+  
+                      // copy properties from the social API to the User object.
+                      if (userMapping) {
+                          userMapping.each{ k, v ->
+                              log.debug("Copy user mapping ${k} ${v} ${j2[v]}");
+                              user[k] = j2[v]
+                          }
+                      }
+  
                       if ( ( user.username ) && ( user.username.trim().length() > 0 ) ) {
-  
-                        user = new User()
-  
-                        // copy properties from the social API to the User object.
-                        if (userMapping) {
-                            userMapping.each{ k, v ->
-                                log.debug("Copy user mapping ${k} ${v} ${j2[v]}");
-                                user[k] = j2[v]
-                            }
-                        }
-  
                         // prefix the username with the social provider.
                         user.username = provider + '_' + user.username
                         user.password = java.util.UUID.randomUUID().toString()
