@@ -4,6 +4,10 @@ import grails.converters.*
 import grails.core.GrailsApplication
 import grails.plugins.*
 import grails.plugin.springsecurity.annotation.Secured
+import grails.converters.*
+import groovyx.net.http.HTTPBuilder
+import static groovyx.net.http.Method.GET
+
 
 
 import com.k_int.grails.tools.finance.YahooRatesService
@@ -141,4 +145,71 @@ class ApplicationController implements PluginManagerAware {
     render result as JSON
   }
   
+
+  /**
+   *  POST a json document in containing 1 map entry of doi:'value to lookup'
+   *  return a json document containing {
+   *    containerType
+   *    containerTitle
+   *    itemTitle
+   *    issn
+   *    eissn
+   *    doi
+   *    authorNames
+   *    message
+   *    identifiers : [ { namespace:'ns', value:'value}, {...}, {...} ]
+   */
+  def crossrefLookup() {
+    def result = [:]
+    log.debug("crossrefLookup ${params} ${request.JSON}");
+    try {
+      if ( ( request.JSON ) && ( request.JSON.doi ) ) {
+        def r = crossrefSyncService.lookupDOI(request.JSON.doi)
+        log.debug("Result of crossref lookup ${r}");
+
+        if ( r ) {
+
+          result.r = r;
+        
+          // See if we can find any journalTitle using the ISSNs crossref have supplied for us. 
+          // If we can, thats what we should use.
+          def issns = r.message.ISSN
+
+          result.containerType=r.message.type;
+          result.containerTitle=r.message.'container-title'[0];
+          result.itemTitle=r.message.title[0];
+          result.doi=r.message.DOI;
+
+          // Add all authors to name list
+          result.authorNames = []
+          r.message.author.each { a ->
+            result.authorNames.add([given:a.given, family:a.family])
+          }
+
+          def publication = PublicationTitle.executeQuery('select t from PublicationTitle as t join t.identifiers as id where id.identifier.value in ( :v )',[v:issns]);
+
+          if ( publication ) {
+            log.debug("Got publication title");
+            result.message="Title ${publication.title} matched with a publication in the monitor database via crossref supplied identifiers";
+            result.identifiers = []
+            publication.identifiers.each { it ->
+              result.identifiers.add([namespace:it.identifier.namespace.value,value:it.value]);
+            }
+          }
+          else {
+            log.debug("Unable to match a publication with identifiers ${issns}");
+            result.message="Unable to match a journal in monitor from crossref supplied identifiers. The information used may not be correct"
+          }
+        }
+      }
+      else {
+        log.warn("crossrefLookup called without { doi:'.....' }");
+      }
+    }
+    catch ( Exception e ) {
+      log.error("Unexpected error looking up DOI",e)
+      result.message="Unexpected error looking up DOI : "+e.message;
+    }
+    render result as JSON
+  }
 }
