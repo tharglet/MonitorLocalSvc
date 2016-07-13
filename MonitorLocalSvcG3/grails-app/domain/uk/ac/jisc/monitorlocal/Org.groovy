@@ -92,7 +92,12 @@ class Org extends Component {
             prompt:'Name or Title',
             qparam:'name',
             placeholder:'Name or title of item',
-            contextTree:['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R']
+            contextTree: [ 'ctxtp':'disjunctive',
+                             'terms':[
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'identifiers.identifier.value', 'wildcard':'R']
+                             ]
+                         ]
           ],
         ],
         qbeGlobals:[
