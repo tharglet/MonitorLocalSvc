@@ -16,5 +16,5 @@ json {
     out << ",\"rates\": ${theRates as JSON}" 
     out << ",\"all\": ${theRates.keySet() as JSON}"
   }
-  user g.render ( user )
+ "user" tmpl."/user/user" (user)
 }
