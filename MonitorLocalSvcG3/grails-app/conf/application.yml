@@ -111,7 +111,13 @@ environments:
     production:
         dataSource:
             dbCreate: update
-            url: jdbc:h2:./prodDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
+            driverClassName: org.mariadb.jdbc.Driver
+            dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+            username: k-int
+            password: k-int
+            url: jdbc:mysql://localhost/MonitorLocalProd?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8
+            pooled: true
+            # logSql: true
             properties:
                 jmxEnabled: true
                 initialSize: 5

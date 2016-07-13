@@ -54,11 +54,6 @@ class AcademicOutput extends Component {
   @Defaults(['CC BY', 'CC BY-SA', 'CC BY-ND', 'CC BY-NC', 'CC BY-NC-SA', 'CC BY-NC-ND'])
   RefdataValue licence
 
-  @BindUsing({obj,source ->
-    Org.orgBinder(obj.ownerInstitution, source['ownerInstitution'], true);
-  })
-  Org ownerInstitution
-
   // Ugh - hate this model - really would prefer publication to be separate to the AO
   Org publisher
 
@@ -128,7 +123,6 @@ class AcademicOutput extends Component {
     publisherSubmissionDate nullable: true
     publisherResponse nullable: true
     publisherResponseDate nullable: true
-    ownerInstitution nullable: true
     publisher nullable: true
     assignedTo nullable: true
     contactDate nullable: true
@@ -226,4 +220,46 @@ class AcademicOutput extends Component {
 
     return result;
   }
+
+  public static Map getSearchConfig() {
+    log.debug("getSearchConfig()");
+
+    return [
+      baseclass:'uk.ac.jisc.monitorlocal.AcademicOutput',
+      title:'AO',
+      group:'Secondary',
+      defaultSort:'name',
+      defaultOrder:'asc',
+      qbeConfig:[
+        qbeForm:[
+          [
+            prompt:'Name or Title',
+            qparam:'q',
+            placeholder:'Name or title of item',
+            contextTree: [ 'ctxtp':'disjunctive',
+                             'terms':[
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'identifiers.identifier.value', 'wildcard':'R'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'assignedTo.name', 'wildcard':'R']
+                             ]
+                         ]
+
+          ],
+          [
+            prompt:'Owner Institution',
+            qparam:'owner',
+            placeholder:'Owner Institution',
+            contextTree: [ 'ctxtp':'qry', 'comparator' : 'eq', 'prop':'ownerInstitution' ],
+          ]
+        ],
+        qbeGlobals:[
+        ],
+        qbeResults:[
+          [heading:'Name', property:'name',sort:'name', link:[controller:'resource',action:'show',id:'x.r.class.name+\':\'+x.r.id'] ],
+          [heading:'Status', sort:'status', property:'status.value'],
+        ]
+      ]
+    ]
+  }
+
 }

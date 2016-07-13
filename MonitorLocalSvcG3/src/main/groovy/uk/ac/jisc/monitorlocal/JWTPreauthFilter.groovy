@@ -44,12 +44,12 @@ public class JWTPreauthFilter extends org.springframework.security.web.authentic
       // log.debug("checking auth header");
       def authorization = request.getHeader("Authorization")
       if ( authorization ) {
-        // log.debug("Got auth header");
+        log.debug("Got auth header");
         def token = authorization.split(' ')[1];
   
         def payload = publicKeyService.decodeJWT(token)
 
-        // log.debug("Got payload ${payload} ${payload?.subject} from ${token}");
+        log.debug("Got payload ${payload} ${payload?.subject} from ${token}");
 
         if ( payload?.subject ) {
 
@@ -61,10 +61,10 @@ public class JWTPreauthFilter extends org.springframework.security.web.authentic
 
           // Doing this here instead of in the standard filter should enable @secured annotations
           if ( payload.subject ) {
-            // log.debug("Attempting to locate user ${payload.subject}")
+            log.debug("Attempting to locate user ${payload.subject}")
             User.withTransaction() {
               def principal = User.findByUsername(payload.subject)
-              // log.debug("Got user ${principal}")
+              log.debug("Got user ${principal}")
               org.springframework.security.core.Authentication auth = new JWTAuthentication(token,payload,principal);
               result = auth
 

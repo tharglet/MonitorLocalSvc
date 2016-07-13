@@ -3,6 +3,7 @@ package uk.ac.jisc.monitorlocal
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 import uk.ac.jisc.monitorlocal.databinding.AbsoluteCollection;
+import javax.persistence.Transient
 
 @EqualsAndHashCode(includes='username')
 @ToString(includes='username', includeNames=true, includePackage=false)
@@ -18,6 +19,7 @@ class User implements Serializable {
   boolean accountExpired
   boolean accountLocked
   boolean passwordExpired
+  String localId
 
   String profilePic
   String email
@@ -79,6 +81,7 @@ class User implements Serializable {
     email blank: true, nullable:true, bindable: false
     name blank: true, nullable:true, bindable: false
     biography blank: true, nullable:true, bindable: false
+    localId blank: true, nullable:true, bindable: false
     
     enabled bindable: false
     accountExpired bindable: false
@@ -97,7 +100,7 @@ class User implements Serializable {
   public boolean isVerified () {
     this.authorities.contains ( Role.findByAuthority('ROLE_VERIFIED_USER') )
   }
-  
+
   public createUserDTO() {
 
     def result = [
@@ -108,11 +111,19 @@ class User implements Serializable {
       bio: this.biography,
       affiliations: [],
       roles: [],
-      verified: this.verified
+      verified: this.verified,
+      wibble:true
     ]
 
     orgAffiliations.each {
       result.affiliations.add([org:it.org.name,role:it.formalRole?.value,status:it.status?.value]);
+      // Maybe have a status that lets the user set their home institution
+      if ( result.instCtx == null ) {
+        result.instCtx=[
+          id:userInstitution?.id,
+          name:userInstitution?.name
+        ]
+      }
     }
     
     getAuthorities().each {
@@ -121,4 +132,14 @@ class User implements Serializable {
 
     return result;
   }
+
+  @Transient
+  public Org getUserOrg() {
+    def result = null
+    if ( orgAffiliations.size() > 0 ) {
+      result = orgAffiliations.getAt(0);
+    }
+    result
+  }
+
 }

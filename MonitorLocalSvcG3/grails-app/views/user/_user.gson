@@ -19,6 +19,7 @@ def exlc = [
   'updated',
   'updatedBy'
 ]
+
 json g.render( user, [excludes: exlc]) {
 
   affiliations (user.orgAffiliations) { UserOrg affil ->
@@ -26,7 +27,16 @@ json g.render( user, [excludes: exlc]) {
     role  affil.formalRole?.authority
     status    affil.status?.value
   }
-  
+
+  if ( user.userOrg ) {
+    userOrg {
+      name user.userOrg?.name
+      id user.userOrg?.id
+    }
+  }
+
+  ts (new Date())
+
   verified user.verified
   System.out.println ("Running Template")
   roles g.render(template:"/role/role", collection: user.getAuthorities(), var:'role')

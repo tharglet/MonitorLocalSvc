@@ -90,15 +90,17 @@ class JwtController {
               def social_identity = SocialIdentity.findByProviderAndReference(provider, userReference)
   
               if ( authorization_header ) {
-                log.debug("Request already contains an Authorization header :  ${authorization_header} so we should already have neen through this process")
+                log.debug("Request already contains an Authorization header :  ${authorization_header} so we should already have been through this process")
                 if ( social_identity ) {
                   log.debug("Got user for that JWT")
                   result.message =  'There is already a Google account that belongs to you'
                   response.status = 409;
                 }
                 else {
+                  
+                  log.debug("Process auth header to get token ${token}")
                   def token = authorization_header.split(' ')[1];
-                  log.debug("Create token ${token}")
+                  log.debug("Token = ${token}")
                   def payload = publicKeyService.decodeJWT(token);
                   result.token = createToken(social_identity)
                 }
@@ -122,33 +124,40 @@ class JwtController {
                       log.error('missing role "user"')
                       response.status(500, "invalid system state")
                   } else {
-                      // log.debug("Creating new user");
+                      log.debug("Creating new user :: ${user.username}");
+
+                      if ( ( user.username ) && ( user.username.trim().length() > 0 ) ) {
   
-                      user = new User()
+                        user = new User()
   
-                      // copy properties from the social API to the User object.
-                      if (userMapping) {
-                          userMapping.each{ k, v ->
-                              log.debug("Copy user mapping ${k} ${v} ${j2[v]}");
-                              user[k] = j2[v]
-                          }
+                        // copy properties from the social API to the User object.
+                        if (userMapping) {
+                            userMapping.each{ k, v ->
+                                log.debug("Copy user mapping ${k} ${v} ${j2[v]}");
+                                user[k] = j2[v]
+                            }
+                        }
+  
+                        // prefix the username with the social provider.
+                        user.username = provider + '_' + user.username
+                        user.password = java.util.UUID.randomUUID().toString()
+                        user.accountExpired=false;
+                        user.accountLocked=false;
+                        user.passwordExpired=false;
+                        // TODO: add created and lastUsed timestamp fields?
+                        user.save(flush:true, failOnError:true);
+  
+                        social_identity = new SocialIdentity(provider: provider,reference:userReference,user:user).save(flush:true, failOnError:true);
+  
+                        log.debug("Grant user role");
+                        def new_grant = new UserRole(role:role_user, user:user).save(flush:true, failOnError:true);
+  
+                        result.token = createToken(social_identity)
                       }
-  
-                      // prefix the username with the social provider.
-                      user.username = provider + '_' + user.username
-                      user.password = java.util.UUID.randomUUID().toString()
-                      user.accountExpired=false;
-                      user.accountLocked=false;
-                      user.passwordExpired=false;
-                      // TODO: add created and lastUsed timestamp fields?
-                      user.save(flush:true, failOnError:true);
-  
-                      social_identity = new SocialIdentity(provider: provider,reference:userReference,user:user).save(flush:true, failOnError:true);
-  
-                      log.debug("Grant user role");
-                      def new_grant = new UserRole(role:role_user, user:user).save(flush:true, failOnError:true);
-  
-                      result.token = createToken(social_identity)
+                      else {
+                        // Trying to stop database filling with null users
+                        throw new RuntimeException("No username available to create new user - perhaps this is meant to be anonymous?");
+                      }
                   }
                 }
   
@@ -190,6 +199,8 @@ class JwtController {
   }
 
   private String createToken(user) {
+
+    log.debug("Request seems to contain a legitimate user - create and sign a token for that user");
 
     // See https://bitbucket.org/b_c/jose4j/wiki/JWT%20Examples
 

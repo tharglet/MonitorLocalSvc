@@ -64,7 +64,7 @@ class ComponentIdentifier {
   }
 
   public void setIdentifier(Identifier i) {
-    println("setIdentifier(${i})");
+    // println("setIdentifier(${i})");
     this.identifier = i;
   }
 
@@ -78,19 +78,19 @@ class ComponentIdentifier {
 
   public Identifier bindIdentifier(obj,source) {
 
-    println("**");
-    println("Bind identifier in componentIdentifier ${obj} ${source}");
-    println("**");
+    // println("**");
+    // println("Bind identifier in componentIdentifier ${obj} ${source}");
+    // println("**");
 
     Identifier result = null;
     try {
       def needs_save = false;
       result = Identifier.fuzzyMatch(source);
       if ( result == null ) {
-        println("Create and bind a new identifier");
+        // println("Create and bind a new identifier");
         result = new Identifier()
         needs_save=true;
-        println("Calling bind on instance of ${result?.class.name} with identifier ${source}");
+        // println("Calling bind on instance of ${result?.class.name} with identifier ${source}");
       }
 
       grailsWebDataBinder.bind(result, new SimpleMapDataBindingSource(source));
@@ -103,7 +103,7 @@ class ComponentIdentifier {
       e.printStackTrace()
     }
     finally {
-      println("Bind identifier in componentIdentifier returning ${result}");
+      // println("Bind identifier in componentIdentifier returning ${result}");
     }
 
     result;

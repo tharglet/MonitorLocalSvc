@@ -92,6 +92,8 @@ dependencies {
   compile "org.springframework.security:spring-security-core:4.0.3.RELEASE"
   compile "org.springframework.security:spring-security-web:4.0.3.RELEASE"
   runtime 'mysql:mysql-connector-java:5.1.30'
+  runtime 'org.mariadb.jdbc:mariadb-java-client:1.4.6'
+
   compile "org.bitbucket.b_c:jose4j:0.4.2"
   compile "au.com.bytecode:opencsv:2.4"
 

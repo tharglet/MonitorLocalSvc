@@ -19,6 +19,8 @@ class BootStrap {
     def role_admin_user = Role.findByAuthority('ROLE_ADMIN') ?: new Role(authority:'ROLE_ADMIN').save(flush:true, failOnError:true)
     def role_verified_user = Role.findByAuthority('ROLE_VERIFIED_USER') ?: new Role(authority:'ROLE_VERIFIED_USER').save(flush:true, failOnError:true)
     def role_system = Role.findByAuthority('ROLE_SYSTEM') ?: new Role(authority:'ROLE_SYSTEM').save(flush:true, failOnError:true)
+    def role_org_std = Role.findByAuthority('Standard User') ?: new Role(authority:'Standard User').save(flush:true, failOnError:true)
+    def role_org_adm = Role.findByAuthority('Admin') ?: new Role(authority:'Admin').save(flush:true, failOnError:true)
     
     // Run the rules.
 //    AcademicOutput ao = AcademicOutput.list(max:1)?.get(0)
