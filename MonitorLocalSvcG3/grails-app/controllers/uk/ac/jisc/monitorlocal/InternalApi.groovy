@@ -19,7 +19,7 @@ class InternalApiController implements PluginManagerAware {
     'name':[action:'process', target:"name", subtype:'simple'],
     'domain':[action:'process', target:"domain", subtype:'simple'],
     'address':[action:'process', target:"address", subtype:'simple'],
-    'type':[action:'process', target:"type", subtype:'simple'],
+    'type':[action:'process', target:"type", subtype:'refdata', refdataCategory:'Org.Type'],
     'id.jisc':[action:'process', target:"id", subtype:'id'],
     'id.ukprn':[action:'process', target:"id", subtype:'id'],
     'id.isni':[action:'process', target:"id", subtype:'id'],
@@ -193,6 +193,10 @@ class InternalApiController implements PluginManagerAware {
               orgdata.identifiers.add([namespace:id_components[1], value:it?.trim()])
             }
             break;
+          case 'refdata':
+            if ( it && ( it.trim().length() > 0 ) )  {
+              orgdata[cfg.target] = RefdataValue.lookupOrCreate(cfg.refdataCategory, it)
+            }
           default:
             log.debug("Unhandled type ${cfg.type} for column ${header[col]} config ${cfg} value ${it}");
             break;
