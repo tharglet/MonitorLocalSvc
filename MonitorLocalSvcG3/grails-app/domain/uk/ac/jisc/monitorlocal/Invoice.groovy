@@ -86,7 +86,9 @@ class Invoice extends Component {
             placeholder:'Name or title of item',
             contextTree: [ 'ctxtp':'disjunctive',
                              'terms':[
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R']
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'id', 'wildcard':'R'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'filename', 'wildcard':'R']
                              ]
                          ]
 
