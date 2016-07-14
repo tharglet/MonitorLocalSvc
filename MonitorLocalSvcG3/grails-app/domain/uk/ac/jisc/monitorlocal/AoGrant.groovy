@@ -57,7 +57,7 @@ class AoGrant extends Component {
     log.debug("getSearchConfig()");
 
     return [
-      baseclass:'uk.ac.jisc.monitorlocal.AOGrant',
+      baseclass:'uk.ac.jisc.monitorlocal.AoGrant',
       title:'AOGrant',
       group:'Secondary',
       defaultSort:'name',
