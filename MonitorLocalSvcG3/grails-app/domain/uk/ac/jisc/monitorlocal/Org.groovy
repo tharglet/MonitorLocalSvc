@@ -95,6 +95,7 @@ class Org extends Component {
             contextTree: [ 'ctxtp':'disjunctive',
                              'terms':[
                                   ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'id', 'wildcard':'R'],
                                   ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'identifiers.identifier.value', 'wildcard':'R']
                              ]
                          ]
