@@ -40,7 +40,7 @@ class ComplianceRCUK {
       def val = it.publicationRoute?.value?.toLowerCase()
       int num = it.deposits?.size() ?: 0
       
-      if (val.startsWith('green') && num > 0) {        
+      if (val?.startsWith('green') && num > 0) {        
         val = false
         for (int i=0; i<num && !val; i++ ) {
           def version = it.deposits[i].versionDeposited?.value?.toLowerCase()
