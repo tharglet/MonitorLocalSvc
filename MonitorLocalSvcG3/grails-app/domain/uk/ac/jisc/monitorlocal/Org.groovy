@@ -13,6 +13,8 @@ class Org extends Component {
   
   String address
   String taxCode
+  
+  Org funderGroup
 
   // Can users be affiliated with this org?
   Boolean membershipOrg
@@ -30,6 +32,7 @@ class Org extends Component {
 
   @AbsoluteCollection
   Set userAffiliations = []
+  
   static hasMany = [
     userAffiliations: UserOrg
   ]
