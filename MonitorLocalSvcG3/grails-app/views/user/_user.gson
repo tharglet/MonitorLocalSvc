@@ -38,6 +38,5 @@ json g.render( user, [excludes: exlc]) {
   ts (new Date())
 
   verified user.verified
-  System.out.println ("Running Template")
   roles g.render(template:"/role/role", collection: user.getAuthorities(), var:'role')
 }
