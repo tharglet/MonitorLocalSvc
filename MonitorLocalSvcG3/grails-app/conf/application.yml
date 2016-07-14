@@ -181,7 +181,7 @@ grails:
             pattern: '/angularHelper/**'
             access:
               -
-                'ROLE_USER'
+                'permitAll'
           -
             pattern: '/validate/**'
             access:
