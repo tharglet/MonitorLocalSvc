@@ -7,6 +7,7 @@ import grails.plugin.springsecurity.annotation.Secured
 import grails.converters.*
 import groovyx.net.http.HTTPBuilder
 import static groovyx.net.http.Method.GET
+import com.k_int.grails.tools.refdata.RefdataValue
 
 
 
@@ -186,20 +187,48 @@ class ApplicationController implements PluginManagerAware {
             result.authorNames.add([given:a.given, family:a.family])
           }
 
-          def publication = PublicationTitle.executeQuery('select t from PublicationTitle as t join t.identifiers as id where id.identifier.value in ( :v )',[v:issns]);
+          def publications = PublicationTitle.executeQuery('select distinct t from PublicationTitle as t join t.identifiers as id where id.identifier.value in ( :v )',[v:issns]);
+          def publication = null;
+
+          switch ( publications.size() ) {
+            case 0:
+              log.debug("No pub match");
+              break;
+            case 1:
+              publication = publications.getAt(0)
+              break;
+            default:
+              log.error("Matched ${publications.size()} Identifiers for ${issns}");
+       
+          }
 
           if ( publication ) {
             log.debug("Got publication title");
-            result.message="Title ${publication.title} matched with a publication in the monitor database via crossref supplied identifiers";
+            result.message="Title ${publication.name} matched with a publication in the monitor database via crossref supplied identifiers";
+            log.debug("Pub has ${publication.identifiers.size()} ids");
             result.identifiers = []
-            publication.identifiers.each { it ->
-              result.identifiers.add([namespace:it.identifier.namespace.value,value:it.value]);
+            publication.getIdentifiers().each { pid ->
+              log.debug("Add Pub ID ${pid.id} ${pid.identifier.id} ${pid.identifier.namespace.value} ${pid.identifier.value}");
+              result.identifiers.add([namespace:pid.identifier.namespace.value, value:pid.identifier.value]);
             }
           }
           else {
             log.debug("Unable to match a publication with identifiers ${issns}");
             result.message="Unable to match a journal in monitor from crossref supplied identifiers. The information used may not be correct"
           }
+
+          def jatype = null;
+          switch ( r.message.type ) {
+            case 'journal-article':
+              jatype = RefdataValue.lookupOrCreate('AcademicOutput.OutputType', 'Journal Article');
+              break;
+            case 'conference-paper':
+              jatype = RefdataValue.lookupOrCreate('AcademicOutput.OutputType', 'Conference Paper');
+              break;
+            default:
+              jatype = RefdataValue.lookupOrCreate('AcademicOutput.OutputType', 'Unknown');
+          }
+          result.type=[id:jatype?.id, value:jatype?.value];
         }
       }
       else {
