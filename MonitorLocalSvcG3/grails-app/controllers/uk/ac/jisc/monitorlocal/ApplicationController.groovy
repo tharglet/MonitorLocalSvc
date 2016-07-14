@@ -204,6 +204,7 @@ class ApplicationController implements PluginManagerAware {
 
           if ( publication ) {
             log.debug("Got publication title");
+            result.publication_id = publication.id;
             result.message="Title ${publication.name} matched with a publication in the monitor database via crossref supplied identifiers";
             log.debug("Pub has ${publication.identifiers.size()} ids");
             result.identifiers = []
