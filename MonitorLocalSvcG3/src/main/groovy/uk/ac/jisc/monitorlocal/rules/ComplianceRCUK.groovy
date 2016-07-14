@@ -12,12 +12,12 @@ class ComplianceRCUK {
       // Publication route.
       def val = it.publicationRoute?.value?.toLowerCase()
       
-      if (val == 'gold' || 'gold paid by other') {
-        val = (it.embargoPeriod == 0 && (it.embargoEndDate == null || it.embargoEndDate == it.publishedDate))
-      } else {
-        // If not gold return null... As not a failure, but irrelevant.
-        val = null
-      }
+        if (val?.startsWith('gold')) {
+          val = (it.embargoPeriod == 0 && (it.embargoEndDate == null || it.embargoEndDate == it.publishedDate))
+        } else {
+          // If not gold return null... As not a failure, but irrelevant.
+          val = null
+        }
       
       val
     }
@@ -26,12 +26,12 @@ class ComplianceRCUK {
       // Publication route.
       def val = it.publicationRoute?.value?.toLowerCase()
       
-      if (val == 'gold' || 'gold paid by other') {
-        val = it.licence?.value
-        if (val)  val = (val == 'CC BY')
-      } else {
-        val = null
-      }
+       if (val?.startsWith('gold')) {
+          val = it.licence?.value
+          if (val)  val = (val == 'CC BY')
+        } else {
+          val = null
+        }
       val
     }
     
@@ -40,9 +40,7 @@ class ComplianceRCUK {
       def val = it.publicationRoute?.value?.toLowerCase()
       int num = it.deposits?.size() ?: 0
       
-      if (val == 'green' && num > 0) {
-        
-        
+      if (val.startsWith('green') && num > 0) {        
         val = false
         for (int i=0; i<num && !val; i++ ) {
           def version = it.deposits[i].versionDeposited?.value?.toLowerCase()
