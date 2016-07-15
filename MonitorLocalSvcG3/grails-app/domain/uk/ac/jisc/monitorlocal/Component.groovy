@@ -144,7 +144,7 @@ class Component  implements DomainRulePropertySource{
    
       // def combotype = RefdataCategory.lookupOrCreate('Combo.Type','KBComponent.Ids');
       def sw = new StringWriter()
-      sw.write("select c from Component as c join c.identifiers as i where ")
+      sw.write("select distinct c from Component as c join c.identifiers as i where ")
 
       def bindvars = [:]
       identifiers.eachWithIndex { id, idx ->
