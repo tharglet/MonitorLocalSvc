@@ -1,6 +1,8 @@
 package uk.ac.jisc.monitorlocal
 
 import grails.rest.Resource
+import groovy.util.logging.Log4j
+
 import uk.ac.jisc.monitorlocal.databinding.AbsoluteCollection;
 
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.List;
 import com.k_int.grails.tools.refdata.*
 import com.k_int.grails.tools.rest.ExtendedRestfulController
 
+@Log4j
 @Resource(uri="/invoice", superClass=ExtendedRestfulController)
 class Invoice extends Component {
   
@@ -16,8 +19,7 @@ class Invoice extends Component {
   Date date
   Date dueDate
   
-  
-  Tag supplier
+  RefdataValue supplier
   
   @Defaults(['Yes','No'])
   RefdataValue received
@@ -84,7 +86,9 @@ class Invoice extends Component {
             placeholder:'Name or title of item',
             contextTree: [ 'ctxtp':'disjunctive',
                              'terms':[
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R']
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'id', 'wildcard':'R'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'filename', 'wildcard':'R']
                              ]
                          ]
 

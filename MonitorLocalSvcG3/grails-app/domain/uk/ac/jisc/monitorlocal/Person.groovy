@@ -57,7 +57,11 @@ class Person extends Component {
             placeholder:'Name or title of item',
             contextTree: [ 'ctxtp':'disjunctive',
                              'terms':[
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R']
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'firstName', 'wildcard':'R'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'surname', 'wildcard':'R'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'id', 'wildcard':'R'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'personContactDetails.emailAddress', 'wildcard':'R'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'personContactDetails.department', 'wildcard':'R']
                              ]
                          ]
 

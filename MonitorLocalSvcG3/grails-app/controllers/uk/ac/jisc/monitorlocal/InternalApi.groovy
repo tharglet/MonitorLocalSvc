@@ -33,7 +33,7 @@ class InternalApiController implements PluginManagerAware {
     'id.dnb-uri':[action:'process', target:"id", subtype:'id'],
     'id.juliet':[action:'process', target:"id", subtype:'id'],
     'id.doi':[action:'process', target:"id", subtype:'id'],
-    'funder_group':[action:'process', target:"funder_group", subtype:'simple'],
+    'funder_group':[action:'process', target:"funder_group", subtype:'org'],
     'membership_org':[action:'process', target:"membership_org", subtype:'simple']
   ]
 
@@ -197,6 +197,12 @@ class InternalApiController implements PluginManagerAware {
             if ( it && ( it.trim().length() > 0 ) )  {
               orgdata[cfg.target] = RefdataValue.lookupOrCreate(cfg.refdataCategory, it)
             }
+            break;
+          case 'org':
+            if ( it && ( it.trim().length() > 0 ) )  {
+              orgdata[cfg.target] = Org.findByName(it.trim()) ?: new Org(name:it).save(flush:true, failOnError:true);
+            }
+            break;
           default:
             log.debug("Unhandled type ${cfg.type} for column ${header[col]} config ${cfg} value ${it}");
             break;
@@ -212,6 +218,9 @@ class InternalApiController implements PluginManagerAware {
           uk.ac.jisc.monitorlocal.Org o = Component.lookupOrCreate(uk.ac.jisc.monitorlocal.Org.class, orgdata.name, orgdata.identifiers)
           if ( orgdata.type ) {
             o.type = orgdata.type;
+          }
+          if ( orgdata.funder_group ) {
+            o.funderGroup = orgdata.funder_group;
           }
           o.save(flush:true, failOnError:true);
         }

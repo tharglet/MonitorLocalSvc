@@ -13,6 +13,8 @@ class Org extends Component {
   
   String address
   String taxCode
+  
+  Org funderGroup
 
   // Can users be affiliated with this org?
   Boolean membershipOrg
@@ -30,6 +32,7 @@ class Org extends Component {
 
   @AbsoluteCollection
   Set userAffiliations = []
+  
   static hasMany = [
     userAffiliations: UserOrg
   ]
@@ -95,6 +98,7 @@ class Org extends Component {
             contextTree: [ 'ctxtp':'disjunctive',
                              'terms':[
                                   ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'id', 'wildcard':'R'],
                                   ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'identifiers.identifier.value', 'wildcard':'R']
                              ]
                          ]
