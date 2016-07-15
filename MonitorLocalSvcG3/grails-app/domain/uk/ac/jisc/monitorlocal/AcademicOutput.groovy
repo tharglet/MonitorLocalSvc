@@ -240,6 +240,17 @@ class AcademicOutput extends Component {
                              'terms':[
                                   ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R'],
                                   ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'identifiers.identifier.value', 'wildcard':'R'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'assignedTo.name', 'wildcard':'R'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.personContactDetails.department', 'wildcard':'R'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.firstName', 'wildcard':'R'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.surname.department', 'wildcard':'R'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'authorNameList', 'wildcard':'R'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'publishedIn.name', 'wildcard':'R'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'publisher.name', 'wildcard':'R'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.fund', 'wildcard':'R'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.grantId', 'wildcard':'R'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.internalGrantId', 'wildcard':'R'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.funder.name', 'wildcard':'R'],
                                   ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'assignedTo.name', 'wildcard':'R']
                              ]
                          ]
@@ -250,6 +261,12 @@ class AcademicOutput extends Component {
             qparam:'instCtx',
             placeholder:'Owner Institution',
             contextTree: [ 'ctxtp':'qry', 'comparator' : 'eq', 'prop':'ownerInstitution.id', type:'java.lang.Long' ],
+          ],
+          [
+            prompt:'Id',
+            qparam:'id',
+            placeholder:'ID',
+            contextTree: [ 'ctxtp':'qry', 'comparator' : 'eq', 'prop':'id', type:'java.lang.Long' ],
           ]
         ],
         qbeGlobals:[
