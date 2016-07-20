@@ -306,6 +306,7 @@ class InternalApiController implements PluginManagerAware {
           def o_list = Component.lookupByIdentifierValue(persdata.org_ids)
           def o = o_list.size() == 1 ? o_list[0] : null
       
+          // def name="${persdata.surname}, ${persdata.forename}"
           if ( ( o ) && ( o instanceof Org ) ) {
             if ( persdata.name ) {
               log.debug("Got org : ${o} lookupOrCreate ${persdata.name}");
