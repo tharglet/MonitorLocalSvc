@@ -38,7 +38,7 @@ class CostItem {
   ])
   RefdataValue status
 
-  String purchaseOrder
+  RefdataValue purchaseOrder
   
   Currency currency = Constants.GBP
   
