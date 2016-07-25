@@ -16,7 +16,11 @@ class Workflow {
     'Set APC funding approval' 'apcFundingApproval != null'
 
     // People
-    'Add a main contact' 'keyContact != null'
+    'Add a main contact' {
+      names?.find {
+        it.keyContact == true
+      } as boolean
+    }
 
     // Publication
     'Add an identifier (DOI/PMID/PMCID)' {
