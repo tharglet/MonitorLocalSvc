@@ -38,7 +38,7 @@ class CostItem {
   ])
   RefdataValue status
 
-  RefdataValue purchaseOrder
+  InstitutionalRefdataValue purchaseOrder
   
   Currency currency = Constants.GBP
   

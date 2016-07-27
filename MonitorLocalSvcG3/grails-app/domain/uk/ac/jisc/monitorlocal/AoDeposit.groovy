@@ -59,7 +59,7 @@ class AoDeposit {
 	"University of Wales Trinity Saint David","University of Worcester Research and Publications","UWE Research Repository","UWL Repository (University of West London)",
 	"Visual Arts Data Service","Warwick Research Archives Portal Repository","WestminsterResearch (University of Westminster)","White Rose E-theses Online",
 	"White Rose Research Online","Wolverhampton Intellectual Repository and E-theses","York Digital Library"])
-  RefdataValue name
+  InstitutionalRefdataValue name
   String url
   Date depositDate
 
