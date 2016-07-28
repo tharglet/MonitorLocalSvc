@@ -332,9 +332,6 @@ elasticSearch:
 k_int:
   grails:
     tools:
-      rules:
-        compliance-rcuk: 'uk.ac.jisc.monitorlocal.rules.ComplianceRCUK'
-        workflow: 'uk.ac.jisc.monitorlocal.rules.Workflow'
       finance:
         currencies:
           - EUR
