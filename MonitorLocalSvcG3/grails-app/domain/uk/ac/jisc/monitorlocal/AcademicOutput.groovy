@@ -3,10 +3,8 @@ package uk.ac.jisc.monitorlocal
 import grails.rest.Resource
 import groovy.util.logging.Log4j
 
-import java.util.Map;
-
-import org.grails.databinding.BindUsing
 import org.hibernate.proxy.HibernateProxy
+
 import uk.ac.jisc.monitorlocal.databinding.AbsoluteCollection
 
 import com.k_int.grails.tools.refdata.*
@@ -103,6 +101,21 @@ class AcademicOutput extends Component {
   
   @Defaults(['Yes', 'No'])
   RefdataValue deposited
+  
+  Boolean complianceStatus
+  
+  def beforeInsert () {
+    // Check compliance before 
+    super.beforeInsert()
+  }
+  
+  def beforeUpdate() {
+    super.beforeUpdate()
+  }
+  
+  public String[] getApplicableRuleSets() {
+    
+  }
 
   static hasMany = [
     academicOutputCosts: CostItem,
@@ -146,6 +159,7 @@ class AcademicOutput extends Component {
     embargoEndDate nullable:true
     acknowledgement nullable:true
     accessStatement nullable:true
+    complianceStatus nullable: true
   }
   
   static mappedBy = [
