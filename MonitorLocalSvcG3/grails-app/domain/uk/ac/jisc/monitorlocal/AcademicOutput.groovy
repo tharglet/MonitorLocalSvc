@@ -99,9 +99,6 @@ class AcademicOutput extends Component {
   Set funds = []
   
   @AbsoluteCollection
-  Set complianceRules = []
-  
-  @AbsoluteCollection
   Set deposits = []
   
   @Defaults(['Yes', 'No'])
@@ -111,7 +108,6 @@ class AcademicOutput extends Component {
     academicOutputCosts: CostItem,
     names: AoName,
     funds: AoFunding,
-    complianceRules: ComplianceRule,
     deposits: AoDeposit
   ]
 
@@ -164,7 +160,6 @@ class AcademicOutput extends Component {
     grants cascade: "all"
     funds cascade: "all-delete-orphan"
     deposits cascade: "all-delete-orphan"
-    complianceRules cascade: "all-delete-orphan"
     academicOutputCosts cascade: 'all', sort: 'id', order: 'asc'
   }
 
