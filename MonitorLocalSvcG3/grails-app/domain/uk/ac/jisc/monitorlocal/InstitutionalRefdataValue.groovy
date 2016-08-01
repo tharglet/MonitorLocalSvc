@@ -23,7 +23,11 @@ class InstitutionalRefdataValue extends RefdataValue {
   
   def beforeInsert () {
     User currentUser = springSecurityService.currentUser
-   ownerInstitution = currentUser?.getUserOrg()
+    
+    // Added to prevent null wiping out an explicitly set ownerInstitution when doing person import
+    if ( ownerInstitution == null ) {
+      ownerInstitution = currentUser?.getUserOrg()
+    }
   }
 
   static constraints = {

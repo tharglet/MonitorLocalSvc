@@ -52,7 +52,8 @@ class InternalApiController implements PluginManagerAware {
     'org.id.dnb-uri':[action:'process', target:'org_ids', subtype:'id'],
     'org.id.juliet':[action:'process', target:'org_ids', subtype:'id'],
     'org.id.doi':[action:'process', target:'org_ids', subtype:'id'],
-    'person.name':[action:'process', target:'name', subtype:'simple'],
+    'person.surname':[action:'process', target:'surname', subtype:'simple'],
+    'person.forenames':[action:'process', target:'forenames', subtype:'simple'],
     'person.email':[action:'process', target:'email', subtype:'simple'],
     'person.division':[action:'process', target:'division', subtype:'simple'],
     'person.department':[action:'process', target:'department', subtype:'simple'],
@@ -308,9 +309,11 @@ class InternalApiController implements PluginManagerAware {
         col++
       }
 
+      def name="${persdata.surname}, ${persdata.forenames}"
+
       log.debug("Process person: ${persdata}");
-      if ( ( persdata.name ) &&
-           ( persdata.name.trim().length() > 0 ) &&
+      if ( ( name ) &&
+           ( name.trim().length() > 0 ) &&
            ( persdata.pers_ids.size() > 0 ) &&
            ( persdata.org_ids.size() > 0 ) ) {
         // Try to look up the person
@@ -341,12 +344,15 @@ class InternalApiController implements PluginManagerAware {
           def o_list = Component.lookupByIdentifierValue(persdata.org_ids)
           def o = o_list.size() == 1 ? o_list[0] : null
       
-          // def name="${persdata.surname}, ${persdata.forename}"
+          def name="${persdata.surname}, ${persdata.forenames}"
           if ( ( o ) && ( o instanceof Org ) ) {
-            if ( persdata.name ) {
-              log.debug("Got org : ${o} lookupOrCreate ${persdata.name}");
-              def person = Component.lookupOrCreate(uk.ac.jisc.monitorlocal.Person.class, persdata.name, persdata.pers_ids)
+
+            if ( name ) {
+              log.debug("Got org : ${o} lookupOrCreate ${name}");
+              def person = Component.lookupOrCreate(uk.ac.jisc.monitorlocal.Person.class, name, persdata.pers_ids)
               person.institution = o;
+              person.firstName = persdata.forenames
+              person.surname = persdata.surname
               person.save(flush:true, failOnError:true);
 
               // Find contact details for this person
@@ -385,19 +391,30 @@ class InternalApiController implements PluginManagerAware {
     result
   }
 
-  private  getInstitutionalRefdataValue(org, catname, val) {
+  private InstitutionalRefdataValue getInstitutionalRefdataValue(org, catname, val) {
 
-    def result = null;
-    def cat = RefdataCategory.findByDescription(catname);
+    InstitutionalRefdataValue result = null;
+
+    def cat = RefdataCategory.findByDescription(catname) ?: new RefdataCategory(description:catname).save(flush:true, failOnError:true);
+
     if ( cat ) {
-      def q = InstitutionalRefdataValue.executQuery('select irv from InstitutionalRefdataValue as irv where irv.ownerInstitution = :inst and irv.owner = :d and irv.value = :v',
-                                                  [inst:org, d:cat, v:val]);
+      def q = InstitutionalRefdataValue.executeQuery('select irv from InstitutionalRefdataValue as irv where irv.ownerInstitution = :inst and irv.owner = :d and irv.value = :v',
+                                                     [inst:org, d:cat, v:val.trim()]);
   
       if ( q.size() == 0 ) {
-        result = g.get(0);
+        log.debug("Unable to locate irv for \"${org}\" \"${cat}\" \"${val.trim()}\" - create new");
+        result = new InstitutionalRefdataValue(value:val.trim(), owner:cat)
+        result.ownerInstitution = org
+        result.save(flush:true, failOnError:true);
+ 
+        log.debug("Created new irv, owner institution of created object is ${result.ownerInstitution}");
       }
       else if (q.size() == 1 ) {
-        result = new InstitutionalRefdataValue(ownerInstitution:org, value:val, owner:cat).save(flush:true, failOnError:true);
+        log.debug("Looked up irv for \"${org}\" \"${cat}\" \"${val.trim()}\" - ${result}");
+        result = (InstitutionalRefdataValue) q.get(0);
+      }
+      else {
+        log.error("Matched multiple..");
       }
     }
 
