@@ -1,4 +1,4 @@
-org.id.jisc,person.name,person.email,person.id.email,person.role
-university_of_jisc,"Gill Osguthorpe", "gill.osguthorpe@k-int.com","gill.osguthorpe@k-int.com","ROLE_USER, ROLE_ADMIN"
-university_of_jisc,"Ian Ibbotson", "ian.ibbotson@k-int.com","ian.ibbotson@k-int.com","ROLE_USER, ROLE_ADMIN"
-university_of_jisc,"Steve Osguthorpe", "steve.osguthorpe@k-int.com","steve.osguthorpe@k-int.com","ROLE_USER, ROLE_ADMIN"
+org.id.jisc,person.surname,person.forenames,person.email,person.id.email,person.role,person.division,person.department
+university_of_jisc,"Osguthorpe","Gill","gill.osguthorpe@k-int.com","gill.osguthorpe@k-int.com","ROLE_USER, ROLE_ADMIN","TestDiv0","Dept2"
+university_of_jisc,"Ibbotson","Ian","ian.ibbotson@k-int.com","ian.ibbotson@k-int.com","ROLE_USER, ROLE_ADMIN","TestDiv1","Dept1"
+university_of_jisc,"Osguthorpe","Steve","steve.osguthorpe@k-int.com","steve.osguthorpe@k-int.com","ROLE_USER, ROLE_ADMIN","TestDiv1","Dept2"
