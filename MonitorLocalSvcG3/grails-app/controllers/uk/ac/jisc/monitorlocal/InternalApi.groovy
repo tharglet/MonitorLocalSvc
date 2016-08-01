@@ -54,6 +54,8 @@ class InternalApiController implements PluginManagerAware {
     'org.id.doi':[action:'process', target:'org_ids', subtype:'id'],
     'person.name':[action:'process', target:'name', subtype:'simple'],
     'person.email':[action:'process', target:'email', subtype:'simple'],
+    'person.division':[action:'process', target:'division', subtype:'simple'],
+    'person.department':[action:'process', target:'department', subtype:'simple'],
     'person.id.email':[action:'process', target:'pers_ids', subtype:'id'],
     'person.id.orcid':[action:'process', target:'pers_ids', subtype:'id'],
     'person.role':[action:'process', target:'role', subtype:'simple']
@@ -235,14 +237,14 @@ class InternalApiController implements PluginManagerAware {
   }
 
   def PersonIngest() {
-    def result = [ status:'OK' ]
+    def result = null;
 
     def upload_mime_type = request.getFile("content")?.contentType
     def upload_filename = request.getFile("content")?.getOriginalFilename()
 
     if ( upload_mime_type && upload_filename ) {
       def upload_file = request.getFile("content");
-      processPersonIngest(upload_file.getInputStream());
+      result = processPersonIngest(upload_file.getInputStream());
     }
     else {
       log.warn("No mimetype or filename ${upload_mime_type} or ${upload_filename}");
@@ -252,6 +254,10 @@ class InternalApiController implements PluginManagerAware {
   }
 
   private def processPersonIngest(InputStream is) {
+
+    def result = [:]
+    result.messages = []
+
     log.debug("processUserIngest");
 
     // def charset = 'UTF-8' // 'ISO-8859-1' or 'UTF-8' // Windows-1252
@@ -264,6 +270,12 @@ class InternalApiController implements PluginManagerAware {
     int ctr = 0
     String[] nl=csv.readNext()
     int rownum = 0;
+
+    def persdata_list = []
+    def valid = true;
+    def rowctr = 1;
+
+    // Load persdata
     while ( nl ) {
       log.debug(nl);
       def col = 0;
@@ -301,6 +313,29 @@ class InternalApiController implements PluginManagerAware {
            ( persdata.name.trim().length() > 0 ) &&
            ( persdata.pers_ids.size() > 0 ) &&
            ( persdata.org_ids.size() > 0 ) ) {
+        // Try to look up the person
+        def p_list = Component.lookupByIdentifierValue(persdata.pers_ids)
+        if ( p_list.size() <= 1 ) {
+          persdata_list.add(persdata) 
+        }
+        else {
+          result.messages.add([msg:"ROW ${rowctr} Person matched multiple people in the database. ERROR.", rowdata:nl]);
+          valid = false;
+        }
+      }
+      else {
+        valid = false
+        result.messages.add([msg:"ROW ${rowctr} Failed validation, name, ids or org not present.", rowdata:nl]);
+                             
+      }
+      rowctr++
+      nl=csv.readNext()
+    }
+
+    if ( valid ) {
+
+      persdata_list.each { persdata ->
+
         Component.withNewTransaction {
 
           def o_list = Component.lookupByIdentifierValue(persdata.org_ids)
@@ -313,6 +348,24 @@ class InternalApiController implements PluginManagerAware {
               def person = Component.lookupOrCreate(uk.ac.jisc.monitorlocal.Person.class, persdata.name, persdata.pers_ids)
               person.institution = o;
               person.save(flush:true, failOnError:true);
+
+              // Find contact details for this person
+              def contact_details = null
+              if ( persdata.email ) {
+                contact_details = person.personContactDetails.find { it.emailAddress == persdata.email }
+                if ( contact_details ) {
+                }
+                else {
+                  contact_details = new ContactDetails(person:person)
+                }
+                contact_details.emailAddress = persdata.email
+                if ( o ) {
+                  contact_details.organisation = o
+                  contact_details.division = getInstitutionalRefdataValue(o, 'ContactDetails.Division', persdata.division)
+                  contact_details.department = getInstitutionalRefdataValue(o, 'ContactDetails.Department', persdata.department)
+                }
+                contact_details.save(flush:true, failOnError:true)
+              }
             }
             else {
               log.warn("No person name.. cannot process");
@@ -323,10 +376,32 @@ class InternalApiController implements PluginManagerAware {
           }
         }
       }
-
-      nl=csv.readNext()
+      result.status='SUCCESS';
+    }
+    else {
+      result.status='FAILED';
     }
 
+    result
+  }
+
+  private  getInstitutionalRefdataValue(org, catname, val) {
+
+    def result = null;
+    def cat = RefdataCategory.findByDescription(catname);
+    if ( cat ) {
+      def q = InstitutionalRefdataValue.executQuery('select irv from InstitutionalRefdataValue as irv where irv.ownerInstitution = :inst and irv.owner = :d and irv.value = :v',
+                                                  [inst:org, d:cat, v:val]);
+  
+      if ( q.size() == 0 ) {
+        result = g.get(0);
+      }
+      else if (q.size() == 1 ) {
+        result = new InstitutionalRefdataValue(ownerInstitution:org, value:val, owner:cat).save(flush:true, failOnError:true);
+      }
+    }
+
+    return result;
   }
 
   private def cleanUpGorm() {
