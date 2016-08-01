@@ -49,7 +49,7 @@ class AcademicOutput extends Component {
   RefdataValue publisherResponse
   Date publisherResponseDate
 
-  @Defaults(['CC BY', 'CC BY-SA', 'CC BY-ND', 'CC BY-NC', 'CC BY-NC-SA', 'CC BY-NC-ND'])
+  @Defaults(['CC BY', 'CC BY-SA', 'CC BY-ND', 'CC BY-NC', 'CC BY-NC-SA', 'CC BY-NC-ND', 'Other'])
   RefdataValue licence
 
   // Ugh - hate this model - really would prefer publication to be separate to the AO
