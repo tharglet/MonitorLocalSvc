@@ -29,6 +29,7 @@ logger 'grails.artefact.Interceptor', WARN, ['STDOUT'], false
 // logger 'com.k_int.grails.tools.identifiers.GrailsDomainIdentifierHelpers', DEBUG
 logger 'grails.app.init.BootStrap', DEBUG
 logger 'grails.app.services', DEBUG
+logger 'grails.app.jobs', DEBUG
 logger 'grails.web.mapping.filter', DEBUG
 logger 'com.k_int.grails.tools.databinding.ExtendedWebDataBinder', DEBUG
 logger 'com.k_int.grails.tools.databinding.ExtendedSimpleMapDataBindingSource', DEBUG

@@ -351,5 +351,5 @@ k_int:
 monitor:
     helpHost : 'https://github.com'
     helpUri     : '/k-int/MonitorLocalUX/wiki'
----
-pushToMonitorUK: true
+    pushToMonitorUK: true
+    monitorUk : 'http://monitoruk.cottagelabs.com'

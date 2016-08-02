@@ -288,4 +288,58 @@ class AcademicOutput extends Component {
     ]
   }
 
+
+        // def record = [
+      //   record : [
+      //     "dc:identifier" : [
+      //          {"type" : "pmcid", "id" : "<europe pubmed central id>"},
+      //          {"type" : "pmid", "id" : "<pubmed id>"},
+      //          {"type" : "doi", "id" : "<doi>"},
+      //          {"type" : "url", "id" : "<url to object>"}
+      //      ],
+      //      "rioxxterms:type" : "<publication type (article, etc) - ideally from rioxx guidelines>",
+      //      "dc:title" : "<title>",
+      //      "dc:subject" : ["<list of subject categories, ideally standardised>"],
+      //      "rioxxterms:version" : "<rioxx resource version - from guidelines>",
+      //      "rioxxterms:author" : [
+      //          [
+      //              "name" : "<author name>",
+      //              "identifier" : [
+      //                  ["type" : "orcid", "id" : "<author's orcid>"],
+      //                  ["type" : "email", "id" : "<author's email address>"],
+      //                  ["type" : "<identifier type>", "id" : "<author identifier>"]
+      //              ],
+      //              "affiliation" : [
+      //                  [
+      //                      "name" : "<name of organisation>",
+      //                      "identifier" : [
+      //                          ["type" : "<identifier type>", "id" : "<organisation identifier>"]
+      //                      ]
+      //                  ]
+      //              ]
+      //          ]
+      //      ]
+      //   ]
+      // ]
+
+  // Create a rioxx themed record as described at https://github.com/JiscMonitor/monitor-uk/blob/develop/docs/system/DATA_MODELS.md
+  transient toRioxx() {
+    def result = [:]
+    result.'dc:identifier' = []
+    result.'dc:title' = this.name
+    result.'dc:subject' = [] // List of subjects if present
+    result.'rioxxterms:type' = outputType?.value
+    result.'rioxxterms:author' = []
+
+    this.identifiers.each { component_id ->
+      result."dc:identifier".add(['type':component_id.identifier.namespace.value,'id':component_id.identifier.value]);
+    }
+
+    this.names.each { name ->
+      result.'rioxxterms:author'.add(['name':name.name, 'identifier':[],'affiliation':[]])
+    }
+    
+    result
+  }
+
 }
