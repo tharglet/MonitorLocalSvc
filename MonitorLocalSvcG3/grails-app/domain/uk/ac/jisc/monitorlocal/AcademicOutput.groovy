@@ -338,6 +338,12 @@ class AcademicOutput extends Component {
     this.names.each { name ->
       result.'rioxxterms:author'.add(['name':name.name, 'identifier':[],'affiliation':[]])
     }
+
+    if ( this.publisher ) {
+      result.'dcterms:publisher'=[
+                 'name':publisher.name,
+                 'identifier':[]]  // list of  {"type" : "<identifier type>", "id" : "<publisher identifier>"}
+    }
     
     result
   }
