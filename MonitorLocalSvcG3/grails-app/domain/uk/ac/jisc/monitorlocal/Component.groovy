@@ -1,17 +1,16 @@
 package uk.ac.jisc.monitorlocal
 
 import grails.plugin.springsecurity.SpringSecurityService
-import grails.plugins.orm.auditable.Stamp
+import grails.util.Holders
 import grails.web.databinding.GrailsWebDataBinder
 import groovy.transform.EqualsAndHashCode
 import groovy.util.logging.Log4j
-import uk.ac.jisc.monitorlocal.databinding.AbsoluteCollection
-
-import java.util.Date;
 
 import javax.persistence.Transient
 
 import org.grails.databinding.BindUsing
+
+import uk.ac.jisc.monitorlocal.databinding.AbsoluteCollection
 
 import com.k_int.grails.tools.identifiers.Identifier
 import com.k_int.grails.tools.rules.DomainRulePropertySource
@@ -24,8 +23,26 @@ class Component  implements DomainRulePropertySource{
   static auditable = [ignore:['version','lastUpdated','created','lastUpdatedBy','createdBy']]
   static transients = ["springSecurityService"]
   
+  static lookupBase = {
+    or {
+      isNull ("ownerInstitution") 
+      
+      def currentAffiliation =  ((User)springSecurityService?.currentUser)?.getUserOrg()
+      if (currentAffiliation) {
+        eq ("ownerInstitution",currentAffiliation)
+      }
+    }
+  }
+  
+  static namedQueries = {
+    ownedComponents lookupBase
+  }
+  
   @Transient
-  SpringSecurityService springSecurityService  
+  protected static SpringSecurityService getSpringSecurityService () {
+    Holders.applicationContext.getBean("springSecurityService", SpringSecurityService)
+  }
+  
   Date created
   User createdBy
   Date lastUpdated

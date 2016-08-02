@@ -3,10 +3,8 @@ package uk.ac.jisc.monitorlocal
 import grails.rest.Resource
 import groovy.util.logging.Log4j
 
-import java.util.Map;
-
-import org.grails.databinding.BindUsing
 import org.hibernate.proxy.HibernateProxy
+
 import uk.ac.jisc.monitorlocal.databinding.AbsoluteCollection
 
 import com.k_int.grails.tools.refdata.*
@@ -51,7 +49,7 @@ class AcademicOutput extends Component {
   RefdataValue publisherResponse
   Date publisherResponseDate
 
-  @Defaults(['CC BY', 'CC BY-SA', 'CC BY-ND', 'CC BY-NC', 'CC BY-NC-SA', 'CC BY-NC-ND'])
+  @Defaults(['CC BY', 'CC BY-SA', 'CC BY-ND', 'CC BY-NC', 'CC BY-NC-SA', 'CC BY-NC-ND', 'Other'])
   RefdataValue licence
 
   // Ugh - hate this model - really would prefer publication to be separate to the AO
@@ -99,19 +97,30 @@ class AcademicOutput extends Component {
   Set funds = []
   
   @AbsoluteCollection
-  Set complianceRules = []
-  
-  @AbsoluteCollection
   Set deposits = []
   
   @Defaults(['Yes', 'No'])
   RefdataValue deposited
+  
+  Boolean complianceStatus
+  
+  def beforeInsert () {
+    // Check compliance before 
+    super.beforeInsert()
+  }
+  
+  def beforeUpdate() {
+    super.beforeUpdate()
+  }
+  
+  public String[] getApplicableRuleSets() {
+    
+  }
 
   static hasMany = [
     academicOutputCosts: CostItem,
     names: AoName,
     funds: AoFunding,
-    complianceRules: ComplianceRule,
     deposits: AoDeposit
   ]
 
@@ -150,6 +159,7 @@ class AcademicOutput extends Component {
     embargoEndDate nullable:true
     acknowledgement nullable:true
     accessStatement nullable:true
+    complianceStatus nullable: true
   }
   
   static mappedBy = [
@@ -164,7 +174,6 @@ class AcademicOutput extends Component {
     grants cascade: "all"
     funds cascade: "all-delete-orphan"
     deposits cascade: "all-delete-orphan"
-    complianceRules cascade: "all-delete-orphan"
     academicOutputCosts cascade: 'all', sort: 'id', order: 'asc'
   }
 
@@ -238,20 +247,20 @@ class AcademicOutput extends Component {
             placeholder:'Name or title of item',
             contextTree: [ 'ctxtp':'disjunctive',
                              'terms':[
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'identifiers.identifier.value', 'wildcard':'R'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'assignedTo.name', 'wildcard':'R'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.personContactDetails.department', 'wildcard':'R'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.firstName', 'wildcard':'R'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.surname.department', 'wildcard':'R'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'authorNameList', 'wildcard':'R'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'publishedIn.name', 'wildcard':'R'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'publisher.name', 'wildcard':'R'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.fund', 'wildcard':'R'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.grantId', 'wildcard':'R'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.internalGrantId', 'wildcard':'R'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.funder.name', 'wildcard':'R'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'assignedTo.name', 'wildcard':'R']
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'B'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'identifiers.identifier.value', 'wildcard':'B'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'assignedTo.name', 'wildcard':'B'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.personContactDetails.department', 'wildcard':'B'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.firstName', 'wildcard':'B'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.surname.department', 'wildcard':'B'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'authorNameList', 'wildcard':'B'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'publishedIn.name', 'wildcard':'B'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'publisher.name', 'wildcard':'B'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.fund', 'wildcard':'B'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.grantId', 'wildcard':'B'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.internalGrantId', 'wildcard':'B'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.funder.name', 'wildcard':'B'],
+                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'assignedTo.name', 'wildcard':'B']
                              ]
                          ]
 

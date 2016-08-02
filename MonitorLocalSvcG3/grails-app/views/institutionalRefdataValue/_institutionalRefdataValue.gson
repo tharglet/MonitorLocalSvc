@@ -1,0 +1,15 @@
+import uk.ac.jisc.monitorlocal.InstitutionalRefdataValue
+
+model {
+	InstitutionalRefdataValue institutionalRefdataValue
+}
+
+json g.render (institutionalRefdataValue, [excludes: ['icon', 'sortKey', 'useInstead', 'owner']], {
+  
+  owner {
+    id            institutionalRefdataValue.owner.id
+    description   institutionalRefdataValue.owner.description
+    label         institutionalRefdataValue.owner.label
+  }
+  
+})

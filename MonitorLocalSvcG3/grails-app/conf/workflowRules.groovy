@@ -1,13 +1,4 @@
-package uk.ac.jisc.monitorlocal.rules
-
-/**
- * Rules for workflow. Defining them here as the YML config lacks the ability to
- * include closures. And the application.groovy file doesn't appear to be read properly at the moment.
- */
-class Workflow {
-
-  // Single closure defines the rule names and the code to be executed. Can be a closure or a string. String is assumed to be groovy code.
-  public static final RULES = {
+workflow = {
 
     // General
     'Add a title' 'name != null'
@@ -16,7 +7,11 @@ class Workflow {
     'Set APC funding approval' 'apcFundingApproval != null'
 
     // People
-    'Add a main contact' 'keyContact != null'
+    'Add a main contact' {
+      names?.find {
+        it.keyContact == true
+      } as boolean
+    }
 
     // Publication
     'Add an identifier (DOI/PMID/PMCID)' {
@@ -44,4 +39,3 @@ class Workflow {
       return found
     }
   }
-}

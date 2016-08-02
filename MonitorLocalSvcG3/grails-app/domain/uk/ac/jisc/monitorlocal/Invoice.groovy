@@ -19,7 +19,7 @@ class Invoice extends Component {
   Date date
   Date dueDate
   
-  RefdataValue supplier
+  InstitutionalRefdataValue supplier
   
   @Defaults(['Yes','No'])
   RefdataValue received

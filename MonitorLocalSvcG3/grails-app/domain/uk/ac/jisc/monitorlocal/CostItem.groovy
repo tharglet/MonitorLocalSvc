@@ -38,7 +38,7 @@ class CostItem {
   ])
   RefdataValue status
 
-  String purchaseOrder
+  InstitutionalRefdataValue purchaseOrder
   
   Currency currency = Constants.GBP
   
@@ -47,6 +47,9 @@ class CostItem {
   
   @Defaults(["Yes","No"])
   RefdataValue estimated
+
+  @Defaults(["Debit","Credit"])
+  RefdataValue debit
   
   MonetaryValue grossValue = new MonetaryValue("baseCurrency" : currency)
   MonetaryValue grossValueGBP = new MonetaryValue("baseCurrency" : Constants.GBP)
@@ -83,6 +86,7 @@ class CostItem {
     'category'        ( nullable: true )
     'estimated'       ( nullable: true )
     'purchaseOrder'   ( nullable: true )
+    'debit'   ( nullable: true )
   }
   
   static mapping = {
