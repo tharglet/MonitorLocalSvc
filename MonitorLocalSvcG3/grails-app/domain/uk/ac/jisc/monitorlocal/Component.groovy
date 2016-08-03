@@ -23,19 +23,19 @@ class Component  implements DomainRulePropertySource{
   static auditable = [ignore:['version','lastUpdated','created','lastUpdatedBy','createdBy']]
   static transients = ["springSecurityService"]
   
-  static lookupBase = {
-    or {
-      isNull ("ownerInstitution") 
-      
-      def currentAffiliation =  ((User)springSecurityService?.currentUser)?.getUserOrg()
-      if (currentAffiliation) {
-        eq ("ownerInstitution",currentAffiliation)
-      }
-    }
-  }
+  static lookupBase = 'ownedComponents'
   
   static namedQueries = {
-    ownedComponents lookupBase
+    ownedComponents {
+      or {
+        isNull ("ownerInstitution") 
+        
+        def currentAffiliation =  Holders.applicationContext.getBean("springSecurityService", SpringSecurityService)?.currentUser?.getUserOrg()
+        if (currentAffiliation) {
+          eq ("ownerInstitution",currentAffiliation)
+        }
+      }
+    }
   }
   
   @Transient

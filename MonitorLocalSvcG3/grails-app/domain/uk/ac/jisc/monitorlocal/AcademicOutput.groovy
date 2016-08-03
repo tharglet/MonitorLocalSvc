@@ -105,7 +105,7 @@ class AcademicOutput extends Component {
   Boolean complianceStatus
   
   def beforeInsert () {
-    // Check compliance before 
+    // Check compliance before save.
     super.beforeInsert()
   }
   
