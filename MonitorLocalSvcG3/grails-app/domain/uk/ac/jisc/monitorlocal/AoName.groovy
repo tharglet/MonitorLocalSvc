@@ -29,7 +29,8 @@ class AoName {
     'Principal Investigator',
     'Publisher Contact',
     'Funder Contact',
-    'PhD Student'])
+    'PhD Student',
+    'Other'])
   RefdataValue namerel
   
   def beforeValidate() {

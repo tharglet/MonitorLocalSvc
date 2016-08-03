@@ -34,7 +34,8 @@ class InternalApiController implements PluginManagerAware {
     'id.juliet':[action:'process', target:"id", subtype:'id'],
     'id.doi':[action:'process', target:"id", subtype:'id'],
     'funder_group':[action:'process', target:"funder_group", subtype:'org'],
-    'membership_org':[action:'process', target:"membership_org", subtype:'simple']
+    'membership_org':[action:'process', target:"membership_org", subtype:'simple'],
+    'uk_api_key':[action:'process', target:"uk_api_key",subtype:'simple'],
   ]
 
   static person_import_cfg = [
@@ -224,6 +225,9 @@ class InternalApiController implements PluginManagerAware {
           }
           if ( orgdata.funder_group ) {
             o.funderGroup = orgdata.funder_group;
+          }
+          if ( orgdata.uk_api_key ) {
+            o.monitorLocalAPIKey = orgdata.uk_api_key;
           }
           o.save(flush:true, failOnError:true);
         }
