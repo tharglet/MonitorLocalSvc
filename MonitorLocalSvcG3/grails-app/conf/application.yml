@@ -351,5 +351,10 @@ k_int:
 monitor:
     helpHost : 'https://github.com'
     helpUri     : '/k-int/MonitorLocalUX/wiki'
-    pushToMonitorUK: true
-    monitorUk : 'http://monitoruk.cottagelabs.com'
+    #pushToMonitorUK: true
+    #monitorUk : 'http://monitoruk.cottagelabs.com'
+    compliance:
+      'Funder Group':
+        RCUK:
+          - "rcuk" #Only the base rules applied in the rcukRules file are applied. Sub sets determined by pub route of AO testing.
+---

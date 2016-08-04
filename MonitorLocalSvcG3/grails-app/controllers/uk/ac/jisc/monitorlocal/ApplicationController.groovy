@@ -1,17 +1,12 @@
 package uk.ac.jisc.monitorlocal
 
+import static groovyx.net.http.Method.GET
 import grails.converters.*
 import grails.core.GrailsApplication
 import grails.plugins.*
-import grails.plugin.springsecurity.annotation.Secured
-import grails.converters.*
-import groovyx.net.http.HTTPBuilder
-import static groovyx.net.http.Method.GET
-import com.k_int.grails.tools.refdata.RefdataValue
-
-
 
 import com.k_int.grails.tools.finance.YahooRatesService
+import com.k_int.grails.tools.refdata.RefdataValue
 
 
 class ApplicationController implements PluginManagerAware {

@@ -4,4 +4,4 @@ model {
 	Person person
 }
 
-json tmpl."/global/component" ( component: person)
+json tmpl."/global/component" ( component: person )

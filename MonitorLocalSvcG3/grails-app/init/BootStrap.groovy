@@ -1,5 +1,6 @@
 import uk.ac.jisc.monitorlocal.*
 
+import com.k_int.grails.tools.rules.RulesService
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugin.springsecurity.SecurityFilterPosition
 
@@ -7,6 +8,7 @@ import grails.plugin.springsecurity.SecurityFilterPosition
 class BootStrap {
 
   def grailsApplication
+  RulesService rulesService
 
   def init = { servletContext ->
 
@@ -33,6 +35,36 @@ class BootStrap {
     registerUsers();
 
 
+    // Register the Funders/Funder Groups that have compliance rules.
+    addComplianceRulesToFunders()
+  }
+  
+  private void addComplianceRulesToFunders () {
+    log.debug("Registering compliance rules against Orgs");
+    grailsApplication.config?.monitor?.compliance?.each { String type, Map<String, Set<String>> compDef ->
+      def theType = Org.lookupTypeByValue ( type )
+      
+      compDef?.each { String name, def ruleSets ->
+        Org funder = Org.createCriteria().get {
+          and {
+            eq "type", theType
+            eq "name", name
+          }
+        }
+        
+        if (funder) {
+          log.debug "Found org ${name} of type ${type}, adding the rules."
+          // Add the defs.
+          ruleSets.each { String rule ->
+            funder.addToAppliedComplianceRuleSets(rule)
+            log.debug "Adding rule ${rule} to ${name}"
+          }
+          funder.save(flush: true, failOnError: true)
+        } else {
+          log.debug "No org found for name ${name}, of type ${type}"
+        }
+      }      
+    } 
   }
 
   def destroy = {

@@ -6,21 +6,28 @@ import groovy.util.logging.Log4j
 import org.hibernate.proxy.HibernateProxy
 
 import uk.ac.jisc.monitorlocal.databinding.AbsoluteCollection
+import uk.ac.jisc.monitorlocal.rest.AcademicOutputRestfulController
 
 import com.k_int.grails.tools.refdata.*
-import com.k_int.grails.tools.rest.ExtendedRestfulController
+import com.k_int.grails.tools.rules.RulesService
+import com.k_int.grails.tools.utils.MapUtils
 
 
 @Log4j
-@Resource(uri="/ao", superClass=ExtendedRestfulController)
+@Resource(uri="/ao", superClass=AcademicOutputRestfulController)
 class AcademicOutput extends Component {
+  
+  static transients = ["rulesService"]
   
   static searchable = {
     type component: true
   }
+  
+  static namedQueries = Component.namedQueries
 
   User assignedTo
   Date contactDate = new Date()
+  RulesService rulesService
   
   @Defaults([
     'Green', 'Gold', 'Gold Paid by Other'
@@ -105,16 +112,92 @@ class AcademicOutput extends Component {
   Boolean complianceStatus
   
   def beforeInsert () {
-    // Check compliance before save.
+    
+    // Check compliance..
+    calculateComplainceStatus()
+    
     super.beforeInsert()
   }
   
   def beforeUpdate() {
+    
+    // Check compliance..
+    calculateComplainceStatus ()
+    
     super.beforeUpdate()
   }
   
-  public String[] getApplicableRuleSets() {
+  transient void calculateComplainceStatus () {
     
+    // Init the results.
+    Map<String, ?> results = runRules()
+    if (!results) results = [:]
+    
+    // Set the lowest value.
+    Boolean lowestVal = results.size() > 0 ?  true : null
+    
+    // Go through each rule result and just look for the lowest value.
+    MapUtils.flattenMap (results)?.each { k, v ->
+      if (lowestVal != v) {
+        if (lowestVal == true) {
+            lowestVal = v
+        } else if (lowestVal == false) {
+          if (v != true) {
+            lowestVal = v
+          }
+        } else {
+          // Lowest val == null
+          lowestVal = null
+        }
+      }
+    }
+    
+    complianceStatus = lowestVal
+  }
+  
+  
+  transient Set<String> complianceRules = null
+  
+  transient public Set<String> getApplicableComplianceRules() {
+    
+    // With AOs we also include extra rules depending on the value of the publication route.
+    String route = publicationRoute?.value?.replaceAll("^(\\S+).*", "\$1")
+    
+    // Get all the applied rule sets for this AO.
+    if (complianceRules == null) { 
+      complianceRules = []
+      for (AoFunding funding : funds) {
+        funding?.grant?.funder?.each { Org funder ->
+          
+          // Start with this org and keep going through funderGroups.
+          while (funder) {
+            // Add all the rules denoted here.          
+            funder.appliedComplianceRuleSets?.each { String ruleSet ->
+              // The rules exist we should add them.
+              complianceRules << ruleSet
+              
+              // AOs also include extra rules if the rule def isn't recursive (i.e. does not end with '*'
+              // and the publication route has been set.
+              if (route && !ruleSet.endsWith("*")) {
+                // Check for particular values.
+                String inclusiveKey = "${ruleSet}.${route}*" 
+                complianceRules << inclusiveKey
+              }
+            }
+            
+            // Check the funding group.
+            funder = funder.funderGroup
+          }
+        }
+      }
+    }
+    
+    complianceRules
+  }
+  
+  public Map<String, ?> runRules () {
+    // Run the rules.
+    rulesService.runRules(applicableComplianceRules, this)
   }
 
   static hasMany = [
@@ -169,7 +252,7 @@ class AcademicOutput extends Component {
   ]
 
   static mapping = {
-//    namedRoles sort:'role', order:'asc', cascade: "all"
+    // namedRoles sort:'role', order:'asc', cascade: "all"
     names cascade: "all-delete-orphan"
     grants cascade: "all"
     funds cascade: "all-delete-orphan"

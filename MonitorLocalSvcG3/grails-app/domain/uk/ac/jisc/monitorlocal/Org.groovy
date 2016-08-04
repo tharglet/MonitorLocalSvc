@@ -11,6 +11,8 @@ import com.k_int.grails.tools.rest.ExtendedRestfulController
 @Resource(uri="/org", superClass=ExtendedRestfulController)
 class Org extends Component {
   
+  Set appliedComplianceRuleSets = []
+  
   String address
   String taxCode
   String monitorLocalAPIKey
@@ -34,7 +36,8 @@ class Org extends Component {
   Set userAffiliations = []
   
   static hasMany = [
-    userAffiliations: UserOrg
+    userAffiliations: UserOrg,
+    appliedComplianceRuleSets: String
   ]
 
   static mappedBy = [

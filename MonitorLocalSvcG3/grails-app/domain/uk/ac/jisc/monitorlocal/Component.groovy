@@ -1,14 +1,19 @@
 package uk.ac.jisc.monitorlocal
 
 import grails.plugin.springsecurity.SpringSecurityService
+import grails.util.GrailsClassUtils
 import grails.util.Holders
 import grails.web.databinding.GrailsWebDataBinder
 import groovy.transform.EqualsAndHashCode
 import groovy.util.logging.Log4j
 
+import java.lang.reflect.Field
+import java.lang.reflect.Modifier
 import javax.persistence.Transient
 
 import org.grails.databinding.BindUsing
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider
+import org.springframework.core.type.filter.AssignableTypeFilter
 
 import uk.ac.jisc.monitorlocal.databinding.AbsoluteCollection
 
