@@ -7,3 +7,31 @@ curl -X POST -d {
 "scope":"read"
 }
  http://localhost:8080/sample-oauth2-app/oauth/token
+
+
+curl -X GET "https://www.kbplus.ac.uk/sob/oauth/authorize?response_type=code&client_id=monitorLocal&scope=write&redirect_uri=http://localhost:9090/redirect"
+
+Extract code
+
+curl -X POST \
+-d "grant_type=authorization_code" \
+-d "client_id=monitorLocal" \
+-d "client_secret=my-secret" \
+-d "code=rcFqQ5" \
+https://www.kbplus.ac.uk/sob/oauth/token
+
+curl -X POST \
+-d "grant_type=authorization_code" \
+-d "client_id=monitorLocal" \
+-d "client_secret=" \
+-d "code=rcFqQ5" \
+https://www.kbplus.ac.uk/sob/oauth/token
+
+
+code:KP3j8w, client_id:monitorLocal, redirect_uri:http://localhost:9090/redirect, grant_type:authorization_code, client_secret:$2a$10$6f.1xwxKYInKn.QSPRZZ6.u/JJeoiiCs64MsT0/Ndj0tno6GFNJm.
+curl -X POST \
+-d "grant_type=authorization_code" \
+-d "client_id=monitorLocal" \
+-d "client_secret=$2a$10$6f.1xwxKYInKn.QSPRZZ6.u/JJeoiiCs64MsT0/Ndj0tno6GFNJm." \
+-d "code=KP3j8w" \
+https://www.kbplus.ac.uk/sob/oauth/token
