@@ -37,7 +37,7 @@ class JwtController {
       ];
 
       if ( auth_cfg.secret ) {
-        // access_params.client_secret = auth_cfg.secret
+         access_params.client_secret = auth_cfg.secret
       }
 
       // get the URI to hit for exchanging the auth-code for a token.

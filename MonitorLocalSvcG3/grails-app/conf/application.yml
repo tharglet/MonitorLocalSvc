@@ -276,7 +276,7 @@ monitorLocal_jwk:
 auth:
   sob:
     key: 'monitorLocal'
-    secret: '$2a$10$6f.1xwxKYInKn.QSPRZZ6.u/JJeoiiCs64MsT0/Ndj0tno6GFNJm.'
+    # secret: '$2a$10$6f.1xwxKYInKn.QSPRZZ6.u/JJeoiiCs64MsT0/Ndj0tno6GFNJm.'
     scope: 
       - 'write'
     defaultRoles:
@@ -348,13 +348,13 @@ k_int:
               format: json
               env: 'store://datatables.org/alltableswithkeys'
 ---
-monitor:
+monitor :
     helpHost : 'https://github.com'
-    helpUri     : '/k-int/MonitorLocalUX/wiki'
+    helpUri  : '/k-int/MonitorLocalUX/wiki'
     #pushToMonitorUK: true
     #monitorUk : 'http://monitoruk.cottagelabs.com'
-    compliance:
-      'Funder Group':
-        RCUK:
+    compliance :
+      'Funder Group' :
+        RCUK :
           - "rcuk" #Only the base rules applied in the rcukRules file are applied. Sub sets determined by pub route of AO testing.
 ---
