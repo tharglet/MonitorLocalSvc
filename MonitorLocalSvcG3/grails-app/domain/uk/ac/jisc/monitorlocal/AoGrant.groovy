@@ -17,6 +17,11 @@ class AoGrant extends Component {
   String internalGrantId
   Person fundedAuthor
   
+  
+  static namedQueries = {
+	Component.namedQueries()
+  }
+  
   static mappedBy = [
     costItem: 'grants',
     academicOutput: 'grants',

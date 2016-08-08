@@ -17,6 +17,11 @@ class Person extends Component {
 
   @AbsoluteCollection
   Set personContactDetails = []
+  
+  static namedQueries = {
+	Component.namedQueries()
+  }
+  
   static hasMany = [
     personContactDetails: ContactDetails
   ]

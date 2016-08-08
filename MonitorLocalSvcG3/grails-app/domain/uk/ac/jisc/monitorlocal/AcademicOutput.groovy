@@ -9,6 +9,7 @@ import uk.ac.jisc.monitorlocal.databinding.AbsoluteCollection
 import uk.ac.jisc.monitorlocal.rest.AcademicOutputRestfulController
 
 import com.k_int.grails.tools.refdata.*
+import com.k_int.grails.tools.rest.ExtendedRestfulController
 import com.k_int.grails.tools.rules.RulesService
 import com.k_int.grails.tools.utils.MapUtils
 
@@ -23,7 +24,9 @@ class AcademicOutput extends Component {
     type component: true
   }
   
-  static namedQueries = Component.namedQueries
+  static namedQueries = {
+    Component.namedQueries()
+  }
 
   User assignedTo
   Date contactDate = new Date()

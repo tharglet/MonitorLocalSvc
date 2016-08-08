@@ -35,6 +35,10 @@ class Org extends Component {
   @AbsoluteCollection
   Set userAffiliations = []
   
+  static namedQueries = {
+	Component.namedQueries()
+  }
+  
   static hasMany = [
     userAffiliations: UserOrg,
     appliedComplianceRuleSets: String

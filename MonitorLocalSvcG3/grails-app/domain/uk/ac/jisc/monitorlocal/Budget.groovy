@@ -16,6 +16,10 @@ class Budget extends Component {
   MonetaryValue totalFunds = new MonetaryValue()
   String code
   Org source
+  
+  static namedQueries = {
+	Component.namedQueries()
+  }
 
   // Calculate the remaining funds from the CostItems.
   public MonetaryValue getRemainingFunds () {
