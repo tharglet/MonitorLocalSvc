@@ -354,7 +354,28 @@ monitor :
     #pushToMonitorUK: true
     #monitorUk : 'http://monitoruk.cottagelabs.com'
     compliance :
-      'Funder Group' :
-        RCUK :
-          - "rcuk" #Only the base rules applied in the rcukRules file are applied. Sub sets determined by pub route of AO testing.
+      'Funder Group':
+        'RCUK' :
+          - 'RCUK' #Only the base rules applied in the rcukRules file are applied. Sub sets determined by pub route of AO testing.
+        'COAF' :
+          - 'COAF'
+      'Funder':
+        'AHRC' :
+          - 'Funder.AHRC'
+        'BBSRC':
+          - 'Funder.BBSRC'
+        'European Commission [Horizon 2020]':
+          - 'Funder.EuropeanCommissionHorizon2020'
+        'European Commission [FP7]':
+          - 'Funder.EuropeanCommissionFP7'
+        'ESRC':
+          - 'Funder.ESRC'
+        'EPSRC':
+          - 'Funder.EPSRC'
+        'MRC':
+          - 'Funder.MRC'
+        'NERC':
+          - 'Funder.NERC'
+        'STFC':
+          - 'Funder.STFC'
 ---

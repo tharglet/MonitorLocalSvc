@@ -137,10 +137,10 @@ class AcademicOutput extends Component {
     if (!results) results = [:]
     
     // Set the lowest value.
-    Boolean lowestVal = results.size() > 0 ?  true : null
+    Boolean lowestVal = true
     
     // Go through each rule result and just look for the lowest value.
-    MapUtils.flattenMap (results)?.each { k, v ->
+    MapUtils.flattenMap(results)?.each { k, v ->
       if (lowestVal != v) {
         if (lowestVal == true) {
             lowestVal = v
@@ -199,8 +199,13 @@ class AcademicOutput extends Component {
   }
   
   public Map<String, ?> runRules () {
+    
+    def applicableRules = applicableComplianceRules
+    
     // Run the rules.
-    rulesService.runRules(applicableComplianceRules, this)
+    rulesService.flattenRuleKeys(
+      rulesService.runRules(applicableRules, this)
+    )
   }
 
   static hasMany = [
