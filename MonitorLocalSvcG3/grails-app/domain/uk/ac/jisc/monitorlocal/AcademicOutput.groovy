@@ -113,21 +113,13 @@ class AcademicOutput extends Component {
   RefdataValue deposited
   
   Boolean complianceStatus
+  Boolean workflowStatus = false
   
-  def beforeInsert () {
+  def beforeValidate () {
     
     // Check compliance..
     calculateComplainceStatus()
-    
-    super.beforeInsert()
-  }
-  
-  def beforeUpdate() {
-    
-    // Check compliance..
-    calculateComplainceStatus ()
-    
-    super.beforeUpdate()
+    calculateWorkflowStatus()
   }
   
   transient void calculateComplainceStatus () {
@@ -158,6 +150,20 @@ class AcademicOutput extends Component {
     }
     
     complianceStatus = lowestVal
+  }
+  
+  transient void calculateWorkflowStatus () {
+    
+    // This should be called after calculating the compliance status.
+    // We use that calculated value as the default as it may avoid us having to run the rules.
+    boolean value = complianceStatus
+    def wf = MapUtils.flattenMap(runWorkflowRules())
+    
+    for (int i=0; i<wf.size() && value; i++) {
+      value = wf[i]
+    }
+    
+    workflowStatus = value
   }
   
   
@@ -209,6 +215,11 @@ class AcademicOutput extends Component {
       rulesService.runRules(applicableRules, this)
     )
   }
+  
+  public Map<String, ?> runWorkflowRules () {
+    // Run the workflow rules.
+    rulesService.runRules('workflow*', this)
+  }
 
   static hasMany = [
     academicOutputCosts: CostItem,
@@ -253,6 +264,7 @@ class AcademicOutput extends Component {
     acknowledgement nullable:true
     accessStatement nullable:true
     complianceStatus nullable: true
+    workflowStatus nullable: false
   }
   
   static mappedBy = [
