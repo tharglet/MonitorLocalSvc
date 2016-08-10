@@ -141,16 +141,18 @@ class AcademicOutput extends Component {
     
     // Go through each rule result and just look for the lowest value.
     MapUtils.flattenMap(results)?.each { k, v ->
-      if (lowestVal != v) {
-        if (lowestVal == true) {
-            lowestVal = v
-        } else if (lowestVal == false) {
-          if (v != true) {
-            lowestVal = v
+      if (k.endsWith('.result')) {
+        if (lowestVal != v) {
+          if (lowestVal == true) {
+              lowestVal = v
+          } else if (lowestVal == false) {
+            if (v != true) {
+              lowestVal = v
+            }
+          } else {
+            // Lowest val == null
+            lowestVal = null
           }
-        } else {
-          // Lowest val == null
-          lowestVal = null
         }
       }
     }
