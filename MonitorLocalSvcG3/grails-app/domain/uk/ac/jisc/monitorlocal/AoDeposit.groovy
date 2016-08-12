@@ -17,7 +17,7 @@ class AoDeposit {
 	"Birkbeck Institutional Research Online","Bournemouth University Research Online","Bradford Scholars","British History Online",
 	"Brunel University Research Archive","Canterbury Research and Theses Environment","CEDA Repository","Central Archive at the University of Reading",
 	"Central Lancashire Online Knowledge","ChesterRep","City Research Online","Cognitive Sciences ePrint Archive",
-	"Computer Laboratory Technical Reports - Cambridge University","Cranfield CERES","Cronfa at Swansea University","CURVE (Coventry University)",
+	"Computer Laboratory Technical Reports - Cambridge University","CORE", "Cranfield CERES","Cronfa at Swansea University","CURVE (Coventry University)",
 	"De Montfort University Open Research Archive","Kings College London (KCL) Department of Computer Science E-Repository",
 	"University of Sheffield Department of Computer Science Publications Archive","Digital Education Resource Archive (Institute of Education)",
 	"DSpace @ Cambridge","DSpace at Cardiff Met","Durham Research Online","e-Prints Soton (University of Southampton)",
