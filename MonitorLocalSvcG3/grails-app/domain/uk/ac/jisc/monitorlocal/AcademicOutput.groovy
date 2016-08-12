@@ -191,8 +191,11 @@ class AcademicOutput extends Component {
               // and the publication route has been set.
               if (route && !ruleSet.endsWith("*")) {
                 // Check for particular values.
-                String inclusiveKey = "${ruleSet}.${route}*" 
-                complianceRules << inclusiveKey
+                String inclusiveKey = "${ruleSet}.${route}*"
+                
+                if (rulesService.keyExists(inclusiveKey)) {
+                  complianceRules << inclusiveKey
+                }
               }
             }
             
@@ -351,24 +354,29 @@ class AcademicOutput extends Component {
             qparam:'q',
             placeholder:'Name or title of item',
             contextTree: [ 'ctxtp':'disjunctive',
-                             'terms':[
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'B'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'identifiers.identifier.value', 'wildcard':'B'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'assignedTo.name', 'wildcard':'B'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.personContactDetails.department', 'wildcard':'B'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.firstName', 'wildcard':'B'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.surname.department', 'wildcard':'B'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'authorNameList', 'wildcard':'B'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'publishedIn.name', 'wildcard':'B'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'publisher.name', 'wildcard':'B'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.fund', 'wildcard':'B'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.grantId', 'wildcard':'B'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.internalGrantId', 'wildcard':'B'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.funder.name', 'wildcard':'B'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'assignedTo.name', 'wildcard':'B']
-                             ]
-                         ]
-
+              'terms':[
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'identifiers.identifier.value', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'assignedTo.name', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.personContactDetails.department', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.firstName', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.surname.department', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'authorNameList', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'publishedIn.name', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'publisher.name', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.fund', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.grantId', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.internalGrantId', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.funder.name', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'assignedTo.name', 'wildcard':'B']
+              ]
+            ]
+          ],
+          [
+            prompt:'Workflow Complete',
+            qparam:'wfc',
+            placeholder:'Workflow Complete',
+            contextTree: [ 'ctxtp':'filter', 'comparator' : 'eq', 'prop':'workflowStatus', type:'java.lang.Object' ],
           ],
           [
             prompt:'Owner Institution',
