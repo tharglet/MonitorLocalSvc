@@ -49,7 +49,7 @@ class CostItem {
   RefdataValue estimated
 
   @Defaults(["Debit","Credit"])
-  RefdataValue debit
+  RefdataValue type
   
   MonetaryValue grossValue = new MonetaryValue("baseCurrency" : currency)
   MonetaryValue grossValueGBP = new MonetaryValue("baseCurrency" : Constants.GBP)
@@ -86,7 +86,7 @@ class CostItem {
     'category'        ( nullable: true )
     'estimated'       ( nullable: true )
     'purchaseOrder'   ( nullable: true )
-    'debit'   ( nullable: true )
+    'type'            ( nullable: true )
   }
   
   static mapping = {
