@@ -33,7 +33,7 @@ class ComplianceUtils {
       def ret = [
         details: [
           type: 'deposits',
-          description: "At least one deposite must exist ${repoName ? 'within the \"' + repoName + '\" repository ' : ''}"
+          description: "At least one deposit must exist ${repoName ? 'within the \"' + repoName + '\" repository ' : ''}"
         ]
       ]
       
