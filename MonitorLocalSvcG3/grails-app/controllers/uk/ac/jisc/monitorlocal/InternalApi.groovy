@@ -354,7 +354,7 @@ class InternalApiController implements PluginManagerAware {
             if ( name ) {
               log.debug("Got org : ${o} lookupOrCreate ${name}");
               def person = Component.lookupOrCreate(uk.ac.jisc.monitorlocal.Person.class, name, persdata.pers_ids)
-              person.institution = o;
+              person.ownerInstitution = o;
               person.firstName = persdata.forenames
               person.surname = persdata.surname
               person.save(flush:true, failOnError:true);
