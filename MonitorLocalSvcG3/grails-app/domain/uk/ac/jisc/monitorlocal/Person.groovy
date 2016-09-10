@@ -13,7 +13,6 @@ class Person extends Component {
 
   String firstName
   String surname
-  Org institution
 
   @AbsoluteCollection
   Set personContactDetails = []
@@ -37,7 +36,6 @@ class Person extends Component {
   static constraints = {
     firstName nullable: true
     surname nullable: true
-    institution nullable: true
   }
 
   def beforeValidate () {
