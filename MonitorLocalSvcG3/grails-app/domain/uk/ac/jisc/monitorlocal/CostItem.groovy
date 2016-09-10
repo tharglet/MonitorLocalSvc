@@ -95,5 +95,6 @@ class CostItem {
     grossValueGBP cascade: 'all-delete-orphan'
     tax cascade: 'all-delete-orphan'
     academicOutput cascade: 'all'
+    purchaseOrder cascade: 'all'
   }
 }
