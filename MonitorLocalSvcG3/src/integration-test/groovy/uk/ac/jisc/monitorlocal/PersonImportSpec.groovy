@@ -10,7 +10,7 @@ import grails.util.GrailsWebMockUtil
 import spock.lang.Shared
 import org.springframework.web.context.WebApplicationContext
 import org.springframework.web.context.request.RequestContextHolder
-
+import org.springframework.mock.web.MockMultipartHttpServletRequest
 
 
 @Integration
@@ -37,6 +37,8 @@ university_of_jisc,"Flintsone","Fred","fred.flintstone@no.jisc.domain.ac.uk","fr
 
     def setup() {
       GrailsWebMockUtil.bindMockWebRequest(ctx)
+      def mockRequest = new MockMultipartHttpServletRequest()
+      controller.metaClass.request = mockRequest
     }
 
     def cleanup() {
@@ -46,7 +48,7 @@ university_of_jisc,"Flintsone","Fred","fred.flintstone@no.jisc.domain.ac.uk","fr
     void "test orgs load"() {
       given: "A file of orgs for importing"
         def file = new GrailsMockMultipartFile('content', 'orgs_data.csv', 'text/csv', orgs_data.getBytes())
-        controller.request.addPart(file)
+        controller.request.addFile(file)
 
       when: "A user requests that orgs file be imported"
         controller.OrgsIngest()
@@ -60,7 +62,7 @@ university_of_jisc,"Flintsone","Fred","fred.flintstone@no.jisc.domain.ac.uk","fr
     void "test person load"() {
       given: "A file of people for importing"
         def file = new GrailsMockMultipartFile('content', 'people_data.csv', 'text/csv', person_data.getBytes() )
-        controller.request.addPart(file)
+        controller.request.addFile(file)
       when: "A user requests that people file be imported"
         c.PersonIngest()
       then: "Search for the located person"
