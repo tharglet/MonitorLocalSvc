@@ -232,6 +232,7 @@ class AcademicOutput extends Component {
   ]
 
   static constraints = {
+    Component.constraints.rehydrate (delegate, owner, thisObject).call()
     publicationRoute nullable: true
     apcFundingApproval nullable: true
     apcFundingDate nullable: true
@@ -277,6 +278,7 @@ class AcademicOutput extends Component {
   ]
 
   static mapping = {
+    Component.mapping.rehydrate (delegate, owner, thisObject).call()
     // namedRoles sort:'role', order:'asc', cascade: "all"
     names cascade: "all-delete-orphan"
     grants cascade: "all"

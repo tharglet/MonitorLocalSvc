@@ -19,7 +19,7 @@ class AoGrant extends Component {
   
   
   static namedQueries = {
-	Component.namedQueries()
+    Component.namedQueries()
   }
   
   static mappedBy = [

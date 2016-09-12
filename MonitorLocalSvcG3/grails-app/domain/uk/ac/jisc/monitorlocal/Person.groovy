@@ -30,10 +30,12 @@ class Person extends Component {
   ]
   
   static mapping = {
+  	Component.mapping.rehydrate (delegate, owner, thisObject).call()
     personContactDetails cascade: "all"
   }
 
   static constraints = {
+  	Component.constraints.rehydrate (delegate, owner, thisObject).call()
     firstName nullable: true
     surname nullable: true
   }

@@ -50,11 +50,15 @@ class Invoice extends Component {
   ]
 
   static mapping = {
+    Component.mapping.rehydrate (delegate, owner, thisObject).call()
+    
     invoiceCosts sort:'category', order:'asc', cascade: "all"
     supplier cascade: 'all'
   }
   
   static constraints = {
+    Component.constraints.rehydrate (delegate, owner, thisObject).call()
+    
     date nullable: true
     dueDate nullable: true
     supplier nullable: true

@@ -79,6 +79,7 @@ class Budget extends Component {
   RefdataValue prepay
 
   static constraints = {
+    Component.constraints.rehydrate (delegate, owner, thisObject).call()
     'totalFunds'      ( nullable: true )
     'code'            ( nullable: true, blank: false )
     'source'          ( nullable: true )
@@ -87,6 +88,7 @@ class Budget extends Component {
   }
 
   static mapping = {
+    Component.mapping.rehydrate (delegate, owner, thisObject).call()
     totalFunds cascade: "all-delete-orphan"
     allocatedCosts cascade: "all"
   }
