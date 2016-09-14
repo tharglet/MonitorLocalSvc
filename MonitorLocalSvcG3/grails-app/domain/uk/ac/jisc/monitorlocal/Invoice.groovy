@@ -50,11 +50,15 @@ class Invoice extends Component {
   ]
 
   static mapping = {
+    Component.mapping.rehydrate (delegate, owner, thisObject).call()
+    
     invoiceCosts sort:'category', order:'asc', cascade: "all"
     supplier cascade: 'all'
   }
   
   static constraints = {
+    Component.constraints.rehydrate (delegate, owner, thisObject).call()
+    
     date nullable: true
     dueDate nullable: true
     supplier nullable: true
@@ -86,9 +90,9 @@ class Invoice extends Component {
       qbeConfig:[
         qbeForm:[
           [
-            prompt:'Name or Title',
+            prompt:'Search',
             qparam:'q',
-            placeholder:'Name or title of item',
+            placeholder:'Search Invoices',
             contextTree: [ 'ctxtp':'disjunctive',
                              'terms':[
                                   ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R'],
@@ -99,6 +103,7 @@ class Invoice extends Component {
 
           ],
           [
+            expose: false,
             prompt:'Owner Institution',
             qparam:'instCtx',
             placeholder:'Owner Institution',

@@ -33,9 +33,7 @@ class InstitutionalRefdataValue extends RefdataValue {
   }
 
   static mapping = {
-    def superMapping = RefdataValue.mapping
-    superMapping.delegate = delegate
-    superMapping()
+    RefdataValue.mapping.rehydrate(delegate, owner, thisObject).call()
     
     // Custom
     ownerInstitution cascade: "merge, save-update, lock, refresh, evict, replicate"
@@ -43,10 +41,7 @@ class InstitutionalRefdataValue extends RefdataValue {
 
   static constraints = {
     // Run the constraints of the superclass,.
-    def superConstraints = RefdataValue.constraints
-    superConstraints.delegate = delegate
-    superConstraints()
-    
+    RefdataValue.constraints.rehydrate(delegate, owner, thisObject).call()
     ownerInstitution nullable: true
   }
   

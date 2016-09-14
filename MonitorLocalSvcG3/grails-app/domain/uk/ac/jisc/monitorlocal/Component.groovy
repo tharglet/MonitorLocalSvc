@@ -36,7 +36,7 @@ class Component  implements DomainRulePropertySource{
         isNull ("ownerInstitution") 
         
         def currentAffiliation =  Holders.applicationContext.getBean("springSecurityService", SpringSecurityService)?.currentUser?.getUserOrg()
-        if (currentAffiliation) {
+        if (currentAffiliation?.id != null) {
           eq ("ownerInstitution",currentAffiliation)
         }
       }

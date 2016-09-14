@@ -232,6 +232,7 @@ class AcademicOutput extends Component {
   ]
 
   static constraints = {
+    Component.constraints.rehydrate (delegate, owner, thisObject).call()
     publicationRoute nullable: true
     apcFundingApproval nullable: true
     apcFundingDate nullable: true
@@ -277,6 +278,7 @@ class AcademicOutput extends Component {
   ]
 
   static mapping = {
+    Component.mapping.rehydrate (delegate, owner, thisObject).call()
     // namedRoles sort:'role', order:'asc', cascade: "all"
     names cascade: "all-delete-orphan"
     grants cascade: "all"
@@ -350,9 +352,9 @@ class AcademicOutput extends Component {
       qbeConfig:[
         qbeForm:[
           [
-            prompt:'Name or Title',
+            prompt:'Search',
             qparam:'q',
-            placeholder:'Name or title of item',
+            placeholder:'Search Academic Outputs',
             contextTree: [ 'ctxtp':'disjunctive',
               'terms':[
                 ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'B'],
@@ -376,19 +378,21 @@ class AcademicOutput extends Component {
             prompt:'Workflow Complete',
             qparam:'wfc',
             placeholder:'Workflow Complete',
-            contextTree: [ 'ctxtp':'filter', 'comparator' : 'eq', 'prop':'workflowStatus', type:'java.lang.Object' ],
+            contextTree: [ 'ctxtp':'filter', 'comparator' : 'eq', 'prop':'workflowStatus' ],
           ],
           [
+            expose: false,
             prompt:'Owner Institution',
             qparam:'instCtx',
             placeholder:'Owner Institution',
-            contextTree: [ 'ctxtp':'qry', 'comparator' : 'eq', 'prop':'ownerInstitution.id', type:'java.lang.Long' ],
+            contextTree: [ 'ctxtp':'qry', 'comparator' : 'eq', 'prop':'ownerInstitution.id' ],
           ],
           [
+            expose: false,
             prompt:'Id',
             qparam:'id',
             placeholder:'ID',
-            contextTree: [ 'ctxtp':'qry', 'comparator' : 'eq', 'prop':'id', type:'java.lang.Long' ],
+            contextTree: [ 'ctxtp':'qry', 'comparator' : 'eq', 'prop':'id' ],
           ]
         ],
         qbeGlobals:[

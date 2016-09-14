@@ -1,11 +1,13 @@
 package uk.ac.jisc.monitorlocal
 
 import grails.rest.Resource
+import groovy.util.logging.Log4j;
 
 import com.k_int.grails.tools.finance.MonetaryValue;
 import com.k_int.grails.tools.refdata.*
 import com.k_int.grails.tools.rest.ExtendedRestfulController
 
+@Log4j
 @Resource(uri="/budget", superClass=ExtendedRestfulController)
 class Budget extends Component {
   
@@ -79,6 +81,7 @@ class Budget extends Component {
   RefdataValue prepay
 
   static constraints = {
+    Component.constraints.rehydrate (delegate, owner, thisObject).call()
     'totalFunds'      ( nullable: true )
     'code'            ( nullable: true, blank: false )
     'source'          ( nullable: true )
@@ -87,6 +90,7 @@ class Budget extends Component {
   }
 
   static mapping = {
+    Component.mapping.rehydrate (delegate, owner, thisObject).call()
     totalFunds cascade: "all-delete-orphan"
     allocatedCosts cascade: "all"
   }
@@ -103,9 +107,9 @@ class Budget extends Component {
       qbeConfig:[
         qbeForm:[
           [
-            prompt:'Name or Title',
+            prompt:'Search',
             qparam:'q',
-            placeholder:'Name or title of item',
+            placeholder:'Search Budgets',
             contextTree: [ 'ctxtp':'disjunctive',
                              'terms':[
                                   ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R']
@@ -114,6 +118,7 @@ class Budget extends Component {
 
           ],
           [
+            expose: false,
             prompt:'Owner Institution',
             qparam:'instCtx',
             placeholder:'Owner Institution',
