@@ -6,6 +6,7 @@ model {
 
 def exlc = [
   'academicOutputCosts',
+  'rules',
 ]
 
 json tmpl."/global/component" ( component: academicOutput, excludes: exlc)

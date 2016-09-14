@@ -13,10 +13,14 @@ class Person extends Component {
 
   String firstName
   String surname
-  Org institution
 
   @AbsoluteCollection
   Set personContactDetails = []
+  
+  static namedQueries = {
+	Component.namedQueries()
+  }
+  
   static hasMany = [
     personContactDetails: ContactDetails
   ]
@@ -32,7 +36,6 @@ class Person extends Component {
   static constraints = {
     firstName nullable: true
     surname nullable: true
-    institution nullable: true
   }
 
   def beforeValidate () {

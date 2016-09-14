@@ -37,13 +37,16 @@ class JwtController {
       ];
 
       if ( auth_cfg.secret ) {
-        access_params.client_secret = auth_cfg.secret
+         access_params.client_secret = auth_cfg.secret
       }
 
       // get the URI to hit for exchanging the auth-code for a token.
       def tokenUri = auth_cfg.accessTokenUrl.toURI()
 
+      log.debug("Auth server: ${tokenUri.scheme}://${tokenUri.host}");
+
       def http = new HTTPBuilder(tokenUri.scheme + "://" + tokenUri.host)
+      http.ignoreSSLIssues()
 
       log.debug("About to call post on ${tokenUri.path} to validate token using access params ${access_params}")
 
@@ -51,18 +54,20 @@ class JwtController {
                  path: tokenUri.path,
                  body:access_params) { resp, json ->
 
-        log.debug("POST Success for validation of token ${resp} ${json}")
+        log.debug("POST to ${tokenUri.path} Success for validation of token ${resp} ${json}")
 
         def accessToken = json.access_token;
 
         def authorization_header = request.getHeader('Authorization')
+
+        log.debug("accessToken: ${accessToken}, authorization_header:${authorization_header}");
 
         // get the URI to hit for obtaining meta-data about the user from the social API.
         def peopleUri = auth_cfg.peopleApiUrl.toURI()
 
         // Locate a user for...
         def people_api = new HTTPBuilder(peopleUri.scheme + "://" + peopleUri.host)
-
+        people_api.ignoreSSLIssues()
 
         try {
 

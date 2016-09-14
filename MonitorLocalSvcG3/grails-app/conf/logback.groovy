@@ -29,9 +29,11 @@ logger 'grails.artefact.Interceptor', WARN, ['STDOUT'], false
 // logger 'com.k_int.grails.tools.identifiers.GrailsDomainIdentifierHelpers', DEBUG
 logger 'grails.app.init.BootStrap', DEBUG
 logger 'grails.app.services', DEBUG
+logger 'grails.app.jobs', DEBUG
 logger 'grails.web.mapping.filter', DEBUG
 logger 'com.k_int.grails.tools.databinding.ExtendedWebDataBinder', DEBUG
 logger 'com.k_int.grails.tools.databinding.ExtendedSimpleMapDataBindingSource', DEBUG
+logger 'uk.ac.jisc.monitorlocal.databinding.AbsoluteCollectionListener', WARN
 // logger 'grails.web.databinding.GrailsWebDataBinder',DEBUG
 // logger 'uk.ac.jisc.monitorlocal.databinding', DEBUG
 // logger 'com.k_int.grails.tools.finance.YahooRatesService', DEBUG

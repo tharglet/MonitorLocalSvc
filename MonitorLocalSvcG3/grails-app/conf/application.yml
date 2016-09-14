@@ -275,15 +275,15 @@ monitorLocal_jwk:
   
 auth:
   sob:
-    key: 'monitorLocalDev'
-    secret: 'monitorLocalDevSecret'
+    key: 'monitorLocal'
+    # secret: '$2a$10$6f.1xwxKYInKn.QSPRZZ6.u/JJeoiiCs64MsT0/Ndj0tno6GFNJm.'
     scope: 
-      - 'read'
+      - 'write'
     defaultRoles:
       - 'ROLE_USER'
       - 'ROLE_GOOGLE'
-    accessTokenUrl: 'https://demo.kbplus.ac.uk/sobtest/oauth/token'
-    peopleApiUrl: 'https://demo.kbplus.ac.uk/sobtest/userinfo'
+    accessTokenUrl: 'https://www.kbplus.ac.uk/sob/oauth/token'
+    peopleApiUrl: 'https://www.kbplus.ac.uk/sob/userinfo'
     query: {}
     userMapping:
       username: "sub"
@@ -348,6 +348,34 @@ k_int:
               format: json
               env: 'store://datatables.org/alltableswithkeys'
 ---
-monitor:
+monitor :
     helpHost : 'https://github.com'
-    helpUri     : '/k-int/MonitorLocalUX/wiki'
+    helpUri  : '/k-int/MonitorLocalUX/wiki'
+    #pushToMonitorUK: true
+    #monitorUk : 'http://monitoruk.cottagelabs.com'
+    compliance :
+      'Funder Group':
+        'RCUK' :
+          - 'RCUK' #Only the base rules applied in the rcukRules file are applied. Sub sets determined by pub route of AO testing.
+        'COAF' :
+          - 'COAF'
+      'Funder':
+        'AHRC' :
+          - 'Funder.AHRC'
+        'BBSRC':
+          - 'Funder.BBSRC'
+        'European Commission [Horizon 2020]':
+          - 'Funder.EuropeanCommissionHorizon2020'
+        'European Commission [FP7]':
+          - 'Funder.EuropeanCommissionFP7'
+        'ESRC':
+          - 'Funder.ESRC'
+        'EPSRC':
+          - 'Funder.EPSRC'
+        'MRC':
+          - 'Funder.MRC'
+        'NERC':
+          - 'Funder.NERC'
+        'STFC':
+          - 'Funder.STFC'
+---

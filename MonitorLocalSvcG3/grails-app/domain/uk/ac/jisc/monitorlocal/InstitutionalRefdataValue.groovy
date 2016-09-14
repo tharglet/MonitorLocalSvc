@@ -1,13 +1,13 @@
 package uk.ac.jisc.monitorlocal
 
-import javax.persistence.Transient;
+import grails.plugin.springsecurity.SpringSecurityService
+import grails.util.Holders
+
+import javax.persistence.Transient
 
 import org.grails.databinding.BindUsing
 
 import com.k_int.grails.tools.refdata.RefdataValue
-
-import grails.plugin.springsecurity.SpringSecurityService;
-import grails.util.Holders
 
 class InstitutionalRefdataValue extends RefdataValue {
   @BindUsing({
@@ -28,6 +28,17 @@ class InstitutionalRefdataValue extends RefdataValue {
     if ( ownerInstitution == null ) {
       ownerInstitution = currentUser?.getUserOrg()
     }
+    
+    true
+  }
+
+  static mapping = {
+    def superMapping = RefdataValue.mapping
+    superMapping.delegate = delegate
+    superMapping()
+    
+    // Custom
+    ownerInstitution cascade: "merge, save-update, lock, refresh, evict, replicate"
   }
 
   static constraints = {

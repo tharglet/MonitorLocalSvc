@@ -86,7 +86,8 @@ dependencies {
   testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
   testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
 
-  
+  compile 'org.grails.plugins:quartz:2.0.9'
+
   /******************** Custom Incluldes below *********************/
   compile 'org.grails.plugins:audit-logging:2.0.1'
   compile "org.springframework.security:spring-security-core:4.0.3.RELEASE"
@@ -100,6 +101,7 @@ dependencies {
   compile('org.codehaus.groovy.modules.http-builder:http-builder:0.7.2') {
     exclude group: "org.codehaus.groovy", module: "groovy"
   }
+  compile "joda-time:joda-time:2.9.4"
 
   // Elastic search plugin.
 //  compile ("org.grails.plugins:elasticsearch:1.0.0.2")

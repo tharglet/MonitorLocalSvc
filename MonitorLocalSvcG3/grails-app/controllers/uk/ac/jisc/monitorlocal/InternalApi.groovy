@@ -34,7 +34,8 @@ class InternalApiController implements PluginManagerAware {
     'id.juliet':[action:'process', target:"id", subtype:'id'],
     'id.doi':[action:'process', target:"id", subtype:'id'],
     'funder_group':[action:'process', target:"funder_group", subtype:'org'],
-    'membership_org':[action:'process', target:"membership_org", subtype:'simple']
+    'membership_org':[action:'process', target:"membership_org", subtype:'simple'],
+    'uk_api_key':[action:'process', target:"uk_api_key",subtype:'simple'],
   ]
 
   static person_import_cfg = [
@@ -155,6 +156,7 @@ class InternalApiController implements PluginManagerAware {
     def upload_filename = request.getFile("content")?.getOriginalFilename()
 
     if ( upload_mime_type && upload_filename ) {
+      log.debug("Got orgs file ${upload_mime_type} ${upload_filename}");
       def upload_file = request.getFile("content");
       processOrgsIngest(upload_file.getInputStream());
     }
@@ -225,6 +227,9 @@ class InternalApiController implements PluginManagerAware {
           if ( orgdata.funder_group ) {
             o.funderGroup = orgdata.funder_group;
           }
+          if ( orgdata.uk_api_key ) {
+            o.monitorLocalAPIKey = orgdata.uk_api_key;
+          }
           o.save(flush:true, failOnError:true);
         }
       }
@@ -243,9 +248,16 @@ class InternalApiController implements PluginManagerAware {
     def upload_mime_type = request.getFile("content")?.contentType
     def upload_filename = request.getFile("content")?.getOriginalFilename()
 
+    log.debug("PersonIngest:: ${upload_mime_type} ${upload_filename}");
+
     if ( upload_mime_type && upload_filename ) {
       def upload_file = request.getFile("content");
-      result = processPersonIngest(upload_file.getInputStream());
+      if ( upload_file ) {
+        result = processPersonIngest(upload_file.getInputStream());
+      }
+      else {
+        log.warn("Unable to locate content file for person ingest");
+      }
     }
     else {
       log.warn("No mimetype or filename ${upload_mime_type} or ${upload_filename}");
@@ -350,7 +362,7 @@ class InternalApiController implements PluginManagerAware {
             if ( name ) {
               log.debug("Got org : ${o} lookupOrCreate ${name}");
               def person = Component.lookupOrCreate(uk.ac.jisc.monitorlocal.Person.class, name, persdata.pers_ids)
-              person.institution = o;
+              person.ownerInstitution = o;
               person.firstName = persdata.forenames
               person.surname = persdata.surname
               person.save(flush:true, failOnError:true);
@@ -423,13 +435,14 @@ class InternalApiController implements PluginManagerAware {
 
   private def cleanUpGorm() {
     // log.debug("Clean up GORM");
+    if ( sessionFactory ) {
+      // Get the current session.
+      def session = sessionFactory.currentSession
 
-    // Get the current session.
-    def session = sessionFactory.currentSession
-
-    // flush and clear the session.
-    session.flush()
-    session.clear()
+      // flush and clear the session.
+      session.flush()
+      session.clear()
+    }
   }
 
 }

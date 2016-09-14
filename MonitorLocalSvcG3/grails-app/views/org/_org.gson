@@ -1,0 +1,13 @@
+import uk.ac.jisc.monitorlocal.Org
+
+model {
+	Org org
+}
+
+json tmpl."/global/component" ( component: org, excludes: ['appliedComplianceRuleSets']
+//custom: {  
+//  complianceRules (org.getAppliedComplianceRuleSets()) {
+//    value it
+//  }
+//}
+)

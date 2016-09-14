@@ -18,3 +18,7 @@ To point to a local version create a local file named "settings.gradle" in **the
 include 'MonitorLocalSvcG3', 'grails-tools'
 project(':grails-tools').projectDir = new File('/path/to/grails-tools/directory')
 ```
+
+
+
+See also http://bluesliverx.github.io/grails-spring-security-oauth2-provider/v3/manual/guide/exampleFlows.html#authorizationCode

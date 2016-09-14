@@ -40,6 +40,11 @@ class Invoice extends Component {
   
   @AbsoluteCollection
   Set invoiceCosts = []
+  
+  static namedQueries = {
+	Component.namedQueries()
+  }
+  
   static hasMany = [
     invoiceCosts: CostItem
   ]

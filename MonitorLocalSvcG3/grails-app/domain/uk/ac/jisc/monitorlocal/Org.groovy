@@ -11,9 +11,11 @@ import com.k_int.grails.tools.rest.ExtendedRestfulController
 @Resource(uri="/org", superClass=ExtendedRestfulController)
 class Org extends Component {
   
+  Set appliedComplianceRuleSets = []
+  
   String address
   String taxCode
-  
+  String monitorLocalAPIKey
   Org funderGroup
 
   // Can users be affiliated with this org?
@@ -33,8 +35,13 @@ class Org extends Component {
   @AbsoluteCollection
   Set userAffiliations = []
   
+  static namedQueries = {
+	Component.namedQueries()
+  }
+  
   static hasMany = [
-    userAffiliations: UserOrg
+    userAffiliations: UserOrg,
+    appliedComplianceRuleSets: String
   ]
 
   static mappedBy = [
@@ -77,6 +84,7 @@ class Org extends Component {
     address nullable: true, blank: false
     taxCode nullable: true, blank: false
     membershipOrg nullable:true, blank:false
+    monitorLocalAPIKey nullable:true, blank:false
     type nullable: true
   }
 

@@ -47,6 +47,9 @@ class CostItem {
   
   @Defaults(["Yes","No"])
   RefdataValue estimated
+
+  @Defaults(["Debit","Credit"])
+  RefdataValue type
   
   MonetaryValue grossValue = new MonetaryValue("baseCurrency" : currency)
   MonetaryValue grossValueGBP = new MonetaryValue("baseCurrency" : Constants.GBP)
@@ -83,6 +86,7 @@ class CostItem {
     'category'        ( nullable: true )
     'estimated'       ( nullable: true )
     'purchaseOrder'   ( nullable: true )
+    'type'            ( nullable: true )
   }
   
   static mapping = {
@@ -91,5 +95,6 @@ class CostItem {
     grossValueGBP cascade: 'all-delete-orphan'
     tax cascade: 'all-delete-orphan'
     academicOutput cascade: 'all'
+    purchaseOrder cascade: 'all'
   }
 }

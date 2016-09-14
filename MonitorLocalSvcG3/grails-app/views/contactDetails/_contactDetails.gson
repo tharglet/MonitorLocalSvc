@@ -1,0 +1,7 @@
+import uk.ac.jisc.monitorlocal.ContactDetails
+
+model {
+  ContactDetails contactDetails
+}
+
+json g.render( contactDetails, [deep:true])

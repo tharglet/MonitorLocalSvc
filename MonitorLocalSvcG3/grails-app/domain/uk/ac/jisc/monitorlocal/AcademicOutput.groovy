@@ -3,26 +3,34 @@ package uk.ac.jisc.monitorlocal
 import grails.rest.Resource
 import groovy.util.logging.Log4j
 
-import java.util.Map;
-
-import org.grails.databinding.BindUsing
 import org.hibernate.proxy.HibernateProxy
+
 import uk.ac.jisc.monitorlocal.databinding.AbsoluteCollection
+import uk.ac.jisc.monitorlocal.rest.AcademicOutputRestfulController
 
 import com.k_int.grails.tools.refdata.*
 import com.k_int.grails.tools.rest.ExtendedRestfulController
+import com.k_int.grails.tools.rules.RulesService
+import com.k_int.grails.tools.utils.MapUtils
 
 
 @Log4j
-@Resource(uri="/ao", superClass=ExtendedRestfulController)
+@Resource(uri="/ao", superClass=AcademicOutputRestfulController)
 class AcademicOutput extends Component {
+  
+  static transients = ["rulesService"]
   
   static searchable = {
     type component: true
   }
+  
+  static namedQueries = {
+    Component.namedQueries()
+  }
 
   User assignedTo
   Date contactDate = new Date()
+  RulesService rulesService
   
   @Defaults([
     'Green', 'Gold', 'Gold Paid by Other'
@@ -51,7 +59,7 @@ class AcademicOutput extends Component {
   RefdataValue publisherResponse
   Date publisherResponseDate
 
-  @Defaults(['CC BY', 'CC BY-SA', 'CC BY-ND', 'CC BY-NC', 'CC BY-NC-SA', 'CC BY-NC-ND'])
+  @Defaults(['CC BY', 'CC BY-SA', 'CC BY-ND', 'CC BY-NC', 'CC BY-NC-SA', 'CC BY-NC-ND', 'Other'])
   RefdataValue licence
 
   // Ugh - hate this model - really would prefer publication to be separate to the AO
@@ -103,6 +111,118 @@ class AcademicOutput extends Component {
   
   @Defaults(['Yes', 'No'])
   RefdataValue deposited
+  
+  Boolean complianceStatus
+  Boolean workflowStatus = false
+  
+  def beforeValidate () {
+    
+    // Check compliance..
+    calculateComplainceStatus()
+    calculateWorkflowStatus()
+  }
+  
+  transient void calculateComplainceStatus () {
+    
+    // Init the results.
+    Map<String, ?> results = runRules()
+    if (!results) results = [:]
+    
+    // Set the lowest value.
+    Boolean lowestVal = true
+    
+    // Go through each rule result and just look for the lowest value.
+    MapUtils.flattenMap(results)?.each { k, v ->
+      if (k.endsWith('.result')) {
+        if (lowestVal != v) {
+          if (lowestVal == true) {
+              lowestVal = v
+          } else if (lowestVal == false) {
+            if (v != true) {
+              lowestVal = v
+            }
+          } else {
+            // Lowest val == null
+            lowestVal = null
+          }
+        }
+      }
+    }
+    
+    complianceStatus = lowestVal
+  }
+  
+  transient void calculateWorkflowStatus () {
+    
+    // This should be called after calculating the compliance status.
+    // We use that calculated value as the default as it may avoid us having to run the rules.
+    boolean value = complianceStatus
+    def wf = MapUtils.flattenMap(runWorkflowRules())
+    
+    for (int i=0; i<wf.size() && value; i++) {
+      value = wf[i]
+    }
+    
+    workflowStatus = value
+  }
+  
+  
+  transient Set<String> complianceRules = null
+  
+  transient public Set<String> getApplicableComplianceRules() {
+    
+    // With AOs we also include extra rules depending on the value of the publication route.
+    String route = publicationRoute?.value?.replaceAll("^(\\S+).*", "\$1")
+    
+    // Get all the applied rule sets for this AO.
+    if (complianceRules == null) { 
+      complianceRules = []
+      for (AoFunding funding : funds) {
+        funding?.grant?.funder?.each { Org funder ->
+          
+          // Start with this org and keep going through funderGroups.
+          while (funder) {
+            // Add all the rules denoted here.          
+            funder.appliedComplianceRuleSets?.each { String ruleSet ->
+              // The rules exist we should add them.
+              complianceRules << ruleSet
+              
+              // AOs also include extra rules if the rule def isn't recursive (i.e. does not end with '*'
+              // and the publication route has been set.
+              if (route && !ruleSet.endsWith("*")) {
+                // Check for particular values.
+                String inclusiveKey = "${ruleSet}.${route}*"
+                
+                if (rulesService.keyExists(inclusiveKey)) {
+                  complianceRules << inclusiveKey
+                }
+              }
+            }
+            
+            // Check the funding group.
+            funder = funder.funderGroup
+          }
+        }
+      }
+    }
+    
+    complianceRules
+  }
+  
+  public Map<String, ?> runRules () {
+    
+    def applicableRules = applicableComplianceRules
+    
+    // Run the rules.
+    rulesService.flattenRuleKeys(
+      rulesService.runRules(applicableRules, this)
+    )
+  }
+  
+  public Map<String, ?> runWorkflowRules () {
+    // Run the workflow rules.
+    rulesService.runRules('workflow*', this)
+  }
 
   static hasMany = [
     academicOutputCosts: CostItem,
@@ -146,6 +266,8 @@ class AcademicOutput extends Component {
     embargoEndDate nullable:true
     acknowledgement nullable:true
     accessStatement nullable:true
+    complianceStatus nullable: true
+    workflowStatus nullable: false
   }
   
   static mappedBy = [
@@ -155,7 +277,7 @@ class AcademicOutput extends Component {
   ]
 
   static mapping = {
-//    namedRoles sort:'role', order:'asc', cascade: "all"
+    // namedRoles sort:'role', order:'asc', cascade: "all"
     names cascade: "all-delete-orphan"
     grants cascade: "all"
     funds cascade: "all-delete-orphan"
@@ -232,24 +354,29 @@ class AcademicOutput extends Component {
             qparam:'q',
             placeholder:'Name or title of item',
             contextTree: [ 'ctxtp':'disjunctive',
-                             'terms':[
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'B'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'identifiers.identifier.value', 'wildcard':'B'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'assignedTo.name', 'wildcard':'B'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.personContactDetails.department', 'wildcard':'B'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.firstName', 'wildcard':'B'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.surname.department', 'wildcard':'B'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'authorNameList', 'wildcard':'B'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'publishedIn.name', 'wildcard':'B'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'publisher.name', 'wildcard':'B'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.fund', 'wildcard':'B'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.grantId', 'wildcard':'B'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.internalGrantId', 'wildcard':'B'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.funder.name', 'wildcard':'B'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'assignedTo.name', 'wildcard':'B']
-                             ]
-                         ]
-
+              'terms':[
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'identifiers.identifier.value', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'assignedTo.name', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.personContactDetails.department', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.firstName', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.surname.department', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'authorNameList', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'publishedIn.name', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'publisher.name', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.fund', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.grantId', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.internalGrantId', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.funder.name', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'assignedTo.name', 'wildcard':'B']
+              ]
+            ]
+          ],
+          [
+            prompt:'Workflow Complete',
+            qparam:'wfc',
+            placeholder:'Workflow Complete',
+            contextTree: [ 'ctxtp':'filter', 'comparator' : 'eq', 'prop':'workflowStatus', type:'java.lang.Object' ],
           ],
           [
             prompt:'Owner Institution',
@@ -272,6 +399,66 @@ class AcademicOutput extends Component {
         ]
       ]
     ]
+  }
+
+
+        // def record = [
+      //   record : [
+      //     "dc:identifier" : [
+      //          {"type" : "pmcid", "id" : "<europe pubmed central id>"},
+      //          {"type" : "pmid", "id" : "<pubmed id>"},
+      //          {"type" : "doi", "id" : "<doi>"},
+      //          {"type" : "url", "id" : "<url to object>"}
+      //      ],
+      //      "rioxxterms:type" : "<publication type (article, etc) - ideally from rioxx guidelines>",
+      //      "dc:title" : "<title>",
+      //      "dc:subject" : ["<list of subject categories, ideally standardised>"],
+      //      "rioxxterms:version" : "<rioxx resource version - from guidelines>",
+      //      "rioxxterms:author" : [
+      //          [
+      //              "name" : "<author name>",
+      //              "identifier" : [
+      //                  ["type" : "orcid", "id" : "<author's orcid>"],
+      //                  ["type" : "email", "id" : "<author's email address>"],
+      //                  ["type" : "<identifier type>", "id" : "<author identifier>"]
+      //              ],
+      //              "affiliation" : [
+      //                  [
+      //                      "name" : "<name of organisation>",
+      //                      "identifier" : [
+      //                          ["type" : "<identifier type>", "id" : "<organisation identifier>"]
+      //                      ]
+      //                  ]
+      //              ]
+      //          ]
+      //      ]
+      //   ]
+      // ]
+
+  // Create a rioxx themed record as described at https://github.com/JiscMonitor/monitor-uk/blob/develop/docs/system/DATA_MODELS.md
+  transient toRioxx() {
+    def result = [:]
+    result.'dc:identifier' = []
+    result.'dc:title' = this.name
+    result.'dc:subject' = [] // List of subjects if present
+    result.'rioxxterms:type' = outputType?.value
+    result.'rioxxterms:author' = []
+
+    this.identifiers.each { component_id ->
+      result."dc:identifier".add(['type':component_id.identifier.namespace.value,'id':component_id.identifier.value]);
+    }
+
+    this.names.each { name ->
+      result.'rioxxterms:author'.add(['name':name.name, 'identifier':[],'affiliation':[]])
+    }
+
+    if ( this.publisher ) {
+      result.'dcterms:publisher'=[
+                 'name':publisher.name,
+                 'identifier':[]]  // list of  {"type" : "<identifier type>", "id" : "<publisher identifier>"}
+    }
+    
+    result
   }
 
 }
