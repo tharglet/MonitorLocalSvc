@@ -87,7 +87,7 @@ class AoGrant extends Component {
 
           ],
           [
-            exspose: false,
+            expose: false,
             prompt:'Owner Institution',
             qparam:'instCtx',
             placeholder:'Owner Institution',
