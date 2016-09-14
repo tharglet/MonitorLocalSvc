@@ -57,21 +57,22 @@ class Person extends Component {
       qbeConfig:[
         qbeForm:[
           [
-            prompt:'Name or Title',
+            prompt:'Search',
             qparam:'q',
-            placeholder:'Name or title of item',
+            placeholder:'Search People',
             contextTree: [ 'ctxtp':'disjunctive',
-                             'terms':[
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'firstName', 'wildcard':'R'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'surname', 'wildcard':'R'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'id', 'wildcard':'R'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'personContactDetails.emailAddress', 'wildcard':'R'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'personContactDetails.department', 'wildcard':'R']
-                             ]
-                         ]
+              'terms':[
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'firstName', 'wildcard':'R'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'surname', 'wildcard':'R'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'id', 'wildcard':'R'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'personContactDetails.emailAddress', 'wildcard':'R'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'personContactDetails.department', 'wildcard':'R']
+              ]
+            ]
 
           ],
           [
+            expose: false,
             prompt:'Owner Institution',
             qparam:'instCtx',
             placeholder:'Owner Institution',

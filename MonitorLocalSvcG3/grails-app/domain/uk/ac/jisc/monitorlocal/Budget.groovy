@@ -1,11 +1,13 @@
 package uk.ac.jisc.monitorlocal
 
 import grails.rest.Resource
+import groovy.util.logging.Log4j;
 
 import com.k_int.grails.tools.finance.MonetaryValue;
 import com.k_int.grails.tools.refdata.*
 import com.k_int.grails.tools.rest.ExtendedRestfulController
 
+@Log4j
 @Resource(uri="/budget", superClass=ExtendedRestfulController)
 class Budget extends Component {
   
@@ -105,9 +107,9 @@ class Budget extends Component {
       qbeConfig:[
         qbeForm:[
           [
-            prompt:'Name or Title',
+            prompt:'Search',
             qparam:'q',
-            placeholder:'Name or title of item',
+            placeholder:'Search Budgets',
             contextTree: [ 'ctxtp':'disjunctive',
                              'terms':[
                                   ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R']
@@ -116,6 +118,7 @@ class Budget extends Component {
 
           ],
           [
+            expose: false,
             prompt:'Owner Institution',
             qparam:'instCtx',
             placeholder:'Owner Institution',

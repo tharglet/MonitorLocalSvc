@@ -33,6 +33,7 @@ logger 'grails.app.jobs', DEBUG
 logger 'grails.web.mapping.filter', DEBUG
 logger 'com.k_int.grails.tools.databinding.ExtendedWebDataBinder', DEBUG
 logger 'com.k_int.grails.tools.databinding.ExtendedSimpleMapDataBindingSource', DEBUG
+logger 'com.k_int.grails.tools.query.HQLBuilder', DEBUG
 logger 'uk.ac.jisc.monitorlocal.databinding.AbsoluteCollectionListener', WARN
 // logger 'grails.web.databinding.GrailsWebDataBinder',DEBUG
 // logger 'uk.ac.jisc.monitorlocal.databinding', DEBUG
