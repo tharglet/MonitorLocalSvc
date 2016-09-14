@@ -150,7 +150,7 @@ class InternalApiController implements PluginManagerAware {
 
 
   def OrgsIngest() {
-    def result = [ status:'OK' ]
+    def result = [ status:'OK', messages:[] ]
 
     def upload_mime_type = request.getFile("content")?.contentType 
     def upload_filename = request.getFile("content")?.getOriginalFilename()
@@ -158,7 +158,7 @@ class InternalApiController implements PluginManagerAware {
     if ( upload_mime_type && upload_filename ) {
       log.debug("Got orgs file ${upload_mime_type} ${upload_filename}");
       def upload_file = request.getFile("content");
-      processOrgsIngest(upload_file.getInputStream());
+      processOrgsIngest(upload_file.getInputStream(), result);
     }
     else {
       log.warn("No mimetype or filename ${upload_mime_type} or ${upload_filename}");
@@ -167,7 +167,7 @@ class InternalApiController implements PluginManagerAware {
     render result as JSON
   }
 
-  private def processOrgsIngest(InputStream is) {
+  private def processOrgsIngest(InputStream is, result) {
 
     log.debug("assimilateOrgsData");
 
@@ -188,29 +188,35 @@ class InternalApiController implements PluginManagerAware {
       orgdata.identifiers = []
       nl.each {
         def cfg = orgs_import_cfg[header[col]]
-        switch (cfg.subtype) {
-          case 'simple':
-            orgdata[cfg.target] = it
-            break;
-          case 'id':
-            def id_components = header[col].split('\\.');
-            if ( it.trim().size() > 0 ) {
-              orgdata.identifiers.add([namespace:id_components[1], value:it?.trim()])
-            }
-            break;
-          case 'refdata':
-            if ( it && ( it.trim().length() > 0 ) )  {
-              orgdata[cfg.target] = RefdataValue.lookupOrCreate(cfg.refdataCategory, it)
-            }
-            break;
-          case 'org':
-            if ( it && ( it.trim().length() > 0 ) )  {
-              orgdata[cfg.target] = Org.findByName(it.trim()) ?: new Org(name:it).save(flush:true, failOnError:true);
-            }
-            break;
-          default:
-            log.debug("Unhandled type ${cfg.type} for column ${header[col]} config ${cfg} value ${it}");
-            break;
+        if ( cfg ) {
+          switch (cfg.subtype) {
+            case 'simple':
+              orgdata[cfg.target] = it
+              break;
+            case 'id':
+              def id_components = header[col].split('\\.');
+              if ( it.trim().size() > 0 ) {
+                orgdata.identifiers.add([namespace:id_components[1], value:it?.trim()])
+              }
+              break;
+            case 'refdata':
+              if ( it && ( it.trim().length() > 0 ) )  {
+                orgdata[cfg.target] = RefdataValue.lookupOrCreate(cfg.refdataCategory, it)
+              }
+              break;
+            case 'org':
+              if ( it && ( it.trim().length() > 0 ) )  {
+                orgdata[cfg.target] = Org.findByName(it.trim()) ?: new Org(name:it).save(flush:true, failOnError:true);
+              }
+              break;
+            default:
+              log.debug("Unhandled type ${cfg.type} for column ${header[col]} config ${cfg} value ${it}");
+              break;
+          }
+        }
+        else {
+          log.warn("File contains unmapped column[${col}] with name ${header[col]}");
+          result.messages.add([type:'validation', line:rownum, col:col, msg:"Line references unmapped column[${col}] with name ${header[col]}"]);
         }
         col++
       }
@@ -231,6 +237,7 @@ class InternalApiController implements PluginManagerAware {
             o.monitorLocalAPIKey = orgdata.uk_api_key;
           }
           o.save(flush:true, failOnError:true);
+          result.messages.add([type:'info', line:rownum, orgId:o.id, msg:"Saved org ${o.id}"]);
         }
       }
 
