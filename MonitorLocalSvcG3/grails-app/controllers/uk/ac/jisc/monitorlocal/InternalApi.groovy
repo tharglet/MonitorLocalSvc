@@ -422,8 +422,8 @@ class InternalApiController implements PluginManagerAware {
         log.debug("Created new irv, owner institution of created object is ${result.ownerInstitution}");
       }
       else if (q.size() == 1 ) {
-        log.debug("Looked up irv for \"${org}\" \"${cat}\" \"${val.trim()}\" - ${result}");
         result = (InstitutionalRefdataValue) q.get(0);
+        log.debug("Looked up irv for \"${org}\" \"${cat}\" \"${val.trim()}\" - ${result}");
       }
       else {
         log.error("Matched multiple..");
