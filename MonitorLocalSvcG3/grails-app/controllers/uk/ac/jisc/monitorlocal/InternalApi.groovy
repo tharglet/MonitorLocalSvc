@@ -237,6 +237,10 @@ class InternalApiController implements PluginManagerAware {
             o.monitorLocalAPIKey = orgdata.uk_api_key;
           }
           o.save(flush:true, failOnError:true);
+          if (o.funderGroup) {
+            // Ensure the funder group has the correct type.
+            o.funderGroup.setTypeFromString('Funder Group')
+          }
           result.messages.add([type:'info', line:rownum, orgId:o.id, msg:"Saved org ${o.id}"]);
         }
       }
