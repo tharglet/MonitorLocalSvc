@@ -416,28 +416,31 @@ class InternalApiController implements PluginManagerAware {
 
   private InstitutionalRefdataValue getInstitutionalRefdataValue(org, catname, val) {
 
-    InstitutionalRefdataValue result = null;
+    InstitutionalRefdataValue result = null
+    
+    if (val) {
 
-    def cat = RefdataCategory.findByDescription(catname) ?: new RefdataCategory(description:catname).save(flush:true, failOnError:true);
-
-    if ( cat ) {
-      def q = InstitutionalRefdataValue.executeQuery('select irv from InstitutionalRefdataValue as irv where irv.ownerInstitution = :inst and irv.owner = :d and irv.value = :v',
-                                                     [inst:org, d:cat, v:val.trim()]);
+      def cat = RefdataCategory.findByDescription(catname) ?: new RefdataCategory(description:catname).save(flush:true, failOnError:true)
   
-      if ( q.size() == 0 ) {
-        log.debug("Unable to locate irv for \"${org}\" \"${cat}\" \"${val.trim()}\" - create new");
-        result = new InstitutionalRefdataValue(value:val.trim(), owner:cat)
-        result.ownerInstitution = org
-        result.save(flush:true, failOnError:true);
- 
-        log.debug("Created new irv, owner institution of created object is ${result.ownerInstitution}");
-      }
-      else if (q.size() == 1 ) {
-        result = (InstitutionalRefdataValue) q.get(0);
-        log.debug("Looked up irv for \"${org}\" \"${cat}\" \"${val.trim()}\" - ${result}");
-      }
-      else {
-        log.error("Matched multiple..");
+      if ( cat ) {
+        def q = InstitutionalRefdataValue.executeQuery('select irv from InstitutionalRefdataValue as irv where irv.ownerInstitution = :inst and irv.owner = :d and irv.value = :v',
+                                                       [inst:org, d:cat, v:val.trim()])
+    
+        if ( q.size() == 0 ) {
+          log.debug("Unable to locate irv for \"${org}\" \"${cat}\" \"${val.trim()}\" - create new")
+          result = new InstitutionalRefdataValue(value:val.trim(), owner:cat)
+          result.ownerInstitution = or
+          result.save(flush:true, failOnError:true)
+   
+          log.debug("Created new irv, owner institution of created object is ${result.ownerInstitution}")
+        }
+        else if (q.size() == 1 ) {
+          result = (InstitutionalRefdataValue) q.get(0)
+          log.debug("Looked up irv for \"${org}\" \"${cat}\" \"${val.trim()}\" - ${result}")
+        }
+        else {
+          log.error("Matched multiple..")
+        }
       }
     }
 
