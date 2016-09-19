@@ -100,6 +100,7 @@ class Budget extends Component {
 
     return [
       baseclass:'uk.ac.jisc.monitorlocal.Budget',
+      useDistinct: true,
       title:'Budget',
       group:'Secondary',
       defaultSort:'name',

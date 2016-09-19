@@ -66,6 +66,7 @@ class AoGrant extends Component {
 
     return [
       baseclass:'uk.ac.jisc.monitorlocal.AoGrant',
+      useDistinct: true,
       title:'AOGrant',
       group:'Secondary',
       defaultSort:'name',

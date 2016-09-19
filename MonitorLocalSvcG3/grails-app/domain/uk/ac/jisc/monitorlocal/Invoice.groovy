@@ -83,6 +83,7 @@ class Invoice extends Component {
 
     return [
       baseclass:'uk.ac.jisc.monitorlocal.Invoice',
+      useDistinct: true,
       title:'Invoice',
       group:'Secondary',
       defaultSort:'name',

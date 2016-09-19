@@ -93,6 +93,7 @@ class Org extends Component {
 
     return [
       baseclass:'uk.ac.jisc.monitorlocal.Org',
+      useDistinct: true,
       title:'Organizations',
       group:'Secondary',
       defaultSort:'name',

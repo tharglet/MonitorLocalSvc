@@ -50,6 +50,7 @@ class Person extends Component {
 
     return [
       baseclass:'uk.ac.jisc.monitorlocal.Person',
+      useDistinct: true,
       title:'Person',
       group:'Secondary',
       defaultSort:'name',

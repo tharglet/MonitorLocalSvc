@@ -6,7 +6,7 @@ model {
 json {
    "id" componentIdentifier.id
     "identifier"  {
-        "id" componentIdentifier?.identifier?.id
+       "id" componentIdentifier?.identifier?.id
         if (componentIdentifier?.identifier?.namespace) {
           "namespace" {
             "id" componentIdentifier.identifier.namespace.id

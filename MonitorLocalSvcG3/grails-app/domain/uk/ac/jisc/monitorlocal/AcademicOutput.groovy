@@ -345,6 +345,7 @@ class AcademicOutput extends Component {
 
     return [
       baseclass:'uk.ac.jisc.monitorlocal.AcademicOutput',
+      useDistinct: true,
       title:'AO',
       group:'Secondary',
       defaultSort:'name',
@@ -355,14 +356,14 @@ class AcademicOutput extends Component {
             prompt:'Search',
             qparam:'q',
             placeholder:'Search Academic Outputs',
-            contextTree: [ 'ctxtp':'disjunctive',
+            contextTree: [ 'ctxtp':'disjunctive', 
               'terms':[
                 ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'B'],
                 ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'identifiers.identifier.value', 'wildcard':'B'],
                 ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'assignedTo.name', 'wildcard':'B'],
                 ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.personContactDetails.department', 'wildcard':'B'],
                 ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.firstName', 'wildcard':'B'],
-                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.surname.department', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.surname', 'wildcard':'B'],
                 ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'authorNameList', 'wildcard':'B'],
                 ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'publishedIn.name', 'wildcard':'B'],
                 ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'publisher.name', 'wildcard':'B'],
