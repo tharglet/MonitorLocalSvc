@@ -171,12 +171,21 @@ class JwtController {
                   // necessary on bootstrap.
                   def verified_user = Role.findByAuthority('ROLE_VERIFIED_USER')
                   if (!verified_user) {
-                      // no "ROLE_VERIFIED_USER" role, log an error and respond with a 500 InternalServerError.
-                      log.error('missing role "ROLE_VERIFIED_USER"')
-                      response.status(500, "invalid system state")
+                    // no "ROLE_VERIFIED_USER" role, log an error and respond with a 500 InternalServerError.
+                    log.error('missing role "ROLE_VERIFIED_USER"')
+                    response.status(500, "invalid system state")
                   } else {
-                      // create a user object to push down with the JWT to the client.
-                      result.user = user
+                    
+                    Map affiliations = j2.affiliations
+                    if (affiliations && affiliations.size() > 0) {
+                  
+                      // We are only concerned with the domain ATM.
+                      user.setUserOrg(getOrCreateOrgByDomain(affiliations.keySet().getAt(0)))
+                      user.save(flush:true, failOnError:true)
+                    }
+                  
+                    // create a user object to push down with the JWT to the client.
+                    result.user = user
                   }
                 }
               }
@@ -202,6 +211,26 @@ class JwtController {
     log.debug("JwtController returning...");
     result
   }
+  
+  private Org getOrCreateOrgByDomain (String domain) {
+    Org org
+    def orgs = Org.lookupByIdentifierValue([[namespace: 'domain', value: "${domain}"]])
+    if (orgs.size() < 1) {
+      
+      ComponentIdentifier ci = new ComponentIdentifier()
+      ci.setIdentifierFromStrings("domain", "${domain}")
+      
+      // Create a new org.
+      org = new Org(name: "${domain}")
+      org.addToIdentifiers(ci)
+      org.setTypeFromString('HEI')
+      org.save (failOnError:true)
+    } else {
+      org = orgs[0]
+    }
+    
+    org
+  } 
 
   private String createToken(user) {
 

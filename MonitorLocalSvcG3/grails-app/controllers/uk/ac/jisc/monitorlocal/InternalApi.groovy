@@ -19,7 +19,7 @@ class InternalApiController implements PluginManagerAware {
 
   static orgs_import_cfg = [
     'name':[action:'process', target:"name", subtype:'simple'],
-    'domain':[action:'process', target:"domain", subtype:'simple'],
+    'domain':[action:'process', target:"id", subtype:'id'],
     'address':[action:'process', target:"address", subtype:'simple'],
     'type':[action:'process', target:"type", subtype:'refdata', refdataCategory:'Org.Type'],
     'id.jisc':[action:'process', target:"id", subtype:'id'],
@@ -202,9 +202,9 @@ class InternalApiController implements PluginManagerAware {
                   orgdata[cfg.target] = it
                   break;
                 case 'id':
-                  def id_components = header[col].split('\\.');
+                  def id_components = header[col].replaceAll('^id\\.(.*)$', '$1')
                   if ( it.trim().size() > 0 ) {
-                    orgdata.identifiers.add([namespace:id_components[1], value:it?.trim()])
+                    orgdata.identifiers.add([namespace:id_components, value:it?.trim()])
                   }
                   break;
                 case 'refdata':

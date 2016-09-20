@@ -2,13 +2,13 @@ package uk.ac.jisc.monitorlocal
 
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
-import uk.ac.jisc.monitorlocal.databinding.AbsoluteCollection;
+
 import javax.persistence.Transient
 
 @EqualsAndHashCode(includes='username')
 @ToString(includes='username', includeNames=true, includePackage=false)
 class User implements Serializable {
-
+  
   private static final long serialVersionUID = 1
 
   transient springSecurityService
@@ -72,7 +72,7 @@ class User implements Serializable {
     password = springSecurityService?.passwordEncoder ? springSecurityService.encodePassword(password) : password
   }
 
-  static transients = ['springSecurityService', 'verified']
+  static transients = ['springSecurityService', 'verified', 'userOrg']
 
   static constraints = {
     username blank: false, unique: true, bindable: false
@@ -94,7 +94,7 @@ class User implements Serializable {
 
   static mapping = {
     password column: '`password`'
-    orgAffiliations joinTable: [name: "user_affiliations" ]
+    orgAffiliations joinTable: [name: "user_affiliations" ], cascade: "all-delete-orphan"
   }
   
   public boolean isVerified () {
@@ -136,10 +136,31 @@ class User implements Serializable {
   @Transient
   public Org getUserOrg() {
     def result = null
-    if ( orgAffiliations.size() > 0 ) {
-      result = orgAffiliations.getAt(0).org
+    int total = orgAffiliations.size()
+    if ( total > 0 ) {
+      result = orgAffiliations.getAt(total - 1).org
     }
     result
   }
-
+  
+  @Transient
+  public void setUserOrg(Org org) {
+    
+    // Firstly, clear down the affiliations.
+    orgAffiliations.each {
+      removeFromOrgAffiliations(it)
+    }
+    
+    save()
+    
+    UserOrg uo = new UserOrg()
+    uo.org = org
+    uo.status = 1
+    uo.formalRole = Role.findByAuthority('User')
+    
+    // Then add the relationship.
+    addToOrgAffiliations(uo)
+    
+    save(failOnError: true)
+  }
 }
