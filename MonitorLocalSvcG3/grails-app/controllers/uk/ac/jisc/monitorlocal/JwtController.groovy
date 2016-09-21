@@ -146,22 +146,22 @@ class JwtController {
                         // prefix the username with the social provider.
                         user.username = provider + '_' + user.username
                         user.password = java.util.UUID.randomUUID().toString()
-                        user.accountExpired=false;
-                        user.accountLocked=false;
-                        user.passwordExpired=false;
+                        user.accountExpired=false
+                        user.accountLocked=false
+                        user.passwordExpired=false
                         // TODO: add created and lastUsed timestamp fields?
-                        user.save(flush:true, failOnError:true);
+                        user.save(flush:true, failOnError:true)
   
-                        social_identity = new SocialIdentity(provider: provider,reference:userReference,user:user).save(flush:true, failOnError:true);
+                        social_identity = new SocialIdentity(provider: provider,reference:userReference,user:user).save(flush:true, failOnError:true)
   
-                        log.debug("Grant user role");
-                        def new_grant = new UserRole(role:role_user, user:user).save(flush:true, failOnError:true);
+                        log.debug("Grant user role")
+                        def new_grant = new UserRole(role:role_user, user:user).save(flush:true, failOnError:true)
   
                         result.token = createToken(social_identity)
                       }
                       else {
                         // Trying to stop database filling with null users
-                        throw new RuntimeException("No username available to create new user - perhaps this is meant to be anonymous?");
+                        throw new RuntimeException("No username available to create new user - perhaps this is meant to be anonymous?")
                       }
                   }
                 }
@@ -192,23 +192,23 @@ class JwtController {
             }
   
             response.failure = { resp2, reader ->
-                log.error("Failure result ${resp2.statusLine}");
+                log.error("Failure result ${resp2.statusLine}")
                 log.error(reader.text)
             }
   
           }
         }
         catch ( Exception e ) {
-          log.error("Error",e);
+          log.error("Error",e)
         }
 
       }
     }
     else {
-     log.error("Unable to locate config for provider ${provider}");
+     log.error("Unable to locate config for provider ${provider}")
     }
 
-    log.debug("JwtController returning...");
+    log.debug("JwtController returning...")
     result
   }
   
@@ -245,11 +245,11 @@ class JwtController {
     // rsaJsonWebKey.setKeyId("k1");
 
     // Create the Claims, which will be the content of the JWT
-    JwtClaims claims = new JwtClaims();
-    claims.setIssuer("MonitorLocal");  // who creates the token and signs it
-    claims.setAudience("MonitorLocal"); // to whom the token is intended to be sent
-    claims.setExpirationTimeMinutesInTheFuture(60*15); // time when the token will expire (60*15 minutes from now)
-    claims.setGeneratedJwtId(); // a unique identifier for the token
+    JwtClaims claims = new JwtClaims()
+    claims.setIssuer("MonitorLocal")  // who creates the token and signs it
+    claims.setAudience("MonitorLocal") // to whom the token is intended to be sent
+    claims.setExpirationTimeMinutesInTheFuture(60*15) // time when the token will expire (60*15 minutes from now)
+    claims.setGeneratedJwtId() // a unique identifier for the token
     claims.setIssuedAtToNow();  // when the token was issued/created (now)
     claims.setNotBeforeMinutesInThePast(2); // time before which the token is not yet valid (2 minutes ago)
     claims.setSubject(user.user.username); // the subject/principal is whom the token is about

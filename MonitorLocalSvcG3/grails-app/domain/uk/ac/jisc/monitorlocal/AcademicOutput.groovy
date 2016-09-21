@@ -367,7 +367,7 @@ class AcademicOutput extends Component {
                 ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'authorNameList', 'wildcard':'B'],
                 ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'publishedIn.name', 'wildcard':'B'],
                 ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'publisher.name', 'wildcard':'B'],
-                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.fund', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.name', 'wildcard':'B'],
                 ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.grantId', 'wildcard':'B'],
                 ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.internalGrantId', 'wildcard':'B'],
                 ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.funder.name', 'wildcard':'B'],

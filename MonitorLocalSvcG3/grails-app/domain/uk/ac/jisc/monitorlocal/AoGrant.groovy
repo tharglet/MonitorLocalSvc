@@ -15,7 +15,6 @@ class AoGrant extends Component {
   AcademicOutput academicOutput
   CostItem costItem
   Org funder
-  String fund
   String grantId
   String internalGrantId
   Person fundedAuthor

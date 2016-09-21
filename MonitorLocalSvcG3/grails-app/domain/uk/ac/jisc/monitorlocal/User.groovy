@@ -1,5 +1,7 @@
 package uk.ac.jisc.monitorlocal
 
+import grails.plugin.springsecurity.SpringSecurityService
+import grails.util.Holders
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
@@ -8,6 +10,25 @@ import javax.persistence.Transient
 @EqualsAndHashCode(includes='username')
 @ToString(includes='username', includeNames=true, includePackage=false)
 class User implements Serializable {
+  
+  static lookupBase = 'ownedComponents'
+  static namedQueries = {
+    ownedComponents {
+      or {
+        isEmpty ('orgAffiliations')
+        orgAffiliations {  
+          and {
+            def currentAffiliation =  Holders.applicationContext.getBean("springSecurityService", SpringSecurityService)?.currentUser?.getUserOrg()
+            or {
+              eq ("status", 1) // Approved
+              eq ("status", 3) // Auto approved
+            }
+            eq ("org",currentAffiliation)
+          }
+        }
+      }
+    }
+  }
   
   private static final long serialVersionUID = 1
 
