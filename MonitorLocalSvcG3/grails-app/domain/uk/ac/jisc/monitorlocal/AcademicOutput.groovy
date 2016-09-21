@@ -160,7 +160,7 @@ class AcademicOutput extends Component {
     def wf = MapUtils.flattenMap(runWorkflowRules())
     
     for (int i=0; i<wf.size() && value; i++) {
-      value = (wf[i] !== false)
+      value = (wf[i] != false)
     }
     
     workflowStatus = value
