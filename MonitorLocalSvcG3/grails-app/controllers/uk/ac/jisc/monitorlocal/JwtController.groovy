@@ -29,6 +29,10 @@ class JwtController {
 
       log.debug("Request.JSON.code:${request.JSON.code} redirectUri:${request.JSON.redirectUri}");
 
+      if ( ( request.JSON.code == null ) || ( request.JSON.code == 'null' ) ) {
+        log.error("Attempt to callback with no authentication code");
+      }
+
       def access_params = [
          code: request.JSON.code,
          client_id: request.JSON.clientId,
@@ -37,6 +41,7 @@ class JwtController {
       ];
 
       if ( auth_cfg.secret ) {
+         log.debug('Setting client secret...');
          access_params.client_secret = auth_cfg.secret
       }
 
