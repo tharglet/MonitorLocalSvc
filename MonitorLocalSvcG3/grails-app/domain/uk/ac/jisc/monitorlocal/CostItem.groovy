@@ -89,12 +89,28 @@ class CostItem {
     'type'            ( nullable: true )
   }
   
+  
+  def afterUpdate() {
+    log.info ("running after update")
+    // We should delete this cost item if it is no longer
+    // associated with an Invoice or AO.
+    if (!(academicOutput || invoice)) {
+      CostItem.withNewSession {
+        CostItem ci = CostItem.get(id)
+        ci.delete(flush:true)
+      }
+    }
+    
+    true
+  }
+  
+  
   static mapping = {
-    budget cascade: "all"
+//    budget cascade: "all"
     grossValue cascade: 'all-delete-orphan'
     grossValueGBP cascade: 'all-delete-orphan'
     tax cascade: 'all-delete-orphan'
-    academicOutput cascade: 'all'
-    purchaseOrder cascade: 'all'
+//    academicOutput cascade: 'all'
+//    purchaseOrder cascade: 'all'
   }
 }

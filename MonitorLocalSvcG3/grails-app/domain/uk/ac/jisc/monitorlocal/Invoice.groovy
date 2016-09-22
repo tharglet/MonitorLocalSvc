@@ -52,7 +52,7 @@ class Invoice extends Component {
   static mapping = {
     Component.mapping.rehydrate (delegate, owner, thisObject).call()
     
-    invoiceCosts sort:'category', order:'asc', cascade: "all"
+    invoiceCosts cascade: 'all', sort: 'category', order: 'asc'
     supplier cascade: 'all'
   }
   
