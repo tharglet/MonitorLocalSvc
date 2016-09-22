@@ -21,7 +21,7 @@ class JwtController {
     def result = [:]
     String provider = params.provider
 
-    log.debug("CeJwt::callback ${params}")
+    log.debug("CeJwt::callback ${params} ${request.JSON}")
 
     def auth_cfg = grailsApplication.config.auth[provider]
 
