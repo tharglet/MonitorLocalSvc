@@ -112,10 +112,10 @@ class Budget extends Component {
             qparam:'q',
             placeholder:'Search Budgets',
             contextTree: [ 'ctxtp':'disjunctive',
-                             'terms':[
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R']
-                             ]
-                         ]
+              'terms':[
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R']
+              ]
+            ]
 
           ],
           [

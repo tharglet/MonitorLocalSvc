@@ -5,8 +5,7 @@ import groovy.util.logging.Log4j;
 
 import com.k_int.grails.tools.rest.ExtendedRestfulController
 /**
- *  A Grant attached to an AO - May contain between one and all of:
- *  A funder, the fund name and the grant ID 
+ *  A Grant attached to an AO
  */
 @Log4j
 @Resource(uri="/grant", superClass=ExtendedRestfulController)
@@ -33,12 +32,12 @@ class AoGrant extends Component {
     // Set the name if it isn't already.
      if( !name ) {
       // Lets update the name
-      def nameStr = "${funder?.name ?: ''}:${fund ? ' ' + fund : ''}"
-      if (grantId) {
-        nameStr += " / ${grantId}"
-      }
+      def nameStr = "${grantId}"
       if (internalGrantId) {
         nameStr += " / ${internalGrantId}"
+      }
+      if (funder?.name?.length() ?: 0 > 0) {
+        nameStr += " / ${funder.name}"
       }
       
       if ( !(nameStr?.length() > 0) ) {
@@ -54,7 +53,6 @@ class AoGrant extends Component {
     'academicOutput'  (nullable: true)
     'funder'          (nullable: true)
     'costItem'        (nullable: true)
-    'fund'            (nullable: true,  blank:false)
     'grantId'         (nullable: true,  blank:false)
     'internalGrantId' (nullable: true,  blank:false)
     'fundedAuthor'    (nullable: true)
