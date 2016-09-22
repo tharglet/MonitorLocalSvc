@@ -21,13 +21,17 @@ class JwtController {
     def result = [:]
     String provider = params.provider
 
-    log.debug("CeJwt::callback ${params}")
+    log.debug("CeJwt::callback ${params} ${request.JSON}")
 
     def auth_cfg = grailsApplication.config.auth[provider]
 
     if ( auth_cfg ) {
 
       log.debug("Request.JSON.code:${request.JSON.code} redirectUri:${request.JSON.redirectUri}");
+
+      if ( ( request.JSON.code == null ) || ( request.JSON.code == 'null' ) ) {
+        log.error("Attempt to callback with no authentication code");
+      }
 
       def access_params = [
          code: request.JSON.code,
@@ -37,6 +41,7 @@ class JwtController {
       ];
 
       if ( auth_cfg.secret ) {
+         log.debug('Setting client secret...');
          access_params.client_secret = auth_cfg.secret
       }
 
