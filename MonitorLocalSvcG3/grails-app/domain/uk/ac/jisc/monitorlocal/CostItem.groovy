@@ -106,11 +106,11 @@ class CostItem {
   
   
   static mapping = {
-//    budget cascade: "all"
+    budget cascade: "all"
     grossValue cascade: 'all-delete-orphan'
     grossValueGBP cascade: 'all-delete-orphan'
     tax cascade: 'all-delete-orphan'
 //    academicOutput cascade: 'all'
-//    purchaseOrder cascade: 'all'
+    purchaseOrder cascade: 'all'
   }
 }
