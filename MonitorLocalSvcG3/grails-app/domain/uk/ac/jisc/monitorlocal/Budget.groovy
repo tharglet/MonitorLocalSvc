@@ -20,7 +20,7 @@ class Budget extends Component {
   Org source
   
   static namedQueries = {
-	Component.namedQueries()
+    Component.namedQueries()
   }
 
   // Calculate the remaining funds from the CostItems.

@@ -119,6 +119,11 @@ class Invoice extends Component {
         ]
       ]
     ]
+  }  
+  
+  def afterUpdate() {
+//    CostItem.withNewSession {
+      CostItem.tidyOrphans()
+//    }
   }
-
 }

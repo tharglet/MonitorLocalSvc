@@ -465,5 +465,11 @@ class AcademicOutput extends Component {
     
     result
   }
+  
+  def afterUpdate() {
+//    CostItem.withNewSession {
+      CostItem.tidyOrphans()
+//    }
+  }
 
 }
