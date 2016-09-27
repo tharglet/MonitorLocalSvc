@@ -389,7 +389,7 @@ class AcademicOutput extends Component {
             contextTree: [ 'ctxtp':'qry', 'comparator' : 'eq', 'prop':'ownerInstitution.id' ],
           ],
           [
-            expose: false,
+            expose: true,
             prompt:'Id',
             qparam:'id',
             placeholder:'ID',
