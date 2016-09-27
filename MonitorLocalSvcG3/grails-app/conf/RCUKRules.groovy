@@ -19,4 +19,6 @@ Green = {
  "Deposit" ComplianceUtils.depositCheck(
    ['Accepted Manuscript']
  )
+ 
+ "Licence" ComplianceUtils.refdataCheck("licence", ["CC BY", "CC BY-NC"])
 }

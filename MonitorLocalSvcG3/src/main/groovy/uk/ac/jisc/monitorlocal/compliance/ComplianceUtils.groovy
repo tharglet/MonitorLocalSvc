@@ -4,17 +4,32 @@ import org.joda.time.Months
 
 class ComplianceUtils {
   public static refdataCheck (String field, String expected) {
+    return refdataCheck(field, [expected])
+  }
+  
+  public static refdataCheck (String field, Collection<String> expected) {
     return {
+      String expectedString = ""
+      def total = expected.size()
+      expected.eachWithIndex { String exp, index ->
+        if (index > 0) {
+          expectedString += "${index == (total - 1) ? ' or' : ','} "
+        }
+        expectedString += exp
+      }
+      
       def ret = [
         details: [
           type: 'refdata',
-          expected: expected,
+          expected: expectedString,
           field: field
         ]
       ]
+      
       ret['result'] = it."${ret['details']['field']}"?.value?.toLowerCase()
       if (ret['result']) {
-        ret['result'] = ret['result'] == ret['details']['expected']?.toLowerCase()
+        
+        ret['result'] = (expected?.find { ret['result'] == it.toLowerCase() } != null)
       }
       ret
     }

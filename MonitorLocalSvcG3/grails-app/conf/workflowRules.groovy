@@ -1,6 +1,9 @@
 
 General = {
-  'Add a title' 'name != null'
+  'Add a title' {
+    name?.size() ?: 0 > 0
+  }
+  
   'Set the publication route' 'publicationRoute != null'
   'Set APC funding approval' 'publicationRoute?.value?.toLowerCase()?.startsWith("gold") ? (apcFundingApproval != null) : null'
   'Attach a grant' '(funds?.size() ?: 0) > 0'
@@ -23,7 +26,8 @@ Publication = {
     }
     return found
   }
-  'Add a journal/conference title' 'publicationTitle != null'
+
+  'Add a journal/conference title' 'publishedIn != null'
   'Add a publisher' 'publisher != null'
 }
 

@@ -36,8 +36,6 @@ class AcademicOutput extends Component {
     'Green', 'Gold', 'Gold Paid by Other'
   ])
   RefdataValue publicationRoute
-
-  String publicationTitle
   
   String authorNameList
 
@@ -249,7 +247,6 @@ class AcademicOutput extends Component {
     openAccessStatus nullable: true
     outputType nullable: true
     localReference nullable: true, blank:false
-    publicationTitle nullable: true, blank:false
     publisherURL nullable: true, blank:false
     journalIssueDate nullable: true
     journalVolume nullable: true
