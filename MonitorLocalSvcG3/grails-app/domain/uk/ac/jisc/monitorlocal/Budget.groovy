@@ -83,7 +83,21 @@ class Budget extends Component {
   static constraints = {
     Component.constraints.rehydrate (delegate, owner, thisObject).call()
     'totalFunds'      ( nullable: true )
-    'code'            ( nullable: true, blank: false )
+    
+    // Code is checked to be unique too.
+    'code'            ( nullable: true, blank: false, validator: { val, obj ->
+      def result = Budget.ownedComponents {
+        ilike 'code' , "${val}"
+        projections {
+          count("id")
+        }
+      }
+      
+      if (result[0] > 0) {
+        ['ensureUnique', "${val}"]
+      }
+    })
+    
     'source'          ( nullable: true )
     'credit'          ( nullable: true )
     'prepay'          ( nullable: false )
@@ -113,7 +127,7 @@ class Budget extends Component {
             placeholder:'Search Budgets',
             contextTree: [ 'ctxtp':'disjunctive',
               'terms':[
-                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R']
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'B']
               ]
             ]
 
