@@ -151,7 +151,7 @@ class JwtController {
                         // prefix the username with the social provider.
                         user.username = provider + '_' + user.username
                         user.password = java.util.UUID.randomUUID().toString()
-                        user.displayName = j2['eppn']
+                        if (j2['eppn']) user.name = j2['eppn']
                         user.accountExpired=false
                         user.accountLocked=false
                         user.passwordExpired=false
