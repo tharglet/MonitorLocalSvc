@@ -53,7 +53,19 @@ class AoGrant extends Component {
     'academicOutput'  (nullable: true)
     'funder'          (nullable: true)
     'costItem'        (nullable: true)
-    'grantId'         (nullable: true,  blank:false)
+    'grantId'         (nullable: true,  blank:false, validator: { val, obj ->
+      def result = AoGrant.ownedComponents {
+        ilike 'grantId' , "${val}"
+        projections {
+          count("id")
+        }
+      }
+      
+      if (result[0] > 0) {
+        ['ensureUnique', "${val}", "grant", "code"]
+      }
+    })
+    
     'internalGrantId' (nullable: true,  blank:false)
     'fundedAuthor'    (nullable: true)
   }

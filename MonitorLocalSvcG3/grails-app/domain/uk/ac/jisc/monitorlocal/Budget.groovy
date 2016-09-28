@@ -94,7 +94,7 @@ class Budget extends Component {
       }
       
       if (result[0] > 0) {
-        ['ensureUnique', "${val}"]
+        ['ensureUnique', "${val}", "budget", "code"]
       }
     })
     

@@ -59,6 +59,19 @@ class Invoice extends Component {
   static constraints = {
     Component.constraints.rehydrate (delegate, owner, thisObject).call()
     
+    name (validator: { val, obj ->
+      def result = Invoice.ownedComponents {
+        ilike 'name' , "${val}"
+        projections {
+          count("id")
+        }
+      }
+      
+      if (result[0] > 0) {
+        ['ensureUnique', "${val}", "invoice", "number"]
+      }
+    })
+    
     date nullable: true
     dueDate nullable: true
     supplier nullable: true
