@@ -355,6 +355,7 @@ class AcademicOutput extends Component {
             placeholder:'Search Academic Outputs',
             contextTree: [ 'ctxtp':'disjunctive', 
               'terms':[
+                ['ctxtp':'qry', 'comparator' : 'eq', 'prop':'id'],
                 ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'B'],
                 ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'identifiers.identifier.value', 'wildcard':'B'],
                 ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'assignedTo.name', 'wildcard':'B'],
@@ -384,13 +385,13 @@ class AcademicOutput extends Component {
             qparam:'instCtx',
             placeholder:'Owner Institution',
             contextTree: [ 'ctxtp':'qry', 'comparator' : 'eq', 'prop':'ownerInstitution.id' ],
-          ],
-          [
-            expose: true,
-            prompt:'Id',
-            qparam:'id',
-            placeholder:'ID',
-            contextTree: [ 'ctxtp':'qry', 'comparator' : 'eq', 'prop':'id' ],
+//          ],
+//          [
+//            expose: false,
+//            prompt:'Id',
+//            qparam:'id',
+//            placeholder:'ID',
+//            contextTree: [ 'ctxtp':'qry', 'comparator' : 'eq', 'prop':'id' ],
           ]
         ],
         qbeGlobals:[
