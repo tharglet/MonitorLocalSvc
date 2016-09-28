@@ -59,9 +59,16 @@ class Invoice extends Component {
   static constraints = {
     Component.constraints.rehydrate (delegate, owner, thisObject).call()
     
-    name (validator: { val, obj ->
+    name (validator: { val, inst ->
       def result = Invoice.ownedComponents {
-        ilike 'name' , "${val}"
+        and {
+          if (inst.id) {
+            not {
+              idEq inst.id
+            }
+          }
+          ilike 'name' , "${val}"
+        }
         projections {
           count("id")
         }

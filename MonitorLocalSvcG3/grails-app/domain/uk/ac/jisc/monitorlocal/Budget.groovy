@@ -85,9 +85,16 @@ class Budget extends Component {
     'totalFunds'      ( nullable: true )
     
     // Code is checked to be unique too.
-    'code'            ( nullable: true, blank: false, validator: { val, obj ->
+    'code'            ( nullable: true, blank: false, validator: { val, inst ->
       def result = Budget.ownedComponents {
-        ilike 'code' , "${val}"
+        and {
+          if (inst.id) {
+            not {
+              idEq inst.id
+            }
+          }
+          ilike 'code' , "${val}"
+        }
         projections {
           count("id")
         }

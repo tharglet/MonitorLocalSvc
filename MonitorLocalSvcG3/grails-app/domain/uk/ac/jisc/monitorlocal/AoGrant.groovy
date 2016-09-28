@@ -53,9 +53,17 @@ class AoGrant extends Component {
     'academicOutput'  (nullable: true)
     'funder'          (nullable: true)
     'costItem'        (nullable: true)
-    'grantId'         (nullable: true,  blank:false, validator: { val, obj ->
+    'grantId'         (nullable: true,  blank:false, validator: { val, inst ->
       def result = AoGrant.ownedComponents {
-        ilike 'grantId' , "${val}"
+        and {
+          def instance = inst
+          if (inst.id) {
+            not {
+              idEq inst.id
+            }
+          }
+          ilike 'grantId' , "${val}"
+        }
         projections {
           count("id")
         }
