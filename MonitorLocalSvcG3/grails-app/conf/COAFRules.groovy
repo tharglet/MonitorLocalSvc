@@ -13,7 +13,7 @@ Gold = {
     ['Accepted Manuscript', 'Version of Record', 'Corrected Version of Record', 'Enhanced Version of Record'],
     'PubMed Central'
   )
-  "License" ComplianceUtils.refdataCheck("licence", "CC BY")
+  "Licence" ComplianceUtils.refdataCheck("licence", "CC BY")
 }
 
 Green = {

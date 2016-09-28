@@ -12,7 +12,7 @@ import uk.ac.jisc.monitorlocal.compliance.ComplianceUtils
 
 Gold = {
   "Embargo" ComplianceUtils.embargoCheck(0)
-  "License" ComplianceUtils.refdataCheck("licence", "CC BY")
+  "Licence" ComplianceUtils.refdataCheck("licence", "CC BY")
 }
 
 Green = {
