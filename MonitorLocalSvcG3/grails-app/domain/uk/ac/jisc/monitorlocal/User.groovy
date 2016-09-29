@@ -1,16 +1,21 @@
 package uk.ac.jisc.monitorlocal
 
 import grails.plugin.springsecurity.SpringSecurityService
+import grails.rest.Resource
 import grails.util.Holders
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
 import javax.persistence.Transient
 
+import uk.ac.jisc.monitorlocal.rest.UserRestfulController
+
+import com.k_int.grails.tools.refdata.*
+
 @EqualsAndHashCode(includes='username')
 @ToString(includes='username', includeNames=true, includePackage=false)
+@Resource(uri="/user", superClass=UserRestfulController)
 class User implements Serializable {
-  
   static lookupBase = 'ownedComponents'
   static namedQueries = {
     ownedComponents {
@@ -100,7 +105,7 @@ class User implements Serializable {
     password blank: false, bindable: false
     profilePic blank: true, nullable:true, bindable: false
     email blank: true, nullable:true, bindable: false
-    name blank: true, nullable:true, bindable: false
+    name blank: true, nullable:true, bindable: true
     biography blank: true, nullable:true, bindable: false
     localId blank: true, nullable:true, bindable: false
     

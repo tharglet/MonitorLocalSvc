@@ -237,6 +237,21 @@ grails:
             access:
               -
                 'ROLE_USER'
+          -
+            pattern: '/user/show'
+            access:
+              -
+                'ROLE_USER'
+          -
+            pattern: '/user/update'
+            access:
+              -
+                'ROLE_USER'
+          -
+            pattern: '/user/**'
+            access:
+              -
+                'ROLE_ADMIN'
         chainMap:
           -
             # Register /internalApi as using basic auth -- ONLY for usage when triggering local scripts etc
