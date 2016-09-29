@@ -1,17 +1,20 @@
 package uk.ac.jisc.monitorlocal.rest;
 
 import grails.artefact.Artefact
-import grails.plugin.springsecurity.SpringSecurityService
-import grails.plugins.GrailsPluginManager;
+import grails.plugins.GrailsPluginManager
 
-import javax.persistence.Transient;
+import javax.persistence.Transient
 
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.access.prepost.PreAuthorize
 
 import com.k_int.grails.tools.rest.ExtendedRestfulController
 @Artefact("Controller")
 public class UserRestfulController<User> extends ExtendedRestfulController<User> {
   
+  @Transient
+  @Autowired(required = true)
+  def springSecurityService
   
   UserRestfulController (Class<User> domainClass) {
       this(domainClass, false)
