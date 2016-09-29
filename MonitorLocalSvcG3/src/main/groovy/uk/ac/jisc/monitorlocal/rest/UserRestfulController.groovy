@@ -12,10 +12,6 @@ import com.k_int.grails.tools.rest.ExtendedRestfulController
 @Artefact("Controller")
 public class UserRestfulController<User> extends ExtendedRestfulController<User> {
   
-  @Transient
-  @Autowired(required = true)
-  def springSecurityService
-  
   UserRestfulController (Class<User> domainClass) {
       this(domainClass, false)
   }
