@@ -104,7 +104,7 @@ class User implements Serializable {
     username blank: false, unique: true, bindable: false
     password blank: false, bindable: false
     profilePic blank: true, nullable:true, bindable: false
-    email blank: true, nullable:true, bindable: false
+    email blank: true, nullable:true
     name blank: true, nullable:true, bindable: true
     biography blank: true, nullable:true, bindable: false
     localId blank: true, nullable:true, bindable: false
