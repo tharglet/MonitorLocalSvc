@@ -25,13 +25,8 @@ class Person extends Component {
     personContactDetails: ContactDetails
   ]
   
-  static mappedBy = [
-    personContactDetails:'person'
-  ]
-  
   static mapping = {
   	Component.mapping.rehydrate (delegate, owner, thisObject).call()
-    personContactDetails cascade: "all"
   }
 
   static constraints = {
