@@ -119,8 +119,8 @@ dependencies {
   }
 
   if (!gtp) {
-    compile 'com.k-int.grails:grails-tools:0.2.2'
     println "\tno local copy found downloading from Maven"
+    compile 'com.k-int.grails:grails-tools:3.1.1'
   }
 }
 
