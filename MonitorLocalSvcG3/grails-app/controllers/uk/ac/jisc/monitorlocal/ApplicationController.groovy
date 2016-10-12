@@ -38,7 +38,7 @@ class ApplicationController { // implements PluginManagerAware {
     // [details:[institution:[lastUpdated:2016-07-12T08:13:09+0000, created:2016-07-12T08:13:09+0000, name:University of Jisc, id:3]]]
     def org = Org.get(request.JSON.details.institution.id)
 
-    if ( org ) {
+    if ( user && org ) {
       def existing_affiliation = UserOrg.findByOrgAndUser(org, user)
       def requested_role = Role.findByAuthority(request.JSON.details.role)
 
@@ -46,8 +46,8 @@ class ApplicationController { // implements PluginManagerAware {
         log.debug("Found existing affiliation");
       }
       else {
-        // Status == 1 is approved
-        existing_affiliation = new UserOrg(org:org, user:user, formalRole:requested_role, status: 1).save(flush:true, failOnError:true)
+        // Status 0=Pending, 1=Approved, 2=Rejected, 3=AutoApproved
+        existing_affiliation = new UserOrg(org:org, user:user, formalRole:requested_role, status: 0).save(flush:true, failOnError:true)
         result.message="Affiliation Requested"
         result.org_id=org.id
         result.org=org.name
@@ -58,6 +58,38 @@ class ApplicationController { // implements PluginManagerAware {
     render result as JSON
   }
   
+  /**
+   *  Only callable by admin
+   *  /application/setAffiliationStatus?aid=99&s=[0,1,2,3]
+   *  aid = affiliation record id (UserOrg)
+   *  s = status code - 0=Pending, 1=Approved, 2=Rejected, 3=AutoApproved
+   */
+  def setAffiliationStatus() {
+    def result = [:]
+    def user = springSecurityService.currentUser
+    log.debug("Application::requestAffiliation - ${user} ${params}");
+    if ( ( user ) && (request.isUserInRole("ROLE_ADMIN") && params.int('s') ) ) {
+      def affiliation = UserOrg.get(params.aid)
+      if ( affiliation ) {
+        affiliation.status = params.int('s')
+        result.status=0
+        result.message="Affiliation updated"
+      }
+      else {
+        result.message="Attempt to approve non-existent affiliation ${params.aid}";
+        result.status = 1;
+        log.warn("Attempt to approve non-existent affiliation ${params.aid}");
+      }
+    }
+    else {
+      log.warn("Attempt to approve affiliation by non-admin user ${user} ${params}");
+      result.message="Only admin users may approve affiliation requests"
+      result.status = 1;
+    }
+
+    render result as JSON
+  }
+
 
   /**
    *  POST a json document in containing 1 map entry of doi:'value to lookup'
