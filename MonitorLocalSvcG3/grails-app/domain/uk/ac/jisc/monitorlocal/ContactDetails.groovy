@@ -12,7 +12,7 @@ class ContactDetails {
   String emailAddress
   String telephoneNumber
 
-  static belongsTo = [Person]
+  static belongsTo = [person: Person]
 
   static constraints = {
     organisation nullable: true
@@ -23,7 +23,7 @@ class ContactDetails {
     telephoneNumber nullable: true, blank: false
   }
   static mapping = {
-    division cascade: 'all'
-    department cascade: 'all'
+    division cascade: 'merge, save-update'
+    department cascade: 'merge, save-update'
   }
 }
