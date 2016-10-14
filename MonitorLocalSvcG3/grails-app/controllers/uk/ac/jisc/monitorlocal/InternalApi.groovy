@@ -4,16 +4,17 @@ import static groovyx.net.http.ContentType.*
 import static groovyx.net.http.Method.GET
 import grails.converters.*
 import grails.core.GrailsApplication
-import grails.plugins.*
 import grails.transaction.Transactional
+
 import org.hibernate.Session
+
 import au.com.bytecode.opencsv.CSVReader
 
 import com.k_int.grails.tools.finance.YahooRatesService
 import com.k_int.grails.tools.refdata.*
 
 
-class InternalApiController implements PluginManagerAware {
+class InternalApiController {
 
   static responseFormats = ['json', 'xml']
 
@@ -66,7 +67,6 @@ class InternalApiController implements PluginManagerAware {
   ]
 
   GrailsApplication grailsApplication
-  GrailsPluginManager pluginManager
   YahooRatesService yahooRatesService
 
   def kbplusSyncService
@@ -396,7 +396,6 @@ class InternalApiController implements PluginManagerAware {
                   person.ownerInstitution = o;
                   person.firstName = persdata.forenames
                   person.surname = persdata.surname
-                  person.save(flush:true, failOnError:true);
     
                   // Find contact details for this person
                   def contact_details = null
@@ -406,6 +405,7 @@ class InternalApiController implements PluginManagerAware {
                     }
                     else {
                       contact_details = new ContactDetails(person:person)
+                      person.addToPersonContactDetails (contact_details)
                     }
                     contact_details.emailAddress = persdata.email
                     if ( o ) {
@@ -413,8 +413,11 @@ class InternalApiController implements PluginManagerAware {
                       contact_details.division = getInstitutionalRefdataValue(o, 'ContactDetails.Division', persdata.division)
                       contact_details.department = getInstitutionalRefdataValue(o, 'ContactDetails.Department', persdata.department)
                     }
-                    contact_details.save(flush:true, failOnError:true)
+//                    contact_details.save(flush:true, failOnError:true)
                   }
+                  
+                  // Save the person.
+                  person.save(flush:true, failOnError:true)
                 }
                 else {
                   log.warn("No person name.. cannot process");
