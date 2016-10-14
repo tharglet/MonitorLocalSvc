@@ -289,7 +289,7 @@ class InternalApiController {
     render result as JSON
   }
 
-  @Transactional(readOnly = true)
+  
   private def processPersonIngest(InputStream is) {
     
     long start = System.currentTimeSeconds()

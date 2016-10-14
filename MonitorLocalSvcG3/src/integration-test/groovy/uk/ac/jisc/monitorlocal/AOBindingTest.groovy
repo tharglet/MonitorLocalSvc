@@ -1,24 +1,26 @@
-package com.k_int.monitor
+package uk.ac.jisc.monitorlocal
 
-import grails.test.mixin.TestFor
-import spock.lang.Specification
-import uk.ac.jisc.monitorlocal.*
-import grails.test.mixin.TestMixin
-import grails.test.mixin.support.GrailsUnitTestMixin
 import grails.databinding.SimpleMapDataBindingSource
+import grails.test.mixin.integration.Integration
+import grails.transaction.Rollback
+import grails.web.databinding.GrailsWebDataBinder
+
+import org.springframework.beans.factory.annotation.*
+
+import spock.lang.Specification
 
 
 /**
  * See the API for {@link grails.test.mixin.services.ServiceUnitTestMixin} for usage instructions
  */
-@TestMixin(GrailsUnitTestMixin)
+@Integration
+@Rollback
 class AOBindingTest extends Specification {
     
-    def dataBinder
+    @Autowired
+    GrailsWebDataBinder grailsWebDataBinder
 
     def setup() {
-        // Use Grails data binding
-        dataBinder = applicationContext.getBean('grailsWebDataBinder')
     }
 
     def cleanup() {
@@ -26,10 +28,10 @@ class AOBindingTest extends Specification {
 
     void "Binding name to AO should set name property"() {
         given:
-        final AcademicOutput ao = new AcademicOutput()
+          final AcademicOutput ao = new AcademicOutput()
 
         and:
-        final SimpleMapDataBindingSource source = 
+          final SimpleMapDataBindingSource source = 
             [id: 1, 
              name: 'My AO Name 1',
              identifiers:[
@@ -41,11 +43,11 @@ class AOBindingTest extends Specification {
             ]
 
         when:
-        dataBinder.bind(ao, source)
+          grailsWebDataBinder.bind(ao, source)
 
         then:
-        with(ao) {
-            name == 'My AO Name 1'
-        }
+          with(ao) {
+              name == 'My AO Name 1'
+          }
     }
 }
