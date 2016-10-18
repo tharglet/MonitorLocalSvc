@@ -29,12 +29,7 @@ public class UserRestfulController<User> extends ExtendedRestfulController<User>
    */
   @PreAuthorize("#id == 'current' or #id == authentication.id or hasRole('ADMIN')")
   def show() {
-    String id = "${params.id}".toLowerCase()
-    if (id == "current") {
-      current()
-    } else {
-      super.show()
-    }
+    super.show()
   }
   
   /**

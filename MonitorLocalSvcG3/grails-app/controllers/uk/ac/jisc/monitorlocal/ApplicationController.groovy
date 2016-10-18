@@ -87,7 +87,7 @@ class ApplicationController { // implements PluginManagerAware {
       result.status = 1;
     }
 
-    render result as JSON
+    respond result
   }
 
 
