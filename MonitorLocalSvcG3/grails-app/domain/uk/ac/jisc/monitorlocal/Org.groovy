@@ -16,6 +16,7 @@ class Org extends Component {
   String address
   String taxCode
   String monitorLocalAPIKey
+  String lanternAPIKey
   Org funderGroup
 
   // Can users be affiliated with this org?
@@ -76,6 +77,7 @@ class Org extends Component {
     taxCode nullable: true, blank: false
     membershipOrg nullable:true, blank:false
     monitorLocalAPIKey nullable:true, blank:false
+    lanternAPIKey nullable:true, blank:false
     type nullable: true
   }
 

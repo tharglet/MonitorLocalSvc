@@ -373,6 +373,7 @@ class InternalApiController {
     }
 
     if ( valid ) {
+      log.debug("Person datafile validated, process");
       
       int ctr = 0
       int row = 0
@@ -413,7 +414,6 @@ class InternalApiController {
                       contact_details.division = getInstitutionalRefdataValue(o, 'ContactDetails.Division', persdata.division)
                       contact_details.department = getInstitutionalRefdataValue(o, 'ContactDetails.Department', persdata.department)
                     }
-//                    contact_details.save(flush:true, failOnError:true)
                   }
                   
                   // Save the person.
