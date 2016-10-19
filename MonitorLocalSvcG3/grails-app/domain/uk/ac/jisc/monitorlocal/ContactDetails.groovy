@@ -4,7 +4,6 @@ import groovy.transform.EqualsAndHashCode
 @EqualsAndHashCode(excludes=["id"])
 class ContactDetails {
 
-  Person person
   Org organisation
 
   InstitutionalRefdataValue department
@@ -13,11 +12,7 @@ class ContactDetails {
   String emailAddress
   String telephoneNumber
 
-  static belongsTo = [Person]
-
-  static mappedBy = [
-    person: 'personContactDetails'
-  ]
+  static belongsTo = [person: Person]
 
   static constraints = {
     organisation nullable: true
@@ -28,7 +23,7 @@ class ContactDetails {
     telephoneNumber nullable: true, blank: false
   }
   static mapping = {
-    division cascade: 'all'
-    department cascade: 'all'
+    division cascade: 'merge, save-update'
+    department cascade: 'merge, save-update'
   }
 }

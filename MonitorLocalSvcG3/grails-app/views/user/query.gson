@@ -1,0 +1,9 @@
+// grab the vals.
+Map table = (Map) (getBinding().variables?.entrySet()?.iterator()?.next()?.getValue() ?: [:])
+
+json {
+  draw table['draw']
+  recordsTotal table['recordsTotal']
+  recordsFiltered table['recordsFiltered']
+  data g.render (collection: table['data'], var: 'val', template: '/global/genericRender')
+}

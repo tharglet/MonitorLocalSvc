@@ -7,7 +7,7 @@ model {
 json {
   
   id aoName.id
-  academicOutput g.render(aoName.academicOutput)
+  // academicOutput g.render(aoName.academicOutput)
   keyContact aoName.keyContact
   name aoName.name
   namerel g.render(aoName.namerel)

@@ -21,13 +21,17 @@ class JwtController {
     def result = [:]
     String provider = params.provider
 
-    log.debug("CeJwt::callback ${params}")
+    log.debug("CeJwt::callback ${params} ${request.JSON}")
 
     def auth_cfg = grailsApplication.config.auth[provider]
 
     if ( auth_cfg ) {
 
       log.debug("Request.JSON.code:${request.JSON.code} redirectUri:${request.JSON.redirectUri}");
+
+      if ( ( request.JSON.code == null ) || ( request.JSON.code == 'null' ) ) {
+        log.error("Attempt to callback with no authentication code");
+      }
 
       def access_params = [
          code: request.JSON.code,
@@ -37,6 +41,7 @@ class JwtController {
       ];
 
       if ( auth_cfg.secret ) {
+         log.debug('Setting client secret...');
          access_params.client_secret = auth_cfg.secret
       }
 
@@ -146,22 +151,23 @@ class JwtController {
                         // prefix the username with the social provider.
                         user.username = provider + '_' + user.username
                         user.password = java.util.UUID.randomUUID().toString()
-                        user.accountExpired=false;
-                        user.accountLocked=false;
-                        user.passwordExpired=false;
+                        if (j2['eppn']) user.name = j2['eppn']
+                        user.accountExpired=false
+                        user.accountLocked=false
+                        user.passwordExpired=false
                         // TODO: add created and lastUsed timestamp fields?
-                        user.save(flush:true, failOnError:true);
+                        user.save(flush:true, failOnError:true)
   
-                        social_identity = new SocialIdentity(provider: provider,reference:userReference,user:user).save(flush:true, failOnError:true);
+                        social_identity = new SocialIdentity(provider: provider,reference:userReference,user:user).save(flush:true, failOnError:true)
   
-                        log.debug("Grant user role");
-                        def new_grant = new UserRole(role:role_user, user:user).save(flush:true, failOnError:true);
+                        log.debug("Grant user role")
+                        def new_grant = new UserRole(role:role_user, user:user).save(flush:true, failOnError:true)
   
                         result.token = createToken(social_identity)
                       }
                       else {
                         // Trying to stop database filling with null users
-                        throw new RuntimeException("No username available to create new user - perhaps this is meant to be anonymous?");
+                        throw new RuntimeException("No username available to create new user - perhaps this is meant to be anonymous?")
                       }
                   }
                 }
@@ -171,37 +177,66 @@ class JwtController {
                   // necessary on bootstrap.
                   def verified_user = Role.findByAuthority('ROLE_VERIFIED_USER')
                   if (!verified_user) {
-                      // no "ROLE_VERIFIED_USER" role, log an error and respond with a 500 InternalServerError.
-                      log.error('missing role "ROLE_VERIFIED_USER"')
-                      response.status(500, "invalid system state")
+                    // no "ROLE_VERIFIED_USER" role, log an error and respond with a 500 InternalServerError.
+                    log.error('missing role "ROLE_VERIFIED_USER"')
+                    response.status(500, "invalid system state")
                   } else {
-                      // create a user object to push down with the JWT to the client.
-                      result.user = user
+                    
+                    Map affiliations = j2.affiliations
+                    if (affiliations && affiliations.size() > 0) {
+                  
+                      // We are only concerned with the domain ATM.
+                      user.setUserOrg(getOrCreateOrgByDomain(affiliations.keySet().getAt(0)))
+                      user.save(flush:true, failOnError:true)
+                    }
+                  
+                    // create a user object to push down with the JWT to the client.
+                    result.user = user
                   }
                 }
               }
             }
   
             response.failure = { resp2, reader ->
-                log.error("Failure result ${resp2.statusLine}");
+                log.error("Failure result ${resp2.statusLine}")
                 log.error(reader.text)
             }
   
           }
         }
         catch ( Exception e ) {
-          log.error("Error",e);
+          log.error("Error",e)
         }
 
       }
     }
     else {
-     log.error("Unable to locate config for provider ${provider}");
+     log.error("Unable to locate config for provider ${provider}")
     }
 
-    log.debug("JwtController returning...");
+    log.debug("JwtController returning...")
     result
   }
+  
+  private Org getOrCreateOrgByDomain (String domain) {
+    Org org
+    def orgs = Org.lookupByIdentifierValue([[namespace: 'domain', value: "${domain}"]])
+    if (orgs.size() < 1) {
+      
+      ComponentIdentifier ci = new ComponentIdentifier()
+      ci.setIdentifierFromStrings("domain", "${domain}")
+      
+      // Create a new org.
+      org = new Org(name: "${domain}")
+      org.addToIdentifiers(ci)
+      org.setTypeFromString('HEI')
+      org.save (failOnError:true)
+    } else {
+      org = orgs[0]
+    }
+    
+    org
+  } 
 
   private String createToken(user) {
 
@@ -216,11 +251,11 @@ class JwtController {
     // rsaJsonWebKey.setKeyId("k1");
 
     // Create the Claims, which will be the content of the JWT
-    JwtClaims claims = new JwtClaims();
-    claims.setIssuer("MonitorLocal");  // who creates the token and signs it
-    claims.setAudience("MonitorLocal"); // to whom the token is intended to be sent
-    claims.setExpirationTimeMinutesInTheFuture(60*15); // time when the token will expire (60*15 minutes from now)
-    claims.setGeneratedJwtId(); // a unique identifier for the token
+    JwtClaims claims = new JwtClaims()
+    claims.setIssuer("MonitorLocal")  // who creates the token and signs it
+    claims.setAudience("MonitorLocal") // to whom the token is intended to be sent
+    claims.setExpirationTimeMinutesInTheFuture(60*15) // time when the token will expire (60*15 minutes from now)
+    claims.setGeneratedJwtId() // a unique identifier for the token
     claims.setIssuedAtToNow();  // when the token was issued/created (now)
     claims.setNotBeforeMinutesInThePast(2); // time before which the token is not yet valid (2 minutes ago)
     claims.setSubject(user.user.username); // the subject/principal is whom the token is about

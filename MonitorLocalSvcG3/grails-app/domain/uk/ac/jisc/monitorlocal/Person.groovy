@@ -13,7 +13,6 @@ class Person extends Component {
 
   String firstName
   String surname
-  Org institution
 
   @AbsoluteCollection
   Set personContactDetails = []
@@ -26,18 +25,14 @@ class Person extends Component {
     personContactDetails: ContactDetails
   ]
   
-  static mappedBy = [
-    personContactDetails:'person'
-  ]
-  
   static mapping = {
-    personContactDetails cascade: "all"
+  	Component.mapping.rehydrate (delegate, owner, thisObject).call()
   }
 
   static constraints = {
+  	Component.constraints.rehydrate (delegate, owner, thisObject).call()
     firstName nullable: true
     surname nullable: true
-    institution nullable: true
   }
 
   def beforeValidate () {
@@ -50,6 +45,7 @@ class Person extends Component {
 
     return [
       baseclass:'uk.ac.jisc.monitorlocal.Person',
+      useDistinct: true,
       title:'Person',
       group:'Secondary',
       defaultSort:'name',
@@ -57,21 +53,22 @@ class Person extends Component {
       qbeConfig:[
         qbeForm:[
           [
-            prompt:'Name or Title',
+            prompt:'Search',
             qparam:'q',
-            placeholder:'Name or title of item',
+            placeholder:'Search People',
             contextTree: [ 'ctxtp':'disjunctive',
-                             'terms':[
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'firstName', 'wildcard':'R'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'surname', 'wildcard':'R'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'id', 'wildcard':'R'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'personContactDetails.emailAddress', 'wildcard':'R'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'personContactDetails.department', 'wildcard':'R']
-                             ]
-                         ]
+              'terms':[
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'firstName', 'wildcard':'R'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'surname', 'wildcard':'R'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'id', 'wildcard':'R'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'personContactDetails.emailAddress', 'wildcard':'R'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'personContactDetails.department', 'wildcard':'R']
+              ]
+            ]
 
           ],
           [
+            expose: false,
             prompt:'Owner Institution',
             qparam:'instCtx',
             placeholder:'Owner Institution',

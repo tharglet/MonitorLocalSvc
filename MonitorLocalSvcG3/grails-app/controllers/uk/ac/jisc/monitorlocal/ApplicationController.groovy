@@ -9,96 +9,13 @@ import com.k_int.grails.tools.finance.YahooRatesService
 import com.k_int.grails.tools.refdata.RefdataValue
 
 
-class ApplicationController implements PluginManagerAware {
+class ApplicationController { // implements PluginManagerAware {
   static responseFormats = ['json', 'xml']
 
-  GrailsApplication grailsApplication
-  GrailsPluginManager pluginManager
   YahooRatesService yahooRatesService
 
-  def kbplusSyncService
   def crossrefSyncService
-  def apcSheetImportService
   def springSecurityService
-
-  def index() {
-    [grailsApplication: grailsApplication, pluginManager: pluginManager]
-  }
-
-  /**
-   *  /application/command/kbplus -- Sync with kb+
-   *  /application/command/AOWizard?doi=DOITOLOOKUP -- Create a new AO based on the DOI
-   */
-  def command() {
-    def response = [:]
-    log.debug("Command ${params}");
-    switch(params.id) {
-      case 'kbplus':
-        log.debug("Trigger KB+ Sync");
-        kbplusSyncService.getLatestKBPlusTitles()
-        break;
-      case 'AOWizard':
-        log.debug("AO Wizardi -- example :: curl -v -d \"doi=10.7567/ssdm.1986.c-3-1\" http://localhost:8080/application/command/AOWizard");
-        if ( params.doi ) {
-          crossrefSyncService.crossrefWizzard(params.doi);
-        }
-        break;
-
-      case 'exchange-rates':
-        log.debug("Grab the exchange rates from Yahoo");
-
-      // Fetched all rates
-        response = yahooRatesService.getAllRates()
-        break;
-      default:
-        log.debug("Unhandled command ${params.id}");
-        break;
-    }
-
-    render response as JSON
-  }
-
-
-  /**
-   *  curl -v --user admin:admin -X POST \ --form content=@./YBP1.tsv http://localhost:8080/application/apcIngest
-   *
-   */
-  def ApcIngest() {
-
-    def result = [:]
-    result.messages = []
-
-    log.debug("ApcIngest ${params}");
-
-    def upload_mime_type = request.getFile("content")?.contentType  // getPart?
-    def upload_filename = request.getFile("content")?.getOriginalFilename()
-    def new_datafile_id = null
-    def org = Org.findByName(params.instname) ?: new Org(name:params.instname)
-
-    // Set the type to HEI.
-    org.setTypeFromString('HEI')
-    org.save(flush:true, failOnError:true)
-
-    if ( upload_mime_type && upload_filename && org ) {
-
-      log.debug("got mime type, upload org is ${org}");
-
-      // def deposit_token = java.util.UUID.randomUUID().toString();
-      def upload_file = request.getFile("content");
-
-      log.debug("Calling ingest");
-      apcSheetImportService.assimilateApcSpreadsheet(org, upload_file.getInputStream(),upload_filename )
-
-    }
-    else {
-      if ( org == null ){
-        result.messages.add("Unable to locate org with name ${params.instname}. Please add and retry");
-      }
-    }
-
-    render result as JSON
-
-  }
 
   /**
    * This method is where we'll add the app config. This will eventually
@@ -121,7 +38,7 @@ class ApplicationController implements PluginManagerAware {
     // [details:[institution:[lastUpdated:2016-07-12T08:13:09+0000, created:2016-07-12T08:13:09+0000, name:University of Jisc, id:3]]]
     def org = Org.get(request.JSON.details.institution.id)
 
-    if ( org ) {
+    if ( user && org ) {
       def existing_affiliation = UserOrg.findByOrgAndUser(org, user)
       def requested_role = Role.findByAuthority(request.JSON.details.role)
 
@@ -129,8 +46,8 @@ class ApplicationController implements PluginManagerAware {
         log.debug("Found existing affiliation");
       }
       else {
-        // Status == 1 is approved
-        existing_affiliation = new UserOrg(org:org, user:user, formalRole:requested_role, status: 1).save(flush:true, failOnError:true)
+        // Status 0=Pending, 1=Approved, 2=Rejected, 3=AutoApproved
+        existing_affiliation = new UserOrg(org:org, user:user, formalRole:requested_role, status: 0).save(flush:true, failOnError:true)
         result.message="Affiliation Requested"
         result.org_id=org.id
         result.org=org.name
@@ -141,6 +58,38 @@ class ApplicationController implements PluginManagerAware {
     render result as JSON
   }
   
+  /**
+   *  Only callable by admin
+   *  /application/setAffiliationStatus?aid=99&s=[0,1,2,3]
+   *  aid = affiliation record id (UserOrg)
+   *  s = status code - 0=Pending, 1=Approved, 2=Rejected, 3=AutoApproved
+   */
+  def setAffiliationStatus() {
+    def result = [:]
+    def user = springSecurityService.currentUser
+    log.debug("Application::requestAffiliation - ${user} ${params}");
+    if ( ( user ) && (request.isUserInRole("ROLE_ADMIN") && params.int('s') ) ) {
+      def affiliation = UserOrg.get(params.aid)
+      if ( affiliation ) {
+        affiliation.status = params.int('s')
+        result.status=0
+        result.message="Affiliation updated"
+      }
+      else {
+        result.message="Attempt to approve non-existent affiliation ${params.aid}";
+        result.status = 1;
+        log.warn("Attempt to approve non-existent affiliation ${params.aid}");
+      }
+    }
+    else {
+      log.warn("Attempt to approve affiliation by non-admin user ${user} ${params}");
+      result.message="Only admin users may approve affiliation requests"
+      result.status = 1;
+    }
+
+    respond result
+  }
+
 
   /**
    *  POST a json document in containing 1 map entry of doi:'value to lookup'

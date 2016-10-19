@@ -84,7 +84,7 @@ class BootStrap {
   
       usercfg.sysusers.each { su ->
         log.debug("test ${su.name} ${su.pass} ${su.display} ${su.roles}");
-        def user = User.findByUsername(su.name)
+        User user = User.findByUsername(su.name)
         if ( user ) {
           if ( user.password != su.pass ) {
             log.debug("Hard change of user password from config ${user.password} -> ${su.pass}");
@@ -97,12 +97,17 @@ class BootStrap {
         }
         else {
           log.debug("Create user...");
-          user = new User(
-                          username: su.name,
-                          password: su.pass,
-                          name: su.display,
-                          email: su.email,
-                          enabled: true).save(failOnError: true)
+          user = new User()
+          
+          // SO: As we protect the user attributes from being unbindable you can not use the map constructor here.
+          user.with {
+            username = su.name
+            password = su.pass
+            name = su.display
+            email = su.email
+            enabled = true
+            save(failOnError: true)
+          }
         }
   
         log.debug("Add roles for ${su.name}");
@@ -121,8 +126,5 @@ class BootStrap {
     else {
       log.warn("No local user config file:: ${System.properties['user.home']}/.grails/monitor_users.groovy");
     }
-
-
   }
-
 }

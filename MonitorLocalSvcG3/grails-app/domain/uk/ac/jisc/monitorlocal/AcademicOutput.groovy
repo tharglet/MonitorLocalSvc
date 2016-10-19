@@ -36,8 +36,6 @@ class AcademicOutput extends Component {
     'Green', 'Gold', 'Gold Paid by Other'
   ])
   RefdataValue publicationRoute
-
-  String publicationTitle
   
   String authorNameList
 
@@ -160,7 +158,7 @@ class AcademicOutput extends Component {
     def wf = MapUtils.flattenMap(runWorkflowRules())
     
     for (int i=0; i<wf.size() && value; i++) {
-      value = wf[i]
+      value = (wf[i] != false)
     }
     
     workflowStatus = value
@@ -232,6 +230,7 @@ class AcademicOutput extends Component {
   ]
 
   static constraints = {
+    Component.constraints.rehydrate (delegate, owner, thisObject).call()
     publicationRoute nullable: true
     apcFundingApproval nullable: true
     apcFundingDate nullable: true
@@ -248,7 +247,6 @@ class AcademicOutput extends Component {
     openAccessStatus nullable: true
     outputType nullable: true
     localReference nullable: true, blank:false
-    publicationTitle nullable: true, blank:false
     publisherURL nullable: true, blank:false
     journalIssueDate nullable: true
     journalVolume nullable: true
@@ -277,6 +275,7 @@ class AcademicOutput extends Component {
   ]
 
   static mapping = {
+    Component.mapping.rehydrate (delegate, owner, thisObject).call()
     // namedRoles sort:'role', order:'asc', cascade: "all"
     names cascade: "all-delete-orphan"
     grants cascade: "all"
@@ -343,6 +342,7 @@ class AcademicOutput extends Component {
 
     return [
       baseclass:'uk.ac.jisc.monitorlocal.AcademicOutput',
+      useDistinct: true,
       title:'AO',
       group:'Secondary',
       defaultSort:'name',
@@ -350,25 +350,25 @@ class AcademicOutput extends Component {
       qbeConfig:[
         qbeForm:[
           [
-            prompt:'Name or Title',
+            prompt:'Search',
             qparam:'q',
-            placeholder:'Name or title of item',
-            contextTree: [ 'ctxtp':'disjunctive',
+            placeholder:'Search Academic Outputs',
+            contextTree: [ 'ctxtp':'disjunctive', 
               'terms':[
+                ['ctxtp':'qry', 'comparator' : 'eq', 'prop':'id'],
                 ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'B'],
                 ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'identifiers.identifier.value', 'wildcard':'B'],
                 ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'assignedTo.name', 'wildcard':'B'],
-                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.personContactDetails.department', 'wildcard':'B'],
                 ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.firstName', 'wildcard':'B'],
-                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.surname.department', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.surname', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'names.person.personContactDetails.department.value', 'wildcard':'B'],
                 ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'authorNameList', 'wildcard':'B'],
                 ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'publishedIn.name', 'wildcard':'B'],
                 ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'publisher.name', 'wildcard':'B'],
-                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.fund', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.name', 'wildcard':'B'],
                 ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.grantId', 'wildcard':'B'],
                 ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.internalGrantId', 'wildcard':'B'],
-                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.funder.name', 'wildcard':'B'],
-                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'assignedTo.name', 'wildcard':'B']
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funds.grant.funder.name', 'wildcard':'B']
               ]
             ]
           ],
@@ -376,19 +376,21 @@ class AcademicOutput extends Component {
             prompt:'Workflow Complete',
             qparam:'wfc',
             placeholder:'Workflow Complete',
-            contextTree: [ 'ctxtp':'filter', 'comparator' : 'eq', 'prop':'workflowStatus', type:'java.lang.Object' ],
+            contextTree: [ 'ctxtp':'filter', 'comparator' : 'eq', 'prop':'workflowStatus' ],
           ],
           [
+            expose: false,
             prompt:'Owner Institution',
             qparam:'instCtx',
             placeholder:'Owner Institution',
-            contextTree: [ 'ctxtp':'qry', 'comparator' : 'eq', 'prop':'ownerInstitution.id', type:'java.lang.Long' ],
-          ],
-          [
-            prompt:'Id',
-            qparam:'id',
-            placeholder:'ID',
-            contextTree: [ 'ctxtp':'qry', 'comparator' : 'eq', 'prop':'id', type:'java.lang.Long' ],
+            contextTree: [ 'ctxtp':'qry', 'comparator' : 'eq', 'prop':'ownerInstitution.id' ],
+//          ],
+//          [
+//            expose: false,
+//            prompt:'Id',
+//            qparam:'id',
+//            placeholder:'ID',
+//            contextTree: [ 'ctxtp':'qry', 'comparator' : 'eq', 'prop':'id' ],
           ]
         ],
         qbeGlobals:[
@@ -459,6 +461,12 @@ class AcademicOutput extends Component {
     }
     
     result
+  }
+  
+  def afterUpdate() {
+//    CostItem.withNewSession {
+      CostItem.tidyOrphans()
+//    }
   }
 
 }

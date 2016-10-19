@@ -8,15 +8,15 @@ import uk.ac.jisc.monitorlocal.compliance.ComplianceUtils
  */
 
 "Funder acknowledgement" ComplianceUtils.refdataCheck("acknowledgement", "Yes")
-Gold = {
-  "Deposit" ComplianceUtils.depositCheck(
-    ['Accepted Manuscript', 'Version of Record', 'Corrected Version of Record', 'Enhanced Version of Record'],
-    'PubMed Central'
-  )
-  "License" ComplianceUtils.refdataCheck("licence", "CC BY")
-}
-
-Green = {
+  Gold = {
+    "Deposit" ComplianceUtils.depositCheck(
+      ['Accepted Manuscript', 'Version of Record', 'Corrected Version of Record', 'Enhanced Version of Record'],
+      'PubMed Central'
+    )
+    "Licence" ComplianceUtils.refdataCheck("licence", "CC BY")
+  }
+  
+  Green = {
   "Deposit" ComplianceUtils.depositCheck(
     ['Accepted Manuscript', 'Version of Record', 'Corrected Version of Record', 'Enhanced Version of Record'],
     'Europe PubMed Central'

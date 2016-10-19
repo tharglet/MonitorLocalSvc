@@ -1,11 +1,13 @@
 package uk.ac.jisc.monitorlocal
 
 import grails.rest.Resource
+import groovy.util.logging.Log4j;
 
 import com.k_int.grails.tools.finance.MonetaryValue;
 import com.k_int.grails.tools.refdata.*
 import com.k_int.grails.tools.rest.ExtendedRestfulController
 
+@Log4j
 @Resource(uri="/budget", superClass=ExtendedRestfulController)
 class Budget extends Component {
   
@@ -18,7 +20,7 @@ class Budget extends Component {
   Org source
   
   static namedQueries = {
-	Component.namedQueries()
+    Component.namedQueries()
   }
 
   // Calculate the remaining funds from the CostItems.
@@ -79,14 +81,37 @@ class Budget extends Component {
   RefdataValue prepay
 
   static constraints = {
+    Component.constraints.rehydrate (delegate, owner, thisObject).call()
     'totalFunds'      ( nullable: true )
-    'code'            ( nullable: true, blank: false )
+    
+    // Code is checked to be unique too.
+    'code'            ( nullable: true, blank: false, validator: { val, inst ->
+      def result = Budget.ownedComponents {
+        and {
+          if (inst.id) {
+            not {
+              idEq inst.id
+            }
+          }
+          ilike 'code' , "${val}"
+        }
+        projections {
+          count("id")
+        }
+      }
+      
+      if (result[0] > 0) {
+        ['ensureUnique', "${val}", "budget", "code"]
+      }
+    })
+    
     'source'          ( nullable: true )
     'credit'          ( nullable: true )
     'prepay'          ( nullable: false )
   }
 
   static mapping = {
+    Component.mapping.rehydrate (delegate, owner, thisObject).call()
     totalFunds cascade: "all-delete-orphan"
     allocatedCosts cascade: "all"
   }
@@ -96,6 +121,7 @@ class Budget extends Component {
 
     return [
       baseclass:'uk.ac.jisc.monitorlocal.Budget',
+      useDistinct: true,
       title:'Budget',
       group:'Secondary',
       defaultSort:'name',
@@ -103,17 +129,18 @@ class Budget extends Component {
       qbeConfig:[
         qbeForm:[
           [
-            prompt:'Name or Title',
+            prompt:'Search',
             qparam:'q',
-            placeholder:'Name or title of item',
+            placeholder:'Search Budgets',
             contextTree: [ 'ctxtp':'disjunctive',
-                             'terms':[
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R']
-                             ]
-                         ]
+              'terms':[
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'B']
+              ]
+            ]
 
           ],
           [
+            expose: false,
             prompt:'Owner Institution',
             qparam:'instCtx',
             placeholder:'Owner Institution',

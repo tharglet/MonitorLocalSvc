@@ -89,12 +89,16 @@ class CostItem {
     'type'            ( nullable: true )
   }
   
+  
   static mapping = {
-    budget cascade: "all"
+    budget cascade: 'merge, save-update, lock, refresh'
     grossValue cascade: 'all-delete-orphan'
     grossValueGBP cascade: 'all-delete-orphan'
     tax cascade: 'all-delete-orphan'
-    academicOutput cascade: 'all'
     purchaseOrder cascade: 'all'
+  }
+  
+  static void tidyOrphans() {
+    CostItem.executeUpdate('DELETE CostItem ci WHERE ci.academicOutput IS NULL AND ci.invoice IS NULL')
   }
 }

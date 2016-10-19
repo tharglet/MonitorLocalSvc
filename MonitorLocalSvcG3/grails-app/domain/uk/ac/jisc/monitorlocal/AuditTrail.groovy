@@ -50,13 +50,9 @@ class AuditTrail implements Serializable {
         persistedObjectVersion(nullable: true)
         eventName(nullable: true)
         propertyName(nullable: true)
-
-        oldValue(nullable: true)
-        newValue(nullable: true)
-
-        // for large column support (as in < 1.0.6 plugin versions), use
-        // oldValue(nullable: true, maxSize: 65534)
-        // newValue(nullable: true, maxSize: 65534)
+        
+        oldValue(nullable: true, type: 'text')
+        newValue(nullable: true, type: 'text')
     }
 
     static mapping = {
@@ -95,20 +91,20 @@ class AuditTrail implements Serializable {
      */
     private void writeObject(ObjectOutputStream out) throws IOException {
         def map = [
-                id: id,
-                dateCreated: dateCreated,
-                lastUpdated: lastUpdated,
+          id: id,
+          dateCreated: dateCreated,
+          lastUpdated: lastUpdated,
 
-                actor: actor,
-                uri: uri,
-                className: className,
-                persistedObjectId: persistedObjectId,
-                persistedObjectVersion: persistedObjectVersion,
+          actor: actor,
+          uri: uri,
+          className: className,
+          persistedObjectId: persistedObjectId,
+          persistedObjectVersion: persistedObjectVersion,
 
-                eventName: eventName,
-                propertyName: propertyName,
-                oldValue: oldValue,
-                newValue: newValue,
+          eventName: eventName,
+          propertyName: propertyName,
+          oldValue: oldValue,
+          newValue: newValue,
         ]
         out.writeObject(map)
     }

@@ -1,25 +1,26 @@
 package uk.ac.jisc.monitorlocal
 
 import grails.rest.Resource
+import groovy.util.logging.Log4j;
+
 import com.k_int.grails.tools.rest.ExtendedRestfulController
 /**
- *  A Grant attached to an AO - May contain between one and all of:
- *  A funder, the fund name and the grant ID 
+ *  A Grant attached to an AO
  */
+@Log4j
 @Resource(uri="/grant", superClass=ExtendedRestfulController)
 class AoGrant extends Component {
   
   AcademicOutput academicOutput
   CostItem costItem
   Org funder
-  String fund
   String grantId
   String internalGrantId
   Person fundedAuthor
   
   
   static namedQueries = {
-	Component.namedQueries()
+    Component.namedQueries()
   }
   
   static mappedBy = [
@@ -31,12 +32,12 @@ class AoGrant extends Component {
     // Set the name if it isn't already.
      if( !name ) {
       // Lets update the name
-      def nameStr = "${funder?.name ?: ''}:${fund ? ' ' + fund : ''}"
-      if (grantId) {
-        nameStr += " / ${grantId}"
-      }
+      def nameStr = "${grantId}"
       if (internalGrantId) {
         nameStr += " / ${internalGrantId}"
+      }
+      if (funder?.name?.length() ?: 0 > 0) {
+        nameStr += " / ${funder.name}"
       }
       
       if ( !(nameStr?.length() > 0) ) {
@@ -52,8 +53,27 @@ class AoGrant extends Component {
     'academicOutput'  (nullable: true)
     'funder'          (nullable: true)
     'costItem'        (nullable: true)
-    'fund'            (nullable: true,  blank:false)
-    'grantId'         (nullable: true,  blank:false)
+    'grantId'         (nullable: true,  blank:false, validator: { val, inst ->
+      def result = AoGrant.ownedComponents {
+        and {
+          def instance = inst
+          if (inst.id) {
+            not {
+              idEq inst.id
+            }
+          }
+          ilike 'grantId' , "${val}"
+        }
+        projections {
+          count("id")
+        }
+      }
+      
+      if (result[0] > 0) {
+        ['ensureUnique', "${val}", "grant", "code"]
+      }
+    })
+    
     'internalGrantId' (nullable: true,  blank:false)
     'fundedAuthor'    (nullable: true)
   }
@@ -63,6 +83,7 @@ class AoGrant extends Component {
 
     return [
       baseclass:'uk.ac.jisc.monitorlocal.AoGrant',
+      useDistinct: true,
       title:'AOGrant',
       group:'Secondary',
       defaultSort:'name',
@@ -70,24 +91,25 @@ class AoGrant extends Component {
       qbeConfig:[
         qbeForm:[
           [
-            prompt:'Name or Title',
+            prompt:'Search',
             qparam:'q',
-            placeholder:'Name or title of item',
+            placeholder:'Search Grants',
             contextTree: [ 'ctxtp':'disjunctive',
-                             'terms':[
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'grantId', 'wildcard':'R'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'internalGrantId', 'wildcard':'R'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funder.name', 'wildcard':'R']
-                             ]
-                         ]
+              'terms':[
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'grantId', 'wildcard':'R'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'internalGrantId', 'wildcard':'R'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'funder.name', 'wildcard':'R']
+              ]
+            ]
 
           ],
           [
+            expose: false,
             prompt:'Owner Institution',
             qparam:'instCtx',
             placeholder:'Owner Institution',
-            contextTree: [ 'ctxtp':'qry', 'comparator' : 'eq', 'prop':'ownerInstitution.id', type:'java.lang.Long' ],
+            contextTree: [ 'ctxtp':'qry', 'comparator' : 'eq', 'prop':'ownerInstitution.id'],
           ]
         ],
         qbeGlobals:[

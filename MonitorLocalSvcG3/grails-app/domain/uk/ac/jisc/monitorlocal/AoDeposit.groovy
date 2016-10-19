@@ -4,7 +4,7 @@ import com.k_int.grails.tools.refdata.Defaults
 import com.k_int.grails.tools.refdata.RefdataValue
 
 class AoDeposit {
-  static belongsTo = [ academicOutput: AcademicOutput ]
+//  static belongsTo = [ academicOutput: AcademicOutput ]
   static mappedBy = [
     academicOutput:'deposits',
   ]

@@ -20,7 +20,6 @@ class Org extends Component {
 
   // Can users be affiliated with this org?
   Boolean membershipOrg
-  
 
   // Still don't like this - these are roles, not types really, and an org needs to be able to play multiple. Not for this release
   // But pretty critical to fix
@@ -31,21 +30,13 @@ class Org extends Component {
     'Funder Group'
   ])
   RefdataValue type
-
-  @AbsoluteCollection
-  Set userAffiliations = []
   
   static namedQueries = {
 	Component.namedQueries()
   }
   
   static hasMany = [
-    userAffiliations: UserOrg,
     appliedComplianceRuleSets: String
-  ]
-
-  static mappedBy = [
-    userAffiliations: 'org'
   ]
 
   // A closure that can be used when databinding an instance of org
@@ -93,6 +84,7 @@ class Org extends Component {
 
     return [
       baseclass:'uk.ac.jisc.monitorlocal.Org',
+      useDistinct: true,
       title:'Organizations',
       group:'Secondary',
       defaultSort:'name',
@@ -100,16 +92,16 @@ class Org extends Component {
       qbeConfig:[
         qbeForm:[
           [
-            prompt:'Name or Title',
+            prompt:'Search',
             qparam:'name',
-            placeholder:'Name or title of item',
+            placeholder:'Search Organizations',
             contextTree: [ 'ctxtp':'disjunctive',
-                             'terms':[
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'id', 'wildcard':'R'],
-                                  ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'identifiers.identifier.value', 'wildcard':'R']
-                             ]
-                         ]
+              'terms':[
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'id', 'wildcard':'R'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'identifiers.identifier.value', 'wildcard':'R']
+              ]
+            ]
           ],
         ],
         qbeGlobals:[

@@ -28,6 +28,11 @@ class UserOrg  implements Comparable {
     formalRole(nullable:true)
     status(nullable:false)
   }
+  
+  static mapping = {
+    org cascade: "merge, save-update, lock, refresh, evict, replicate"
+    user cascade: "merge, save-update, lock, refresh, evict, replicate"
+  }
 
   @Transient
   def getSortString() {

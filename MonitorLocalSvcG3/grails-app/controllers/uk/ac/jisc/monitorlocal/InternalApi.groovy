@@ -4,20 +4,23 @@ import static groovyx.net.http.ContentType.*
 import static groovyx.net.http.Method.GET
 import grails.converters.*
 import grails.core.GrailsApplication
-import grails.plugins.*
+import grails.transaction.Transactional
+
+import org.hibernate.Session
+
 import au.com.bytecode.opencsv.CSVReader
 
 import com.k_int.grails.tools.finance.YahooRatesService
 import com.k_int.grails.tools.refdata.*
 
 
-class InternalApiController implements PluginManagerAware {
+class InternalApiController {
 
   static responseFormats = ['json', 'xml']
 
   static orgs_import_cfg = [
     'name':[action:'process', target:"name", subtype:'simple'],
-    'domain':[action:'process', target:"domain", subtype:'simple'],
+    'domain':[action:'process', target:"id", subtype:'id'],
     'address':[action:'process', target:"address", subtype:'simple'],
     'type':[action:'process', target:"type", subtype:'refdata', refdataCategory:'Org.Type'],
     'id.jisc':[action:'process', target:"id", subtype:'id'],
@@ -64,7 +67,6 @@ class InternalApiController implements PluginManagerAware {
   ]
 
   GrailsApplication grailsApplication
-  GrailsPluginManager pluginManager
   YahooRatesService yahooRatesService
 
   def kbplusSyncService
@@ -150,14 +152,15 @@ class InternalApiController implements PluginManagerAware {
 
 
   def OrgsIngest() {
-    def result = [ status:'OK' ]
+    def result = [ status:'OK', messages:[] ]
 
     def upload_mime_type = request.getFile("content")?.contentType 
     def upload_filename = request.getFile("content")?.getOriginalFilename()
 
     if ( upload_mime_type && upload_filename ) {
+      log.debug("Got orgs file ${upload_mime_type} ${upload_filename}");
       def upload_file = request.getFile("content");
-      processOrgsIngest(upload_file.getInputStream());
+      processOrgsIngest(upload_file.getInputStream(), result);
     }
     else {
       log.warn("No mimetype or filename ${upload_mime_type} or ${upload_filename}");
@@ -166,7 +169,9 @@ class InternalApiController implements PluginManagerAware {
     render result as JSON
   }
 
-  private def processOrgsIngest(InputStream is) {
+  private def processOrgsIngest(InputStream is, result) {
+    
+    long start = System.currentTimeSeconds()
 
     log.debug("assimilateOrgsData");
 
@@ -178,67 +183,86 @@ class InternalApiController implements PluginManagerAware {
     String[] header = csv.readNext()
     log.debug("Got header ${header}");
     int ctr = 0
+    int rownum = 0
     String[] nl=csv.readNext()
-    int rownum = 0;
     while ( nl ) {
-      log.debug(nl);
-      def col = 0;
-      def orgdata = [:]
-      orgdata.identifiers = []
-      nl.each {
-        def cfg = orgs_import_cfg[header[col]]
-        switch (cfg.subtype) {
-          case 'simple':
-            orgdata[cfg.target] = it
-            break;
-          case 'id':
-            def id_components = header[col].split('\\.');
-            if ( it.trim().size() > 0 ) {
-              orgdata.identifiers.add([namespace:id_components[1], value:it?.trim()])
+      
+      Org.withNewSession { Session s ->
+        for (rownum = 0; rownum<100 && nl; rownum++) {
+      
+          log.debug(nl);
+          def col = 0;
+          def orgdata = [:]
+          orgdata.identifiers = []
+          nl.each {
+            def cfg = orgs_import_cfg[header[col]]
+            if ( cfg ) {
+              switch (cfg.subtype) {
+                case 'simple':
+                  orgdata[cfg.target] = it
+                  break;
+                case 'id':
+                  def id_components = header[col].replaceAll('^id\\.(.*)$', '$1')
+                  if ( it.trim().size() > 0 ) {
+                    orgdata.identifiers.add([namespace:id_components, value:it?.trim()])
+                  }
+                  break;
+                case 'refdata':
+                  if ( it && ( it.trim().length() > 0 ) )  {
+                    orgdata[cfg.target] = RefdataValue.lookupOrCreate(cfg.refdataCategory, it)
+                  }
+                  break;
+                case 'org':
+                  if ( it && ( it.trim().length() > 0 ) )  {
+                    orgdata[cfg.target] = Org.findByName(it.trim()) ?: new Org(name:it).save(flush:true, failOnError:true);
+                  }
+                  break;
+                default:
+                  log.debug("Unhandled type ${cfg.type} for column ${header[col]} config ${cfg} value ${it}");
+                  break;
+              }
             }
-            break;
-          case 'refdata':
-            if ( it && ( it.trim().length() > 0 ) )  {
-              orgdata[cfg.target] = RefdataValue.lookupOrCreate(cfg.refdataCategory, it)
+            else {
+              log.warn("File contains unmapped column[${col}] with name ${header[col]}");
+              result.messages.add([type:'validation', line:rownum, col:col, msg:"Line references unmapped column[${col}] with name ${header[col]}"]);
             }
-            break;
-          case 'org':
-            if ( it && ( it.trim().length() > 0 ) )  {
-              orgdata[cfg.target] = Org.findByName(it.trim()) ?: new Org(name:it).save(flush:true, failOnError:true);
+            col++
+          }
+    
+          log.debug("Process org: ${orgdata}")
+          if ( ( orgdata.name ) &&
+               ( orgdata.name.trim().length() > 0 ) &&
+               ( orgdata.identifiers.size() > 0 ) ) {
+            Org.withNewTransaction() {
+              uk.ac.jisc.monitorlocal.Org o = Component.lookupOrCreate(uk.ac.jisc.monitorlocal.Org.class, orgdata.name, orgdata.identifiers)
+              if ( orgdata.type ) {
+                o.type = orgdata.type
+              }
+              if ( orgdata.funder_group ) {
+                o.funderGroup = orgdata.funder_group
+              }
+              if ( orgdata.uk_api_key ) {
+                o.monitorLocalAPIKey = orgdata.uk_api_key
+              }
+              o.save()
+              if (o.funderGroup) {
+                // Ensure the funder group has the correct type.
+                o.funderGroup.setTypeFromString('Funder Group')
+              }
+              o.save(flush:true, failOnError:true)
+              result.messages.add([type:'info', line:rownum, orgId:o.id, msg:"Saved org ${o.id}"]);
             }
-            break;
-          default:
-            log.debug("Unhandled type ${cfg.type} for column ${header[col]} config ${cfg} value ${it}");
-            break;
+          }
+          ctr++
+  
+          nl=csv.readNext() 
         }
-        col++
       }
-
-      log.debug("Process org: ${orgdata}");
-      if ( ( orgdata.name ) &&
-           ( orgdata.name.trim().length() > 0 ) &&
-           ( orgdata.identifiers.size() > 0 ) ) {
-        Org.withNewTransaction() {
-          uk.ac.jisc.monitorlocal.Org o = Component.lookupOrCreate(uk.ac.jisc.monitorlocal.Org.class, orgdata.name, orgdata.identifiers)
-          if ( orgdata.type ) {
-            o.type = orgdata.type;
-          }
-          if ( orgdata.funder_group ) {
-            o.funderGroup = orgdata.funder_group;
-          }
-          if ( orgdata.uk_api_key ) {
-            o.monitorLocalAPIKey = orgdata.uk_api_key;
-          }
-          o.save(flush:true, failOnError:true);
-        }
-      }
-
-      if ( rownum++ % 50 == 0 ) {
-        cleanUpGorm()
-      }
-
-      nl=csv.readNext()
+    
+      log.info "Processed records ${(ctr - rownum) + 1} to ${ctr}."
     }
+    
+    log.info "Finished processing ${ctr} records in ${System.currentTimeSeconds() - start} seconds."
   }
 
   def PersonIngest() {
@@ -247,9 +271,16 @@ class InternalApiController implements PluginManagerAware {
     def upload_mime_type = request.getFile("content")?.contentType
     def upload_filename = request.getFile("content")?.getOriginalFilename()
 
+    log.debug("PersonIngest:: ${upload_mime_type} ${upload_filename}");
+
     if ( upload_mime_type && upload_filename ) {
       def upload_file = request.getFile("content");
-      result = processPersonIngest(upload_file.getInputStream());
+      if ( upload_file ) {
+        result = processPersonIngest(upload_file.getInputStream());
+      }
+      else {
+        log.warn("Unable to locate content file for person ingest");
+      }
     }
     else {
       log.warn("No mimetype or filename ${upload_mime_type} or ${upload_filename}");
@@ -258,8 +289,11 @@ class InternalApiController implements PluginManagerAware {
     render result as JSON
   }
 
+  
   private def processPersonIngest(InputStream is) {
-
+    
+    long start = System.currentTimeSeconds()
+    
     def result = [:]
     result.messages = []
 
@@ -271,8 +305,7 @@ class InternalApiController implements PluginManagerAware {
     def csv = new CSVReader(new InputStreamReader(new org.apache.commons.io.input.BOMInputStream(is),java.nio.charset.Charset.forName(charset)),',' as char,'"' as char)
 
     String[] header = csv.readNext()
-    log.debug("Got header ${header}");
-    int ctr = 0
+    log.debug("Got header ${header}")
     String[] nl=csv.readNext()
     int rownum = 0;
 
@@ -341,56 +374,66 @@ class InternalApiController implements PluginManagerAware {
 
     if ( valid ) {
       log.debug("Person datafile validated, process");
-
-      persdata_list.each { persdata ->
-
-        Component.withNewTransaction {
-
-          def o_list = Component.lookupByIdentifierValue(persdata.org_ids)
-          def o = o_list.size() == 1 ? o_list[0] : null
       
-          def name="${persdata.surname}, ${persdata.forenames}"
-          if ( ( o ) && ( o instanceof Org ) ) {
+      int ctr = 0
+      int row = 0
+      final int total = persdata_list.size()
+      while (ctr < total) {
+        Person.withNewSession { Session s ->
+          for (row = 0; (row<100) && (ctr < total); row++) {
 
-            if ( name ) {
-              log.debug("Got org : ${o} lookupOrCreate ${name}");
-              def person = Component.lookupOrCreate(uk.ac.jisc.monitorlocal.Person.class, name, persdata.pers_ids)
-              person.institution = o;
-              person.firstName = persdata.forenames
-              person.surname = persdata.surname
-              person.save(flush:true, failOnError:true);
-              log.debug("Saved person ${person.id}");
-
-              // Find contact details for this person
-              def contact_details = null
-              if ( persdata.email ) {
-                log.debug("Add contact details for person ${persdata.email}");
-
-                contact_details = person.personContactDetails.find { it.emailAddress == persdata.email }
-                if ( contact_details ) {
+            Component.withNewTransaction {
+              def persdata = persdata_list[ctr]
+    
+              def o_list = Component.lookupByIdentifierValue(persdata.org_ids)
+              def o = o_list.size() == 1 ? o_list[0] : null
+          
+              def name="${persdata.surname}, ${persdata.forenames}"
+              if ( ( o ) && ( o instanceof Org ) ) {
+    
+                if ( name ) {
+                  log.debug("Got org : ${o} lookupOrCreate ${name}");
+                  def person = Component.lookupOrCreate(uk.ac.jisc.monitorlocal.Person.class, name, persdata.pers_ids)
+                  person.ownerInstitution = o;
+                  person.firstName = persdata.forenames
+                  person.surname = persdata.surname
+    
+                  // Find contact details for this person
+                  def contact_details = null
+                  if ( persdata.email ) {
+                    contact_details = person.personContactDetails.find { it.emailAddress == persdata.email }
+                    if ( contact_details ) {
+                    }
+                    else {
+                      contact_details = new ContactDetails(person:person)
+                      person.addToPersonContactDetails (contact_details)
+                    }
+                    contact_details.emailAddress = persdata.email
+                    if ( o ) {
+                      contact_details.organisation = o
+                      contact_details.division = getInstitutionalRefdataValue(o, 'ContactDetails.Division', persdata.division)
+                      contact_details.department = getInstitutionalRefdataValue(o, 'ContactDetails.Department', persdata.department)
+                    }
+                  }
+                  
+                  // Save the person.
+                  person.save(flush:true, failOnError:true)
                 }
                 else {
-                  contact_details = new ContactDetails(person:person)
+                  log.warn("No person name.. cannot process");
                 }
-                contact_details.emailAddress = persdata.email
-                if ( o ) {
-                  contact_details.organisation = o
-                  contact_details.division = getInstitutionalRefdataValue(o, 'ContactDetails.Division', persdata.division)
-                  contact_details.department = getInstitutionalRefdataValue(o, 'ContactDetails.Department', persdata.department)
-                }
-                contact_details.save(flush:true, failOnError:true)
+              }
+              else {
+                log.debug("Unable to lookup org for ${persdata.org_ids}");
               }
             }
-            else {
-              log.warn("No person name.. cannot process");
-            }
-          }
-          else {
-            log.debug("Unable to lookup org for ${persdata.org_ids}");
+            ctr++
           }
         }
-        log.debug("Completed processing ${persdata}");
+        log.info "Processed records ${(ctr - row) + 1} to ${ctr}."
       }
+      
+      log.info "Finished processing ${ctr} records in ${System.currentTimeSeconds() - start} seconds."
       result.status='SUCCESS';
     }
     else {
@@ -402,43 +445,34 @@ class InternalApiController implements PluginManagerAware {
 
   private InstitutionalRefdataValue getInstitutionalRefdataValue(org, catname, val) {
 
-    InstitutionalRefdataValue result = null;
+    InstitutionalRefdataValue result = null
+    
+    if (val) {
 
-    def cat = RefdataCategory.findByDescription(catname) ?: new RefdataCategory(description:catname).save(flush:true, failOnError:true);
-
-    if ( cat ) {
-      def q = InstitutionalRefdataValue.executeQuery('select irv from InstitutionalRefdataValue as irv where irv.ownerInstitution = :inst and irv.owner = :d and irv.value = :v',
-                                                     [inst:org, d:cat, v:val.trim()]);
+      def cat = RefdataCategory.findByDescription(catname) ?: new RefdataCategory(description:catname).save(flush:true, failOnError:true)
   
-      if ( q.size() == 0 ) {
-        log.debug("Unable to locate irv for \"${org}\" \"${cat}\" \"${val.trim()}\" - create new");
-        result = new InstitutionalRefdataValue(value:val.trim(), owner:cat)
-        result.ownerInstitution = org
-        result.save(flush:true, failOnError:true);
- 
-        log.debug("Created new irv, owner institution of created object is ${result.ownerInstitution}");
-      }
-      else if (q.size() == 1 ) {
-        log.debug("Looked up irv for \"${org}\" \"${cat}\" \"${val.trim()}\" - ${result}");
-        result = (InstitutionalRefdataValue) q.get(0);
-      }
-      else {
-        log.error("Matched multiple..");
+      if ( cat ) {
+        def q = InstitutionalRefdataValue.executeQuery('select irv from InstitutionalRefdataValue as irv where irv.ownerInstitution = :inst and irv.owner = :d and irv.value = :v',
+                                                       [inst:org, d:cat, v:val.trim()])
+    
+        if ( q.size() == 0 ) {
+          log.debug("Unable to locate irv for \"${org}\" \"${cat}\" \"${val.trim()}\" - create new")
+          result = new InstitutionalRefdataValue(value:val.trim(), owner:cat)
+          result.ownerInstitution = org
+          result.save(flush:true, failOnError:true)
+   
+          log.debug("Created new irv, owner institution of created object is ${result.ownerInstitution}")
+        }
+        else if (q.size() == 1 ) {
+          result = (InstitutionalRefdataValue) q.get(0)
+          log.debug("Looked up irv for \"${org}\" \"${cat}\" \"${val.trim()}\" - ${result}")
+        }
+        else {
+          log.error("Matched multiple..")
+        }
       }
     }
 
     return result;
   }
-
-  private def cleanUpGorm() {
-    // log.debug("Clean up GORM");
-
-    // Get the current session.
-    def session = sessionFactory.currentSession
-
-    // flush and clear the session.
-    session.flush()
-    session.clear()
-  }
-
 }

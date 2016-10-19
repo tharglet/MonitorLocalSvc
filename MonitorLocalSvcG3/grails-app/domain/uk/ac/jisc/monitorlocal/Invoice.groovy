@@ -50,11 +50,35 @@ class Invoice extends Component {
   ]
 
   static mapping = {
-    invoiceCosts sort:'category', order:'asc', cascade: "all"
+    Component.mapping.rehydrate (delegate, owner, thisObject).call()
+    
+    invoiceCosts cascade: 'all', sort: 'category', order: 'asc'
     supplier cascade: 'all'
   }
   
   static constraints = {
+    Component.constraints.rehydrate (delegate, owner, thisObject).call()
+    
+    name (validator: { val, inst ->
+      def result = Invoice.ownedComponents {
+        and {
+          if (inst.id) {
+            not {
+              idEq inst.id
+            }
+          }
+          ilike 'name' , "${val}"
+        }
+        projections {
+          count("id")
+        }
+      }
+      
+      if (result[0] > 0) {
+        ['ensureUnique', "${val}", "invoice", "number"]
+      }
+    })
+    
     date nullable: true
     dueDate nullable: true
     supplier nullable: true
@@ -79,6 +103,7 @@ class Invoice extends Component {
 
     return [
       baseclass:'uk.ac.jisc.monitorlocal.Invoice',
+      useDistinct: true,
       title:'Invoice',
       group:'Secondary',
       defaultSort:'name',
@@ -86,9 +111,9 @@ class Invoice extends Component {
       qbeConfig:[
         qbeForm:[
           [
-            prompt:'Name or Title',
+            prompt:'Search',
             qparam:'q',
-            placeholder:'Name or title of item',
+            placeholder:'Search Invoices',
             contextTree: [ 'ctxtp':'disjunctive',
                              'terms':[
                                   ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R'],
@@ -99,6 +124,7 @@ class Invoice extends Component {
 
           ],
           [
+            expose: false,
             prompt:'Owner Institution',
             qparam:'instCtx',
             placeholder:'Owner Institution',
@@ -113,6 +139,11 @@ class Invoice extends Component {
         ]
       ]
     ]
+  }  
+  
+  def afterUpdate() {
+//    CostItem.withNewSession {
+      CostItem.tidyOrphans()
+//    }
   }
-
 }

@@ -23,6 +23,7 @@ def exlc = [
 json g.render( user, [excludes: exlc]) {
 
   affiliations (user.orgAffiliations) { UserOrg affil ->
+    id    affil.id
     org   affil.org?.name
     role  affil.formalRole?.authority
     status    affil.status?.value
