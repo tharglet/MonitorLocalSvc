@@ -340,6 +340,7 @@ class InternalApiController implements PluginManagerAware {
     }
 
     if ( valid ) {
+      log.debug("Person datafile validated, process");
 
       persdata_list.each { persdata ->
 
@@ -358,10 +359,13 @@ class InternalApiController implements PluginManagerAware {
               person.firstName = persdata.forenames
               person.surname = persdata.surname
               person.save(flush:true, failOnError:true);
+              log.debug("Saved person ${person.id}");
 
               // Find contact details for this person
               def contact_details = null
               if ( persdata.email ) {
+                log.debug("Add contact details for person ${persdata.email}");
+
                 contact_details = person.personContactDetails.find { it.emailAddress == persdata.email }
                 if ( contact_details ) {
                 }
@@ -385,6 +389,7 @@ class InternalApiController implements PluginManagerAware {
             log.debug("Unable to lookup org for ${persdata.org_ids}");
           }
         }
+        log.debug("Completed processing ${persdata}");
       }
       result.status='SUCCESS';
     }
