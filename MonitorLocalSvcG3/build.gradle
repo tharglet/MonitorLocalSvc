@@ -120,7 +120,7 @@ dependencies {
 
   if (!gtp) {
     println "\tno local copy found downloading from Maven"
-    compile 'com.k-int.grails:grails-tools:3.1.1'
+    compile 'com.k-int.grails:grails-tools:3.1.2'
   }
 }
 
