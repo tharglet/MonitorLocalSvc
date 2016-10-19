@@ -93,13 +93,13 @@ class Org extends Component {
         qbeForm:[
           [
             prompt:'Search',
-            qparam:'name',
+            qparam:'q',
             placeholder:'Search Organizations',
             contextTree: [ 'ctxtp':'disjunctive',
               'terms':[
-                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'R'],
-                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'id', 'wildcard':'R'],
-                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'identifiers.identifier.value', 'wildcard':'R']
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'name', 'wildcard':'B'],
+                ['ctxtp':'qry', 'comparator' : 'eq', 'prop':'id'],
+                ['ctxtp':'qry', 'comparator' : 'ilike', 'prop':'identifiers.identifier.value', 'wildcard':'B']
               ]
             ]
           ],

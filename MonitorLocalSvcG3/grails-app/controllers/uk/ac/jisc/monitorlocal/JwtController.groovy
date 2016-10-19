@@ -155,6 +155,15 @@ class JwtController {
                         user.accountExpired=false
                         user.accountLocked=false
                         user.passwordExpired=false
+                        
+                        // If we got affiliations from the SOB service we should associate the first one here. 
+                        Map affiliations = j2.affiliations
+                        if (affiliations && affiliations.size() > 0) {
+                      
+                          // We are only concerned with the domain ATM.
+                          user.defaultUserOrg(getOrCreateOrgByDomain(affiliations.keySet().getAt(0)))
+                        }
+                        
                         // TODO: add created and lastUsed timestamp fields?
                         user.save(flush:true, failOnError:true)
   
@@ -173,26 +182,8 @@ class JwtController {
                 }
   
                 if ( user ) {
-                  // if there is no "ROLE_VERIFIED_USER" role, the system is in an invalid state, this should be created as
-                  // necessary on bootstrap.
-                  def verified_user = Role.findByAuthority('ROLE_VERIFIED_USER')
-                  if (!verified_user) {
-                    // no "ROLE_VERIFIED_USER" role, log an error and respond with a 500 InternalServerError.
-                    log.error('missing role "ROLE_VERIFIED_USER"')
-                    response.status(500, "invalid system state")
-                  } else {
-                    
-                    Map affiliations = j2.affiliations
-                    if (affiliations && affiliations.size() > 0) {
-                  
-                      // We are only concerned with the domain ATM.
-                      user.setUserOrg(getOrCreateOrgByDomain(affiliations.keySet().getAt(0)))
-                      user.save(flush:true, failOnError:true)
-                    }
-                  
-                    // create a user object to push down with the JWT to the client.
-                    result.user = user
-                  }
+                  // create a user object to push down with the JWT to the client.
+                  result.user = user
                 }
               }
             }

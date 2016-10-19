@@ -22,11 +22,21 @@ def exlc = [
 
 json g.render( user, [excludes: exlc]) {
 
-  affiliations (user.orgAffiliations) { UserOrg affil ->
-    id    affil.id
-    org   affil.org?.name
-    role  affil.formalRole?.authority
-    status    affil.status?.value
+  if (user.orgAffiliations?.size() ?: 0 > 0) { 
+    for(def obj : user.orgAffiliations) {
+      UserOrg affil = (UserOrg)obj
+      
+      orgAffiliations {
+        id      affil.id
+        org     affil.org ? {
+          id affil.org.id
+          name affil.org.name
+        } : null
+        role    affil.formalRole?.authority
+        status  affil.status
+      }
+      break
+    }
   }
 
   if ( user.userOrg ) {
@@ -35,6 +45,8 @@ json g.render( user, [excludes: exlc]) {
       id user.userOrg?.id
     }
   }
+  
+  status user.status
 
   ts (new Date())
 

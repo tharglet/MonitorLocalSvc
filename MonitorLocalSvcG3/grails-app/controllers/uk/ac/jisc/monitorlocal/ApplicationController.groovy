@@ -3,6 +3,7 @@ package uk.ac.jisc.monitorlocal
 import static groovyx.net.http.Method.GET
 import grails.converters.*
 import grails.core.GrailsApplication
+import grails.plugin.springsecurity.annotation.Secured
 import grails.plugins.*
 
 import com.k_int.grails.tools.finance.YahooRatesService
@@ -64,16 +65,29 @@ class ApplicationController { // implements PluginManagerAware {
    *  aid = affiliation record id (UserOrg)
    *  s = status code - 0=Pending, 1=Approved, 2=Rejected, 3=AutoApproved
    */
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def setAffiliationStatus() {
     def result = [:]
     def user = springSecurityService.currentUser
-    log.debug("Application::requestAffiliation - ${user} ${params}");
-    if ( ( user ) && (request.isUserInRole("ROLE_ADMIN") && params.int('s') ) ) {
-      def affiliation = UserOrg.get(params.aid)
+    log.debug("Application::requestAffiliation - ${user} ${params}")
+    if ( user && params.s) {
+      UserOrg affiliation = UserOrg.get(params.aid)
       if ( affiliation ) {
         affiliation.status = params.int('s')
         result.status=0
         result.message="Affiliation updated"
+          
+        // Verify the user (used for spring auth)
+        if (affiliation.status == 1 && !affiliation.user.isVerified()) {
+          // Verify the user.
+          affiliation.user.verify()
+          affiliation.user.save(flush:true, failOnError:true)
+          
+        } else if (affiliation.status == 2) {
+        
+          affiliation.user.unVerify()
+          affiliation.user.save(flush:true, failOnError:true)
+        }
       }
       else {
         result.message="Attempt to approve non-existent affiliation ${params.aid}";

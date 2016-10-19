@@ -6,7 +6,6 @@ class UrlMappings {
     
     // Specific mappings
     "/user/current"   (controller: 'user', action: 'current')
-    "/user/query/$q?"  (controller: 'user', action: 'query')
     
     "/jwt/${action}/${provider}"(controller: 'jwt')
     

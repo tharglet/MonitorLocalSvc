@@ -1,12 +1,11 @@
 package uk.ac.jisc.monitorlocal.rest;
 
+import static org.springframework.http.HttpStatus.*
 import grails.artefact.Artefact
+import grails.plugin.springsecurity.annotation.Secured
 import grails.plugins.GrailsPluginManager
 
-import javax.persistence.Transient
-
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.access.prepost.PreAuthorize
 
 import com.k_int.grails.tools.rest.ExtendedRestfulController
 @Artefact("Controller")
@@ -27,14 +26,23 @@ public class UserRestfulController<User> extends ExtendedRestfulController<User>
    * @param id The id of the resource
    * @return The rendered resource or a 404 if it doesn't exist
    */
-  @PreAuthorize("#id == 'current' or #id == authentication.id or hasRole('ADMIN')")
   def show() {
-    super.show()
+    def cu = springSecurityService.currentUser
+    if (cu) {
+      if (cu.id == params.int('id') || request.isUserInRole("ROLE_ADMIN")) {
+        super.show()
+      } else {
+        render (status : org.springframework.http.HttpStatus.FORBIDDEN)
+      }
+    } else {
+      render (status : org.springframework.http.HttpStatus.UNAUTHORIZED)
+    }
   }
   
   /**
    * Get the current User information.
    */
+  @Secured("hasRole('USER')")
   def current () {
     
     def cu = springSecurityService.currentUser
