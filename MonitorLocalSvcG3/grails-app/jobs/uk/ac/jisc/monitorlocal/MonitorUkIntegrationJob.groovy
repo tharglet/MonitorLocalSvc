@@ -37,6 +37,9 @@ class MonitorUkIntegrationJob {
           aos.each { ao ->
             log.debug("Check that AO has the necessary fields (DOI) and dispatch using api key ${ao.ownerInstitution.monitorLocalAPIKey}");
 
+            // IF the AO does not have the necessary fields, worry not, next time it is edited and those properties are added this job will pick up the
+            // updated AO and push it through the system. Similarly, updated AOs will get pushed to UK
+
             // https://github.com/JiscMonitor/monitor-uk/blob/develop/docs/API/CONTRIBUTION.md
             monitorUKIntegrationService.pushToUK(ao);
 
