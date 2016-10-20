@@ -31,15 +31,15 @@ public class LanternIntegrationService {
 
       def http = new HTTPBuilder( grailsApplication.config.lantern.apiUrl )
       http.ignoreSSLIssues()
-      http.contentType = JSON
       http.headers = [Accept : 'application/json']
 
       def qry = [ 'api_key' : lanternApiKey ]
 
-      http.request( POST, JSON ) { req ->
+      http.request( POST ) { req ->
         uri.path = '/service/lantern'
         uri.query = qry
-        contentType=JSON
+        contentType=groovyx.net.http.ContentType.JSON
+        requestContentType=groovyx.net.http.ContentType.JSON
         body=[
           "email": response_email,
           "filename": "MonitorLocalIntegration",
@@ -55,7 +55,7 @@ public class LanternIntegrationService {
           log.debug("Lantern Response :: ${json}");
           if ( json.status == 'success' ) {
             log.debug("Got job : json.data.job")
-            pendingRequests.put([job:json.data.job, apiKey:lanternApiKey])
+            pendingRequests.add([job:json.data.job, apiKey:lanternApiKey])
           }
         }
 
@@ -76,7 +76,7 @@ public class LanternIntegrationService {
     if ( pendingRequests.size() > 0 ) {
       def http = new HTTPBuilder( grailsApplication.config.lantern.apiUrl )
       http.ignoreSSLIssues()
-      http.contentType = JSON
+      http.contentType = groovyx.net.http.ContentType.JSON
       http.headers = [Accept : 'application/json']
 
 
@@ -85,10 +85,10 @@ public class LanternIntegrationService {
         log.debug("Check pending request  ${pr}");
 
         def qry = [ 'api_key' : pr.apiKey ]
-        http.request( POST, JSON ) { req ->
+        http.request( POST, groovyx.net.http.ContentType.JSON ) { req ->
           uri.path = pr.job'/progress'
           uri.query = qry
-          contentType=JSON
+          contentType=groovyx.net.http.ContentType.JSON
 
           // response handler for a success response code:
           response.success = { resp, json ->
@@ -115,12 +115,12 @@ public class LanternIntegrationService {
   def getLanternResult(pr) {
     def http = new HTTPBuilder( grailsApplication.config.lantern.apiUrl )
     http.ignoreSSLIssues()
-    http.contentType = JSON
+    http.contentType = groovyx.net.http.ContentType.JSON
     http.headers = [Accept : 'application/json']
-    http.request( POST, JSON ) { req ->
+    http.request( POST, groovyx.net.http.ContentType.JSON ) { req ->
       uri.path = pr.job'/results'
       uri.query = qry
-      contentType=JSON
+      contentType=groovyx.net.http.ContentType.JSON
 
       response.success = { resp, json ->
         log.debug("Lantern Response :: ${json}");
@@ -129,6 +129,7 @@ public class LanternIntegrationService {
       response.error = { err ->
         log.error("Problem talking to monitor UK service ${err}");
       }
+    }
   }
 }
 
