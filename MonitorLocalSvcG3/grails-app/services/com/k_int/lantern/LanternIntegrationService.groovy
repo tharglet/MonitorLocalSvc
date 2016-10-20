@@ -12,6 +12,8 @@ import com.k_int.grails.tools.refdata.*
 @Transactional
 public class LanternIntegrationService {
 
+  static def pendingRequests = []
+
   def grailsApplication
   def grailsWebDataBinder
 
@@ -21,10 +23,112 @@ public class LanternIntegrationService {
   }
 
 
-  def fetchLanternRecordForDOI(String doi) {
+  def fetchLanternRecordForDOI(String doi, String lanternApiKey, response_email) {
+
     def result = [:]
-    // Stub implementation in public repo - see lantern feature branch for current implementation / testing
+
+    if ( lanternApiKey ) {
+
+      def http = new HTTPBuilder( grailsApplication.config.lantern.apiUrl )
+      http.ignoreSSLIssues()
+      http.contentType = JSON
+      http.headers = [Accept : 'application/json']
+
+      def qry = [ 'api_key' : lanternApiKey ]
+
+      http.request( POST, JSON ) { req ->
+        uri.path = '/service/lantern'
+        uri.query = qry
+        contentType=JSON
+        body=[
+          "email": response_email,
+          "filename": "MonitorLocalIntegration",
+          "list" : [
+              [
+                  "DOI" : doi
+              ]
+          ]
+        ]
+
+        // response handler for a success response code:
+        response.success = { resp, json ->
+          log.debug("Lantern Response :: ${json}");
+          if ( json.status == 'success' ) {
+            log.debug("Got job : json.data.job")
+            pendingRequests.put([job:json.data.job, apiKey:lanternApiKey])
+          }
+        }
+
+        response.error = { err ->
+          log.error("Problem talking to monitor UK service ${err}");
+        }
+
+      }
+    }
+
     result
+  }
+
+  def checkPendingRequests() {
+
+    def completed_requests = []
+
+    if ( pendingRequests.size() > 0 ) {
+      def http = new HTTPBuilder( grailsApplication.config.lantern.apiUrl )
+      http.ignoreSSLIssues()
+      http.contentType = JSON
+      http.headers = [Accept : 'application/json']
+
+
+      pendingRequests.each { pr ->
+
+        log.debug("Check pending request  ${pr}");
+
+        def qry = [ 'api_key' : pr.apiKey ]
+        http.request( POST, JSON ) { req ->
+          uri.path = pr.job'/progress'
+          uri.query = qry
+          contentType=JSON
+
+          // response handler for a success response code:
+          response.success = { resp, json ->
+            log.debug("Lantern Response :: ${json}");
+            if ( json.progress?.progress == 100 ) {
+              log.debug("Job Completed")
+              completed_requests.remove(pr)
+              getLanternResult(pr)
+            }
+          }
+
+          response.error = { err ->
+            log.error("Problem talking to monitor UK service ${err}");
+          }
+
+        }
+
+      }
+    }
+
+    pendingRequests.removeAll(completed_requests);
+  }
+
+  def getLanternResult(pr) {
+    def http = new HTTPBuilder( grailsApplication.config.lantern.apiUrl )
+    http.ignoreSSLIssues()
+    http.contentType = JSON
+    http.headers = [Accept : 'application/json']
+    http.request( POST, JSON ) { req ->
+      uri.path = pr.job'/results'
+      uri.query = qry
+      contentType=JSON
+
+      response.success = { resp, json ->
+        log.debug("Lantern Response :: ${json}");
+      }
+
+      response.error = { err ->
+        log.error("Problem talking to monitor UK service ${err}");
+      }
   }
 }
 

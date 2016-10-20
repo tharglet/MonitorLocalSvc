@@ -394,3 +394,6 @@ monitor :
         'STFC':
           - 'Funder.STFC'
 ---
+lantern:
+  apiUrl : 'https://api.cottagelabs.com'
+---
