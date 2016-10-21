@@ -252,13 +252,6 @@ class User implements Serializable {
                 ['ctxtp':'qry', 'comparator' : 'eq', 'prop':'id', 'wildcard':'R'],
               ]
             ]
-          ],
-          [
-            expose: false,
-            prompt:'Owner Institution',
-            qparam:'instCtx',
-            placeholder:'Owner Institution',
-            contextTree: [ 'ctxtp':'qry', 'comparator' : 'eq', 'prop':'orgAffiliations.org.id' ],
           ]
         ],
         qbeGlobals:[],
