@@ -27,9 +27,9 @@ public class UserRestfulController<User> extends ExtendedRestfulController<User>
    * @return The rendered resource or a 404 if it doesn't exist
    */
   def show() {
-    def cu = springSecurityService.currentUser
+    User cu = springSecurityService.currentUser
     if (cu) {
-      if (cu.id == params.int('id') || request.isUserInRole("ROLE_ADMIN")) {
+      if (cu.id == params.int('id') || cu.hasRole("ROLE_ADMIN")) {
         super.show()
       } else {
         render (status : org.springframework.http.HttpStatus.FORBIDDEN)
@@ -49,5 +49,12 @@ public class UserRestfulController<User> extends ExtendedRestfulController<User>
     
     
     respond cu ? resource.get(cu.id) : null
+  }
+  
+  /**
+   * Get the current User information.
+   */
+  def create () {
+    render (status : org.springframework.http.HttpStatus.NOT_FOUND)
   }
 }

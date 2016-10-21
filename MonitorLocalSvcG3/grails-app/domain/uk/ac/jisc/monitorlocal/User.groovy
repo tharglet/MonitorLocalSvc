@@ -73,9 +73,22 @@ class User implements Serializable {
     this.username = username
     this.password = password
   }
+  
+  Set<UserRole> getRoles() {
+    UserRole.findAllByUser(this)
+  }
 
   Set<Role> getAuthorities() {
-    UserRole.findAllByUser(this)*.role
+    getRoles()*.role
+  }
+  
+  boolean hasRole(String roleName) {
+    Role r = Role.findByAuthority(roleName)
+    if (r) {
+      return UserRole.findByUserAndRole(this, r)
+    }
+    
+    false
   }
 
   def beforeInsert() {
@@ -100,7 +113,7 @@ class User implements Serializable {
     password = springSecurityService?.passwordEncoder ? springSecurityService.encodePassword(password) : password
   }
 
-  static transients = ['springSecurityService', 'verified', 'userOrg']
+  static transients = ['springSecurityService', 'verified', 'userOrg', 'roles', 'authorities']
 
   static constraints = {
     username blank: false, unique: true, bindable: false
