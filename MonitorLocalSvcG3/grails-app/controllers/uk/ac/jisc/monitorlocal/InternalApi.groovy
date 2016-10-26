@@ -20,10 +20,10 @@ class InternalApiController {
 
   static orgs_import_cfg = [
     'name':[action:'process', target:"name", subtype:'simple'],
-    'domain':[action:'process', target:"id", subtype:'id'],
     'address':[action:'process', target:"address", subtype:'simple'],
     'type':[action:'process', target:"type", subtype:'refdata', refdataCategory:'Org.Type'],
     'id.jisc':[action:'process', target:"id", subtype:'id'],
+    'domain':[action:'process', target:"id", subtype:'id'],
     'id.ukprn':[action:'process', target:"id", subtype:'id'],
     'id.isni':[action:'process', target:"id", subtype:'id'],
     'id.ringgold':[action:'process', target:"id", subtype:'id'],
@@ -356,7 +356,7 @@ class InternalApiController {
         // Try to look up the person
         def p_list = Component.lookupByIdentifierValue(persdata.pers_ids)
         if ( p_list.size() <= 1 ) {
-          persdata_list.add(persdata) 
+          persdata_list.add(persdata)
         }
         else {
           result.messages.add([msg:"ROW ${rowctr} Person matched multiple people in the database. ERROR.", rowdata:nl]);

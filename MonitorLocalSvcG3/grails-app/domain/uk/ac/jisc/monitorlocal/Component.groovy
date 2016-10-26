@@ -131,19 +131,22 @@ class Component  implements DomainRulePropertySource{
 
     switch ( existingComponents.size() ) {
       case 0:
-        result = cls.newInstance();
-        result.name = name
-        result.identifiers = []
-        identifiers.each {
-          def new_identifier = Identifier.lookupOrCreate(it.namespace, it.value)
-          def new_ci = new ComponentIdentifier();
-          new_ci.identifier=new_identifier
-          result.addToIdentifiers(new_ci);
-        }
-        result.save(flush:true, failOnError:true);
-        break;
+      
+        // Create a new object in the list. Then drop through to set the Identifiers.
+        existingComponents = [cls.newInstance('name': name)]
       case 1:
         result = existingComponents.get(0)
+        
+        // Ensure all identifiers are added to new and existing components.
+        identifiers.each {
+          def new_identifier = Identifier.lookupOrCreate(it.namespace, it.value)
+          def new_ci = new ComponentIdentifier()
+          new_ci.identifier=new_identifier
+          result.addToIdentifiers(new_ci)
+        }
+        
+        // Save...
+        result.save(flush:true, failOnError:true)
         break;
       default:
         throw new RuntimeException("Identifiers ${identifiers} matched ${existingComponents.size()} components in lookupOrCreate for ${name}");
