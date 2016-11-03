@@ -155,7 +155,22 @@ where ( ao.lanternCheckStatus is null OR lcs.value = 'Unchecked' )
   }
 
   def enrichAOWithLanternData(ao_id, lantern_record) {
-    log.debug("enrichAOWithLanternData(${ao_id}, ${lantern_record}");
+    try {
+      log.debug("enrichAOWithLanternData(${ao_id}, ${lantern_record}");
+      def academic_output = AcademicOutput.get(ao_id)
+      if ( academic_output ) {
+        // Use cute data binding to turn string into refdata value
+        academic_output.lanternCheckStatus='Checked'
+
+        academic_output.save(flush:true, failOnError:true)
+      }
+    }
+    catch ( Exception e ) {
+      log.error("Problem",e);
+    }
+    finally {
+      log.debug("enrichAOWithLanternData complete");
+    }
   }
 }
 
