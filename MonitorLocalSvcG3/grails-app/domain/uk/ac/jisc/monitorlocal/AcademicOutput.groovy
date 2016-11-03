@@ -60,6 +60,9 @@ class AcademicOutput extends Component {
   @Defaults(['CC BY', 'CC BY-SA', 'CC BY-ND', 'CC BY-NC', 'CC BY-NC-SA', 'CC BY-NC-ND', 'Other'])
   RefdataValue licence
 
+  @Defaults(['Unchecked', 'Checked'])
+  RefdataValue lanternCheckStatus
+
   // Ugh - hate this model - really would prefer publication to be separate to the AO
   Org publisher
 
@@ -260,6 +263,7 @@ class AcademicOutput extends Component {
     authorNameList nullable: true
     deposited nullable: true
     licence nullable:true
+    lanternCheckStatus nullable:true
     embargoPeriod nullable:true
     embargoEndDate nullable:true
     acknowledgement nullable:true

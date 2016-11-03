@@ -13,6 +13,14 @@ import com.k_int.grails.tools.refdata.*
 public class LanternIntegrationService {
 
   static def pendingRequests = []
+  static String new_aos = '''
+select ao from AcademicOutput as ao 
+left outer join ao.lanternCheckStatus as lcs
+join ao.identifiers as ci
+where ( ao.lanternCheckStatus is null OR lcs.value = 'Unchecked' )
+  AND ci.identifier.namespace.value = 'DOI'
+  AND ao.ownerInstitution.lanternAPIKey is not null
+'''
 
   def grailsApplication
   def grailsWebDataBinder
@@ -23,7 +31,20 @@ public class LanternIntegrationService {
   }
 
 
-  def fetchLanternRecordForDOI(String doi, String lanternApiKey, response_email) {
+  /**
+   * Find all AOs with a lantern status of unchecked where a DOI is present
+   */
+  def checkAOsNeedingLookup() {
+    log.debug("Looking for AOs needing a lantern lookup");
+    def aos_needing_lantern_lookup = AcademicOutput.executeQuery(new_aos)
+    aos_needing_lantern_lookup.each { ao ->
+      ao.getIdentifierValues('DOI').each { doi ->
+        fetchLanternRecordForDOI(doi, ao.ownerInstitution.lanternAPIKey, null, ao.id);
+      }
+    }
+  }
+
+  def fetchLanternRecordForDOI(String doi, String lanternApiKey, response_email, localId) {
 
     def result = [:]
 
@@ -55,7 +76,7 @@ public class LanternIntegrationService {
           log.debug("Lantern Response :: ${json}");
           if ( json.status == 'success' ) {
             log.debug("Got job : json.data.job")
-            pendingRequests.add([job:json.data.job, apiKey:lanternApiKey])
+            pendingRequests.add([job:json.data.job, apiKey:lanternApiKey, localId:localId])
           }
         }
 
@@ -124,12 +145,17 @@ public class LanternIntegrationService {
 
       response.success = { resp, json ->
         log.debug("Lantern Response :: ${json}");
+        enrichAOWithLanternData(pr.localId, json);
       }
 
       response.error = { err ->
         log.error("Problem talking to monitor UK service ${err}");
       }
     }
+  }
+
+  def enrichAOWithLanternData(ao_id, lantern_record) {
+    log.debug("enrichAOWithLanternData(${ao_id}, ${lantern_record}");
   }
 }
 

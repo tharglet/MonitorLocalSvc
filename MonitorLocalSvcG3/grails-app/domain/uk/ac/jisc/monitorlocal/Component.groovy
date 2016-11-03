@@ -208,4 +208,14 @@ class Component  implements DomainRulePropertySource{
     }
   }
 
+
+  def getIdentifiersByNamespace(ns) {
+    def result = []
+    identifiers.each { id ->
+      if ( id.identifier.namespace.equals(ns) )  {
+        result.add(id.identifier.value)
+      }
+    }
+    result
+  }
 }

@@ -24,6 +24,7 @@ class LanternJobChecker {
     }
 
     def checkLantern() {
+      lanternIntegrationService.checkAOsNeedingLookup()
       lanternIntegrationService.checkPendingRequests()
     }
 }
