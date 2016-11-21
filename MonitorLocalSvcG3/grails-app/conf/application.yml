@@ -297,8 +297,8 @@ auth:
     defaultRoles:
       - 'ROLE_USER'
       - 'ROLE_GOOGLE'
-    accessTokenUrl: 'https://monitor.jisc.ac.uk/sob/oauth/token'
-    peopleApiUrl: 'https://monitor.jisc.ac.uk/sob/userinfo'
+    accessTokenUrl: 'https://monitorlocal.jisc.ac.uk/sob/oauth/token'
+    peopleApiUrl: 'https://monitorlocal.jisc.ac.uk/sob/userinfo'
     query: {}
     userMapping:
       username: "sub"
